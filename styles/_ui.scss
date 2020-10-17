@@ -1,0 +1,33 @@
+@use "colours";
+@use "breakpoints";
+
+
+@mixin box {
+	display: block;
+	margin: auto;
+	max-width: calc(100vw - 4rem);
+	width: calc(100vw - 4rem);
+	@media only screen and (min-width: breakpoints.$laptop) {
+		width: 65vw;
+	}
+	background-color: white;
+	border-radius: 2.5rem;
+	padding: 2.5rem;
+	box-shadow: 0.5rem 0.5rem 1rem rgba(0,0,0, 0.4);
+}
+
+
+@mixin primary-btn {
+	background-color: colours.$primary-btn-background;
+	border: 1.5px solid colours.$primary-btn-border;
+	color: colours.$primary-btn-font;
+	border-radius: 0.75rem;
+	padding: 0.5rem 1rem;
+	font-size: 0.85rem;
+
+	&:active {
+		background-color: colours.$primary-btn-active-background;
+		border: 1.5px solid colours.$primary-btn-active-border;
+		color: colours.$primary-btn-active-font;
+	}
+}

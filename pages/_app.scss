@@ -1,0 +1,14 @@
+@use "fonts";
+@use "colours";
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: fonts.$native-stack;
+	color: colours.$primary-font;
+	line-height: 1.5;
+}
