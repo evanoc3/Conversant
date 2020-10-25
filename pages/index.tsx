@@ -14,6 +14,8 @@ const LandingPage: NextPage = (props) => (
 			<title>Conversant | Natural Learning</title>
 		</Head>
 
+		<div id={styles.background} />
+
 		<div id={styles.page}>
 			<header>
 				<h1 id={styles.title}>Conversant</h1>

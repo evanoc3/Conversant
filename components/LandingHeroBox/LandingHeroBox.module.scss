@@ -30,7 +30,6 @@
 input#search {
 	font-size: 1.15rem;
 	padding: 0.6rem 1rem;
-	// border-radius: 0.75rem;
 	border-top-left-radius: 0.75rem;
 	border-bottom-left-radius: 0.75rem;
 	border: 1.5px solid colours.$input-inactive-border;
@@ -55,6 +54,7 @@ button#submit {
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 	border-left: none !important;
+	cursor: pointer;
 
 	#icon {
 		width: 1rem;
