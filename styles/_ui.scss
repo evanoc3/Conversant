@@ -10,10 +10,10 @@
 	@media only screen and (min-width: breakpoints.$laptop) {
 		width: 65vw;
 	}
-	background-color: white;
+	background-color: colours.$primary-background;
 	border-radius: 2.5rem;
 	padding: 2.5rem;
-	box-shadow: 0.5rem 0.5rem 1rem rgba(0,0,0, 0.4);
+	box-shadow: 0.5rem 0.5rem 1rem colours.$medium-shadow;
 }
 
 
