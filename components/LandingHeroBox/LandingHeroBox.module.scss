@@ -29,6 +29,8 @@ div#search-container {
 
  
 input#search {
+	position: relative;
+	z-index: 100;
 	font-size: 1.15rem;
 	padding: 0.6rem 1rem;
 	border-top-left-radius: 0.75rem;
@@ -47,6 +49,53 @@ input#search {
 	&::placeholder {
 		font-weight: 400;
 		color: colours.$placeholder-font;
+	}
+}
+
+
+@keyframes fade {
+	0% {
+		display: none;
+		opacity: 0;
+	}
+
+	1% {
+		display: block;
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+.search-results {
+	position: absolute;
+	top: calc(100% + 0.1rem);
+	width: calc(100% - 3rem);
+	background-color: colours.$primary-background;
+	z-index: 101;
+	border: 1px solid colours.$separating-border;
+	box-shadow: 0.25rem 0.25rem 0.5rem colours.$light-shadow;
+	border-radius: 0.5rem;
+	max-height: 15rem;
+
+	&.showing {
+		animation-name: fade;
+		animation-duration: 0.4s;
+		animation-timing-function: linear;
+		animation-iteration-count: 1;
+		animation-direction: normal;
+		animation-fill-mode: forwards;
+	}
+
+	&:not(.showing) {
+		animation-name: fade;
+		animation-duration: 0.4s;
+		animation-timing-function: linear;
+		animation-iteration-count: 1;
+		animation-direction: reverse;
+		animation-fill-mode: forwards;
 	}
 }
 

@@ -1,10 +1,9 @@
-import { Component } from "react";
-import type { FormEvent, ChangeEvent } from "react";
+import { Component, createRef } from "react";
+import type { FormEvent, ChangeEvent, RefObject } from "react";
 import styles from "./LandingHeroBox.module.scss";
 import searchIcon from "./search.svg";
 import { SearchResults } from "../../components/index";
 import type { TopicSearchResult } from "../../types/topic-search";
-
 
 
 interface Props {
@@ -13,23 +12,30 @@ interface Props {
 interface State {
 	topic: string,
 	results: TopicSearchResult[],
-	showResults: boolean
+	showResults: boolean,
+	showBlockingModal: boolean
 }
 
 
 export default class LandingHeroBox extends Component<Props, State> {
+
+	private formRef: RefObject<HTMLFormElement>;
+	private hideResultsTimer: number | undefined;
 
 	constructor(props: Props) {
 		super(props);
 		this.state = {
 			topic: "",
 			results: [],
-			showResults: false
+			showResults: false,
+			showBlockingModal: true
 		};
+		this.formRef = createRef();
 		this.onInputChange = this.onInputChange.bind(this);
 		this.onFormSubmit = this.onFormSubmit.bind(this);
 		this.showResults = this.showResults.bind(this);
 		this.hideResults = this.hideResults.bind(this);
+		this.selectTopic = this.selectTopic.bind(this);
 	}
 
 
@@ -39,7 +45,7 @@ export default class LandingHeroBox extends Component<Props, State> {
 			<div id={styles.box}>
 				<h1 id={styles.title}>What would you like to learn?</h1>
 
-				<form onSubmit={onFormSubmit} autoComplete="off"> 
+				<form onSubmit={onFormSubmit} autoComplete="off" ref={this.formRef}> 
 					<div id={styles["search-container"]}>
 						<input placeholder="Enter the topic e.g. Next.js, or Java programming..." id={styles.search} onChange={onInputChange} value={state.topic} maxLength={60} onFocus={showResults} onBlur={hideResults} />
 
@@ -47,15 +53,20 @@ export default class LandingHeroBox extends Component<Props, State> {
 							<img src={searchIcon} id={styles.icon} draggable={false} />
 						</button>
 
-						{
-							state.showResults && state.results.length ? (
-								<SearchResults results={state.results} />
-							) : ""
-						}
+
+						<SearchResults containerClass={`${styles["search-results"]} ${state.showResults ? styles.showing : ""}`} results={state.results} onResultSelected={this.selectTopic} />
+
 					</div>
 				</form>
 			</div>
 		);
+	}
+
+	public componentWillUnmount(): void {
+		if(this.hideResultsTimer !== undefined) {
+			clearTimeout(this.hideResultsTimer);
+			this.hideResultsTimer = undefined;
+		}
 	}
 
 
@@ -70,6 +81,7 @@ export default class LandingHeroBox extends Component<Props, State> {
 		}
 		else {
 			this.setState({
+				showResults: true,
 				topic: newTopic
 			});
 			this.showResults();
@@ -78,9 +90,11 @@ export default class LandingHeroBox extends Component<Props, State> {
 	}
 
 	private showResults(): void {
-		this.setState({
-			showResults: true,
-		});
+		if(this.state.topic.length > 0) {
+			this.setState({
+				showResults: true,
+			});
+		}
 	}
 
 	private hideResults(): void {
@@ -89,13 +103,14 @@ export default class LandingHeroBox extends Component<Props, State> {
 		});
 	}
 
-	private onFormSubmit(e: FormEvent): void {
+	private onFormSubmit(e: FormEvent): boolean {
 		e.preventDefault();
 		const { state } = this;
 
 		if(state.topic !== undefined) {
 			alert(`${state.topic}`);
 		}
+		return false;
 	}
 
 	private async getTopicSearchResults(): Promise<void> {
@@ -103,11 +118,19 @@ export default class LandingHeroBox extends Component<Props, State> {
 			results: [
 				{
 					label: "React",
-					link: "/"
+					topic: "react"
 				}
 			]
 		});
 	}
+
+	private selectTopic(newTopic: string): void {
+		this.setState({
+			topic: newTopic,
+			showResults: false
+		}, () => {
+			this.formRef.current?.requestSubmit();
+		});
+
+	}
 }
-
-

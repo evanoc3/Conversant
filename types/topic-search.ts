@@ -1,4 +1,4 @@
 export interface TopicSearchResult {
 	label: string,
-	link: string
+	topic: string
 }
