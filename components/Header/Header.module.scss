@@ -1,0 +1,23 @@
+@use "colours";
+@use "fonts";
+
+
+#header {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	height: 4rem;
+	padding: 0 2rem;
+}
+
+
+h1#title {
+	color: colours.$contrast-title;
+	font-size: 2.5rem;
+	@include fonts.title;
+}
+
+
+.spacer {
+	flex-grow: 1;
+}
