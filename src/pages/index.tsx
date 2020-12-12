@@ -2,16 +2,12 @@ import React from "react";
 import type { NextPage } from "next";
 import Head from "react-helmet";
 import styles from "./index.module.scss";
-import { AboutBox, Header, LandingHeroBox } from "components/index";
+import { PageHead, AboutBox, Header, LandingHeroBox } from "components/index";
 
 
 const LandingPage: NextPage = (props) => (
 	<>
-		<Head>
-			<meta charSet="UTF-8" />
-			<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<title>Conversant | Natural Learning</title>
-		</Head>
+		<PageHead />
 
 		<div id={styles.background} />
 
@@ -23,7 +19,6 @@ const LandingPage: NextPage = (props) => (
 			</div>
 
 			<AboutBox />
-
 		</div>
 	</>
 );
