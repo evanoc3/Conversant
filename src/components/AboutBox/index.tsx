@@ -1,5 +1,7 @@
 import { FunctionComponent } from "react";
 import styles from "./AboutBox.module.scss";
+import { Box } from "components/index";
+
 
 
 interface Props {
@@ -7,8 +9,9 @@ interface Props {
 
 
 const AboutBox: FunctionComponent = (props: Props) => (
-	<div id={styles.box}>
-	</div>
+	<Box display="block">
+		H
+	</Box>
 );
 
 

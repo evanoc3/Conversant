@@ -8,9 +8,8 @@
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	transform: translate(-50%, -50%);
+	transform: translate(-50%, -75%);
 	padding: 3rem 2.5rem 3.5rem !important;
-	@include ui.box;
 
 	@media only screen and (min-width: breakpoints.$laptop) {
 		width: 65vw;

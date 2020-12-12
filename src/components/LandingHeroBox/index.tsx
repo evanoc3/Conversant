@@ -2,7 +2,7 @@ import { Component, createRef } from "react";
 import type { FormEvent, ChangeEvent, RefObject } from "react";
 import styles from "./LandingHeroBox.module.scss";
 import searchIcon from "./search.svg";
-import { SearchResults } from "components/index";
+import { Box, SearchResults } from "components/index";
 import type { TopicSearchResult } from "types/topic-search";
 
 
@@ -42,7 +42,7 @@ export default class LandingHeroBox extends Component<Props, State> {
 	public render(): JSX.Element {
 		const { props, state, onInputChange, onFormSubmit, showResults, hideResults } = this;
 		return (
-			<div id={styles.box}>
+			<Box id={styles["box"]}>
 				<h1 id={styles.title}>What would you like to learn?</h1>
 
 				<form onSubmit={onFormSubmit} autoComplete="off" ref={this.formRef}> 
@@ -58,7 +58,7 @@ export default class LandingHeroBox extends Component<Props, State> {
 
 					</div>
 				</form>
-			</div>
+			</Box>
 		);
 	}
 

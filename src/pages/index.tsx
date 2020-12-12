@@ -2,16 +2,14 @@ import React from "react";
 import type { NextPage } from "next";
 import Head from "react-helmet";
 import styles from "./index.module.scss";
-import { PageHead, AboutBox, Header, LandingHeroBox } from "components/index";
+import { Background, PageHead, AboutBox, Header, LandingHeroBox } from "components/index";
 
 
 const LandingPage: NextPage = (props) => (
 	<>
 		<PageHead />
 
-		<div id={styles.background} />
-
-		<div id={styles.page}>
+		<Background>
 			<Header />
 
 			<div id={styles.hero}>
@@ -19,7 +17,7 @@ const LandingPage: NextPage = (props) => (
 			</div>
 
 			<AboutBox />
-		</div>
+		</Background>
 	</>
 );
 
