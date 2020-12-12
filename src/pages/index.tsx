@@ -2,7 +2,7 @@ import React from "react";
 import type { NextPage } from "next";
 import Head from "react-helmet";
 import styles from "./index.module.scss";
-import { AboutBox, Header, LandingHeroBox } from "../components/index";
+import { AboutBox, Header, LandingHeroBox } from "components/index";
 
 
 const LandingPage: NextPage = (props) => (
