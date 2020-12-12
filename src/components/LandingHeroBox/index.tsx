@@ -2,8 +2,8 @@ import { Component, createRef } from "react";
 import type { FormEvent, ChangeEvent, RefObject } from "react";
 import styles from "./LandingHeroBox.module.scss";
 import searchIcon from "./search.svg";
-import { SearchResults } from "../../components/index";
-import type { TopicSearchResult } from "../../types/topic-search";
+import { SearchResults } from "components/index";
+import type { TopicSearchResult } from "types/topic-search";
 
 
 interface Props {

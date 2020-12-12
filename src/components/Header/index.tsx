@@ -1,7 +1,6 @@
 import { FunctionComponent } from "react";
-import Link from "next/link";
 import styles from "./Header.module.scss";
-import { LoginPill } from "../../components/index";
+import { LoginPill } from "components/index";
 
 
 interface Props {

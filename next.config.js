@@ -5,6 +5,6 @@ const withImages = require("next-images");
 
 module.exports = withImages({
   sassOptions: {
-    includePaths: [ `${__dirname}/styles/` ],
+    includePaths: [ `${__dirname}/src/styles/` ],
   }
 });
