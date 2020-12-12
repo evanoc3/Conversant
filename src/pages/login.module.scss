@@ -8,15 +8,15 @@
 	flex-flow: row nowrap;
 }
 
-
 form#signup-form {
 	width: calc(60% - 0.5px);
 	padding-right: 2.5rem;
 }
 
 div.v-separator {
-	width: 1px;
+	width: 1.5px;
 	height: 100%;
+	border-radius: 1px;
 	background-color: colours.$separating-border;
 }
 

@@ -3,11 +3,12 @@ import styles from "./login.module.scss";
 import { Background, PageHead, Box } from "components/index";
 
 
-type InputName = "loginEmail" | "loginPwd" | "signupFirstName" | "signupLastName" | "signupEmail" | "signupPwd" | "signupConfirmPwd" | "signupDOB"
+type InputName = "loginEmail" | "loginPwd" | "loginRemember" | "signupFirstName" | "signupLastName" | "signupEmail" | "signupPwd" | "signupConfirmPwd" | "signupDOB"
 
 interface State {
 	loginEmail: string,
 	loginPwd: string,
+	loginRemember: boolean,
 	signupFirstName: string,
 	signupLastName: string,
 	signupEmail: string,
@@ -24,6 +25,7 @@ class LoginPage extends Component<{}, State> {
 		this.state = {
 			loginEmail: "",
 			loginPwd: "",
+			loginRemember: true,
 			signupFirstName: "",
 			signupLastName: "",
 			signupEmail: "",
@@ -62,6 +64,10 @@ class LoginPage extends Component<{}, State> {
 							<h2>Log In</h2>
 							<input type="email" placeholder="Email address" value={state.loginEmail} onChange={e => this.inputChangeHandler(e, "loginEmail")} />
 							<input type="password" placeholder="Password" value={state.loginPwd} onChange={e => this.inputChangeHandler(e, "loginPwd")} />
+							<label>
+								<input type="checkbox" checked={state.loginRemember} onChange={e => this.inputChangeHandler(e, "loginRemember")} />
+								Remember Me
+							</label>
 							<button>Log In</button>
 						</form>
 					</Box>
@@ -72,9 +78,12 @@ class LoginPage extends Component<{}, State> {
 
 
 	private inputChangeHandler(e: any, input: InputName): void {
-		console.debug(e);
-		let newState: {[key in InputName]?: string} = {};
-		newState[input] = e.target.value;
+		const newState: {[key in InputName]?: string | boolean} = {};
+		if(input === "loginRemember") {
+			newState[input] = e.target.checked;
+		} else {
+			newState[input] = e.target.value;
+		}
 		// @ts-expect-error
 		this.setState(newState);
 	}
@@ -92,6 +101,5 @@ class LoginPage extends Component<{}, State> {
 		return;
 	}
 }
-
 
 export default LoginPage;
