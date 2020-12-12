@@ -1,4 +1,26 @@
+@use "colours";
+
+
 #form-box {
 	height: calc(100vh - 10rem);
 	margin-top: 5rem;
+	display: flex;
+	flex-flow: row nowrap;
+}
+
+
+form#signup-form {
+	width: calc(60% - 0.5px);
+	padding-right: 2.5rem;
+}
+
+div.v-separator {
+	width: 1px;
+	height: 100%;
+	background-color: colours.$separating-border;
+}
+
+form#login-form {
+	width: calc(40% - 0.5px);
+	padding-left: 2.5rem;
 }
