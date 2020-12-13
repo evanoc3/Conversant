@@ -4,16 +4,24 @@ import { LoginPill } from "components/index";
 
 
 interface Props {
+	showNav?: boolean
 }
 
 
-const Header: FunctionComponent = (props: Props) => (
+const Header: FunctionComponent<Props> = (props: Props) => (
 	<header id={styles.header}>
 		<h1 id={styles.title}>Conversant</h1>
 
-		<div className={styles.spacer} />
+		{
+			(props.showNav) ? (
+				<>
+					<div className={styles.spacer} />
 
-		<LoginPill />
+					<LoginPill />
+				</>
+			) : ""
+		}		
+
 	</header>
 );
 

@@ -104,11 +104,21 @@ input#search {
 }
 
 button#submit {
-	@include ui.primary-btn;
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
-	border-left: none !important;
+	background-color: colours.$btn-orange-background;
+	border: 1.5px solid colours.$btn-orange-border;
+	border-left: none;
+	color: colours.$btn-orange-font;
+	border-top-right-radius: 0.75rem;
+	border-bottom-right-radius: 0.75rem;
+	padding: 0.5rem 1rem;
+	font-size: 0.85rem;
 	cursor: pointer;
+
+	&:active {
+		background-color: colours.$btn-orange-active-background;
+		border: 1.5px solid colours.$btn-orange-active-border;
+		color: colours.$btn-orange-active-font;
+	}
 
 	#icon {
 		width: 1rem;

@@ -1,8 +1,9 @@
 @use "colours";
+@use "ui";
 
 
 #form-box {
-	height: calc(100vh - 10rem);
+	max-height: calc(100vh - 10rem);
 	margin-top: 5rem;
 	display: flex;
 	flex-flow: row nowrap;
@@ -15,7 +16,6 @@ form#signup-form {
 
 div.v-separator {
 	width: 1.5px;
-	height: 100%;
 	border-radius: 1px;
 	background-color: colours.$separating-border;
 }
@@ -23,4 +23,72 @@ div.v-separator {
 form#login-form {
 	width: calc(40% - 0.5px);
 	padding-left: 2.5rem;
+}
+
+input.input {
+	display: inline-block;
+	width: 100%;
+	margin: 0.5rem 0;
+	font-size: 0.9rem;
+	padding: 0.5rem;
+	border-radius: 0.4rem;
+	border: 1.5px solid colours.$separating-border;
+
+	&::placeholder {
+		opacity: 1;
+		color: colours.$placeholder-font;
+	}
+}
+
+div.form-row {
+	display: grid;
+	grid-template-rows: auto;
+	grid-auto-columns: 1fr;
+	column-gap: 0.5rem;
+
+	> * {
+		grid-row: 1 / span 1;
+	}
+}
+
+input.date {
+	width: calc(50% - 0.25rem);
+
+	&.empty {
+		color: colours.$placeholder-font;
+	}
+}
+
+.checkbox-lbl {
+	font-size: 0.85rem;
+
+	input.checkbox {
+		margin-right: 0.5rem;
+	}
+}
+
+.error-msg {
+	color: red;
+	font-size: 0.85rem;
+}
+
+.forgot-link {
+	float: right;
+	font-size: 0.85rem;
+	text-decoration: underline;
+	color: colours.$link-colour;
+}
+
+button.button {
+	margin-top: 0.5rem;
+	@include ui.btn;
+	background-color: colours.$btn-green-background;
+	border-color: colours.$btn-green-border;
+	color: colours.$btn-green-font;
+
+	&:active {
+		background-color: colours.$btn-green-active-background;
+		border-color: colours.$btn-green-border;
+		color: colours.$btn-green-active-font;
+	}
 }

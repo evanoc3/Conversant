@@ -13,17 +13,11 @@
 }
 
 
-@mixin primary-btn {
-	background-color: colours.$primary-btn-background;
-	border: 1.5px solid colours.$primary-btn-border;
-	color: colours.$primary-btn-font;
-	border-radius: 0.75rem;
-	padding: 0.5rem 1rem;
+@mixin btn {
+	border-width: 1.5px;
+	border-style: solid;
+	border-radius: 2rem;
+	padding: 0.325rem 1rem;
 	font-size: 0.85rem;
-
-	&:active {
-		background-color: colours.$primary-btn-active-background;
-		border: 1.5px solid colours.$primary-btn-active-border;
-		color: colours.$primary-btn-active-font;
-	}
+	cursor: pointer;
 }

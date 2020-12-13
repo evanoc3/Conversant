@@ -8,5 +8,6 @@ div.box {
 	padding: 2.5rem;
 	box-shadow: 0.5rem 0.5rem 1rem colours.$medium-shadow;
 	width: calc(100vw - 8rem);
+	overflow-y: auto;
 }
 
