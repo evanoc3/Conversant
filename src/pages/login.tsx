@@ -3,6 +3,7 @@ import Link from "next/link";
 import validator from "validator";
 import styles from "./login.module.scss";
 import { Background, PageHead, Header, Box } from "components/index";
+import type { Login } from "types/auth-service";
 
 
 type InputName = "loginEmail" | "loginPwd" | "loginRemember" | "signupFirstName" | "signupLastName" | "signupEmail" | "signupPwd" | "signupConfirmPwd" | "signupDOB"
@@ -162,7 +163,6 @@ class LoginPage extends Component<{}, State> {
 			loginErrorMsg: undefined
 		});
 
-		console.debug(`Sending request to auth service at ${process.env.NEXT_PUBLIC_AUTH_SERVICE_HOST}`);
 		// Make the POST request to the auth service to receive a JWT
 		const resp = await fetch(`${process.env.NEXT_PUBLIC_AUTH_SERVICE_HOST}/login`, {
 			method: "POST",
@@ -192,12 +192,34 @@ class LoginPage extends Component<{}, State> {
 			return;
 		}
 
-		// Parse the response from the auth service, assuming that everything was ok
-		const body = await resp.json();
+		// Parse the response from the auth service
+		const body: Login.Response = await resp.json();
 
-		console.debug(body);
-		
-		return
+		console.debug("Received response from auth service", body);
+
+		if( !("login" in body)) {
+			console.error("Error: Could not parse the response from the auth service", body);
+		}
+
+		if(! body.login.success) {
+			this.setState({
+				loginErrorMsg: "Could not log in"
+			});
+			return;
+		}
+
+		// At this point, we can assume that the login request was successful and we were provided with an auth_token
+		const token = (body.login as Login.SuccessPayload).auth_token;
+
+		// Store the auth_token in either permanent or session client-side storage based on whether the "remember me" checkbox was ticked
+		if("localStorage" in window && this.state.loginRemember) {
+			console.debug("Storing auth_token in localStorage");
+			localStorage.setItem("auth_token", token);
+		}
+		else if("sessionStorage" in window && !this.state.loginRemember) {
+			console.debug("Storing auth_token in sessionStorage");
+			sessionStorage.setItem("auth_token", token);
+		}
 	}
 }
 
