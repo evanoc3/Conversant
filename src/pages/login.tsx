@@ -165,12 +165,10 @@ class LoginPage extends Component<{}, State> {
 		console.debug(`Sending request to auth service at ${process.env.NEXT_PUBLIC_AUTH_SERVICE_HOST}`);
 		// Make the POST request to the auth service to receive a JWT
 		const resp = await fetch(`${process.env.NEXT_PUBLIC_AUTH_SERVICE_HOST}/login`, {
-			mode: "cors",
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 				"Accept": "application/json",
-				"Access-Control-Allow-Origin": process.env.NEXT_PUBLIC_AUTH_SERVICE_HOST!
 			},
 			body: JSON.stringify({
 				"email": this.state.loginEmail,
