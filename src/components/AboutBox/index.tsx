@@ -9,7 +9,7 @@ interface Props {
 
 
 const AboutBox: FunctionComponent = (props: Props) => (
-	<Box display="block">
+	<Box>
 		H
 	</Box>
 );
