@@ -132,26 +132,72 @@ class LoginPage extends Component<{}, State> {
 		this.setState(newState);
 	}
 
-
 	private postSignupForm(e: any): void {
 		e.preventDefault();
 		alert();
 		return;
 	}
 
-	private postLoginForm(e: any): void {
+	private async postLoginForm(e: any): Promise<void> {
+		// Prevent the default form submission
 		e.preventDefault();
+
+		// Validate the email that was entered (must be an email address)
 		if(! validator.isEmail(this.state.loginEmail)) {
-			this.setState({loginErrorMsg: "Please enter a valid email address"});
+			this.setState({
+				loginErrorMsg: "Please enter a valid email address"
+			});
 			return;
 		}
+		// Validate the password that was entered (must be between 8 and 64 characters long)
 		if(! validator.isLength(this.state.loginPwd, {min: 8, max: 64})) {
-			this.setState({loginErrorMsg: "Please enter a valid password (between 8 and 64 characters)"});
+			this.setState({
+				loginErrorMsg: "Please enter a valid password (between 8 and 64 characters)"
+			});
 			return;
 		}
 
-		this.setState({loginErrorMsg: undefined});
-		alert();
+		// Clear any previously set error messages if we've passed input validation
+		this.setState({
+			loginErrorMsg: undefined
+		});
+
+		console.debug(process.env);
+		// Make the POST request to the auth service to receive a JWT
+		const resp = await fetch(`${process.env.NEXT_PUBLIC_AUTH_SERVICE_HOST}/login`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"Accept": "application/json"
+			},
+			body: JSON.stringify({
+				"email": this.state.loginEmail,
+				"password": this.state.loginPwd
+			})
+		}).then(resp => {
+			return resp;
+		}).catch(err => {
+			console.error(`Error: ${err}`);
+		});
+
+		// Validate that there was a response from the auth service
+		if(!resp) {
+			console.error("Error: Did not get a response from the auth service");
+			return;
+		}
+
+		// Validate that the response had an OK status code
+		if(!resp.ok) {
+			console.error(`Error: Did not receive an OK status response from the auth service. Response had status code: ${resp.status}`);
+			return;
+		}
+
+		// Parse the response from the auth service, assuming that everything was ok
+		const body = await resp.json();
+
+		console.debug(body);
+		
+		return
 	}
 }
 
