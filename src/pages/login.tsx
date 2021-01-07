@@ -1,12 +1,18 @@
 import { Component } from "react";
 import Link from "next/link";
+import { withRouter, NextRouter } from "next/router";
 import validator from "validator";
 import styles from "./login.module.scss";
 import { Background, PageHead, Header, Box } from "components/index";
+import authManager from "utils/auth-manager";
 import type { Login } from "types/auth-service";
 
 
-type InputName = "loginEmail" | "loginPwd" | "loginRemember" | "signupFirstName" | "signupLastName" | "signupEmail" | "signupPwd" | "signupConfirmPwd" | "signupDOB"
+type InputName = "loginEmail" | "loginPwd" | "loginRemember" | "signupFirstName" | "signupLastName" | "signupEmail" | "signupPwd" | "signupConfirmPwd" | "signupDOB";
+
+interface Props {
+	router: NextRouter
+}
 
 interface State {
 	loginEmail: string,
@@ -23,9 +29,9 @@ interface State {
 }
 
 
-class LoginPage extends Component<{}, State> {
+class LoginPage extends Component<Props, State> {
 
-	constructor(props: {}) {
+	constructor(props: Props) {
 		super(props);
 		this.state = {
 			loginEmail: "",
@@ -119,6 +125,13 @@ class LoginPage extends Component<{}, State> {
 				</Background>
 			</>
 		);
+	}
+
+	public componentDidMount(): void {
+		// Redirect to the logged-in home page if the user is already logged in
+		if(authManager.isLoggedIn()) {
+			this.props.router.push("/home");
+		}
 	}
 
 
@@ -223,4 +236,4 @@ class LoginPage extends Component<{}, State> {
 	}
 }
 
-export default LoginPage;
+export default withRouter(LoginPage);
