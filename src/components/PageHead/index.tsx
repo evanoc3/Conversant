@@ -1,10 +1,10 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, PropsWithChildren } from "react";
 import Head from "next/head";
 
 
-interface Props {
+type Props = PropsWithChildren<{
 	title?: string
-}
+}>
 
 
 const PageHead: FunctionComponent<Props> = (props: Props) => {
@@ -14,6 +14,10 @@ const PageHead: FunctionComponent<Props> = (props: Props) => {
 			<meta charSet="utf-8" />
 			<meta name="viewport" content="width=device-width, initial-scale=1" />
 			<meta name="author" content="Evan O'Connor <e.oconnor47@nuigalway.ie>" />
+
+			{
+				props.children
+			}
 		</Head>
 	);
 };

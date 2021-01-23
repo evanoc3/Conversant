@@ -1,0 +1,45 @@
+@use "colours";
+
+@mixin input {
+	display: inline-block;
+	width: 100%;
+	margin: 0.5rem 0;
+	font-size: 0.9rem;
+	padding: 0.5rem;
+	border-radius: 0.4rem;
+	border: 1.5px solid colours.$separating-border;
+
+	&::placeholder {
+		opacity: 1;
+		color: colours.$placeholder-font;
+	}
+}
+
+
+@mixin date-input {
+	width: calc(50% - 0.25rem);
+
+	&.empty {
+		color: colours.$placeholder-font;
+	}
+}
+
+
+@mixin form-row {
+	display: grid;
+	grid-template-rows: auto;
+	grid-auto-columns: 1fr;
+	column-gap: 0.5rem;
+
+	> * {
+		grid-row: 1 / span 1;
+	}
+}
+
+@mixin checkbox {
+	font-size: 0.85rem;
+
+	input[type="checkbox"] {
+		margin-right: 0.5rem;
+	}
+}

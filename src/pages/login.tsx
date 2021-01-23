@@ -1,11 +1,9 @@
 import { Component } from "react";
-import Link from "next/link";
 import { withRouter, NextRouter } from "next/router";
-import validator from "validator";
-import styles from "./login.module.scss";
-import { Background, PageHead, Header, Box } from "components/index";
 import authManager from "utils/auth-manager";
-import type { Login } from "types/auth-service";
+
+import styles from "./login.module.scss";
+import { Background, PageHead, Header, Box, RegularLoginBox, OAuthloginBox } from "components/index";
 
 
 type InputName = "loginEmail" | "loginPwd" | "loginRemember" | "signupFirstName" | "signupLastName" | "signupEmail" | "signupPwd" | "signupConfirmPwd" | "signupDOB";
@@ -15,10 +13,7 @@ interface Props {
 }
 
 interface State {
-	loginEmail: string,
-	loginPwd: string,
-	loginErrorMsg: string | undefined,
-	loginRemember: boolean,
+	topLoginBoxOpen: boolean,
 	signupFirstName: string,
 	signupLastName: string,
 	signupEmail: string,
@@ -30,14 +25,10 @@ interface State {
 
 
 class LoginPage extends Component<Props, State> {
-
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			loginEmail: "",
-			loginPwd: "",
-			loginErrorMsg: undefined,
-			loginRemember: true,
+			topLoginBoxOpen: true,
 			signupFirstName: "",
 			signupLastName: "",
 			signupEmail: "",
@@ -48,7 +39,8 @@ class LoginPage extends Component<Props, State> {
 		};
 		this.inputChangeHandler = this.inputChangeHandler.bind(this);
 		this.postSignupForm = this.postSignupForm.bind(this);
-		this.postLoginForm = this.postLoginForm.bind(this);
+		this.openOAuthLogin = this.openOAuthLogin.bind(this);
+		this.openRegularLogin = this.openRegularLogin.bind(this);
 	}
 
 
@@ -61,6 +53,7 @@ class LoginPage extends Component<Props, State> {
 				<Background>
 
 					<Header />
+					
 					<Box id={styles["form-box"]}>
 						<form id={styles["signup-form"]} onSubmit={this.postSignupForm}>
 							<h2>Sign Up</h2>
@@ -93,39 +86,18 @@ class LoginPage extends Component<Props, State> {
 						</form>
 		
 						<div className={styles["v-separator"]} />
-		
-						<form id={styles["login-form"]} onSubmit={this.postLoginForm}>
-							<h2>Log In</h2>
 
-							<input type="email" className={`${styles["input"]}`} placeholder="Email address" value={state.loginEmail} onChange={e => this.inputChangeHandler(e, "loginEmail")} maxLength={255} required />
+						<div id={styles["login"]}>
+							<OAuthloginBox open={state.topLoginBoxOpen} onOpen={this.openOAuthLogin} />
+							<RegularLoginBox open={!state.topLoginBoxOpen} onOpen={this.openRegularLogin} />
+						</div>
 
-							<input type="password" className={`${styles["input"]}`} placeholder="Password" value={state.loginPwd} onChange={e => this.inputChangeHandler(e, "loginPwd")} minLength={8} maxLength={255} required />
-
-							<label className={styles["checkbox-lbl"]}>
-								<input type="checkbox" className={styles["checkbox"]} checked={state.loginRemember} onChange={e => this.inputChangeHandler(e, "loginRemember")} />
-
-								Remember Me
-							</label>
-
-							<Link href="/forgot-password">
-								<a className={styles["forgot-link"]}>
-									Forgot your password
-								</a>
-							</Link>
-
-							<br />
-							{
-								(state.loginErrorMsg) ? (
-									<div className={styles["error-msg"]}>{state.loginErrorMsg}</div>
-								) : ""
-							}
-							<button className={styles["button"]}>Log In</button>
-						</form>
 					</Box>
 				</Background>
 			</>
 		);
 	}
+
 
 	public componentDidMount(): void {
 		// Redirect to the logged-in home page if the user is already logged in
@@ -146,93 +118,27 @@ class LoginPage extends Component<Props, State> {
 		this.setState(newState);
 	}
 
+
 	private postSignupForm(e: any): void {
 		e.preventDefault();
 		alert();
 		return;
 	}
 
-	private async postLoginForm(e: any): Promise<void> {
-		// Prevent the default form submission
+
+	private openOAuthLogin(e: any): void {
 		e.preventDefault();
-
-		// Validate the email that was entered (must be an email address)
-		if(! validator.isEmail(this.state.loginEmail)) {
-			this.setState({
-				loginErrorMsg: "Please enter a valid email address"
-			});
-			return;
-		}
-		// Validate the password that was entered (must be between 8 and 64 characters long)
-		if(! validator.isLength(this.state.loginPwd, {min: 8, max: 64})) {
-			this.setState({
-				loginErrorMsg: "Please enter a valid password (between 8 and 64 characters)"
-			});
-			return;
-		}
-
-		// Clear any previously set error messages if we've passed input validation
 		this.setState({
-			loginErrorMsg: undefined
+			topLoginBoxOpen: true
 		});
+	}
 
-		// Make the POST request to the auth service to receive a JWT
-		const resp = await fetch(`${process.env.NEXT_PUBLIC_AUTH_SERVICE_HOST}/login`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"Accept": "application/json",
-			},
-			body: JSON.stringify({
-				"email": this.state.loginEmail,
-				"password": this.state.loginPwd
-			})
-		}).then(resp => {
-			return resp;
-		}).catch(err => {
-			console.error(`Error: ${err}`);
+
+	private openRegularLogin(e: any): void {
+		e.preventDefault();
+		this.setState({
+			topLoginBoxOpen: false
 		});
-
-		// Validate that there was a response from the auth service
-		if(!resp) {
-			console.error("Error: Did not get a response from the auth service");
-			return;
-		}
-
-		// Validate that the response had an OK status code
-		if(!resp.ok) {
-			console.error(`Error: Did not receive an OK status response from the auth service. Response had status code: ${resp.status}`);
-			return;
-		}
-
-		// Parse the response from the auth service
-		const body: Login.Response = await resp.json();
-
-		console.debug("Received response from auth service", body);
-
-		if( !("login" in body)) {
-			console.error("Error: Could not parse the response from the auth service", body);
-		}
-
-		if(! body.login.success) {
-			this.setState({
-				loginErrorMsg: "Could not log in"
-			});
-			return;
-		}
-
-		// At this point, we can assume that the login request was successful and we were provided with an auth_token
-		const token = (body.login as Login.SuccessPayload).auth_token;
-
-		// Store the auth_token in either permanent or session client-side storage based on whether the "remember me" checkbox was ticked
-		if("localStorage" in window && this.state.loginRemember) {
-			console.debug("Storing auth_token in localStorage");
-			localStorage.setItem("auth_token", token);
-		}
-		else if("sessionStorage" in window && !this.state.loginRemember) {
-			console.debug("Storing auth_token in sessionStorage");
-			sessionStorage.setItem("auth_token", token);
-		}
 	}
 }
 
