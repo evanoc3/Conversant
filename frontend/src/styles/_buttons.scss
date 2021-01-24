@@ -10,10 +10,18 @@
 }
 
 
+// Border radius
+
 @mixin pill {
 	border-radius: 100rem;
 }
 
+@mixin rounded {
+	border-radius: 0.75rem;
+}
+
+
+// Colours
 
 @mixin green {
 	background-color: colours.$btn-green-background;
@@ -24,5 +32,18 @@
 		background-color: colours.$btn-green-active-background;
 		border-color: colours.$btn-green-border;
 		color: colours.$btn-green-active-font;
+	}
+}
+
+
+@mixin orange {
+	background-color: colours.$btn-orange-background;
+	border-color: colours.$btn-orange-border;
+	color: colours.$btn-orange-font;
+
+	&:active {
+		background-color: colours.$btn-orange-active-background;
+		border-color: colours.$btn-orange-active-border;
+		color: colours.$btn-orange-active-font;
 	}
 }

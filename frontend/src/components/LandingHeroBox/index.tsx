@@ -89,6 +89,7 @@ export default class LandingHeroBox extends Component<Props, State> {
 		}
 	}
 
+	
 	private showResults(): void {
 		if(this.state.topic.length > 0) {
 			this.setState({
@@ -97,11 +98,13 @@ export default class LandingHeroBox extends Component<Props, State> {
 		}
 	}
 
+
 	private hideResults(): void {
 		this.setState({
 			showResults: false
 		});
 	}
+
 
 	private onFormSubmit(e: FormEvent): boolean {
 		e.preventDefault();
@@ -113,6 +116,7 @@ export default class LandingHeroBox extends Component<Props, State> {
 		return false;
 	}
 
+
 	private async getTopicSearchResults(): Promise<void> {
 		this.setState({
 			results: [
@@ -123,6 +127,7 @@ export default class LandingHeroBox extends Component<Props, State> {
 			]
 		});
 	}
+
 
 	private selectTopic(newTopic: string): void {
 		this.setState({

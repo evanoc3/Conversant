@@ -2,6 +2,7 @@
 @use "fonts";
 @use "ui";
 @use "breakpoints";
+@use "buttons";
 
 
 #box {
@@ -103,22 +104,15 @@ input#search {
 	}
 }
 
-button#submit {
-	background-color: colours.$btn-orange-background;
-	border: 1.5px solid colours.$btn-orange-border;
-	border-left: none;
-	color: colours.$btn-orange-font;
-	border-top-right-radius: 0.75rem;
-	border-bottom-right-radius: 0.75rem;
-	padding: 0.5rem 1rem;
-	font-size: 0.85rem;
-	cursor: pointer;
 
-	&:active {
-		background-color: colours.$btn-orange-active-background;
-		border: 1.5px solid colours.$btn-orange-active-border;
-		color: colours.$btn-orange-active-font;
-	}
+button#submit {
+	@include buttons.base;
+	@include buttons.rounded;
+	@include buttons.orange;
+	border-left: none;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	padding: 0.5rem 1rem;
 
 	#icon {
 		width: 1rem;

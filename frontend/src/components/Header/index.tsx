@@ -1,4 +1,5 @@
 import { FunctionComponent } from "react";
+import Link from "next/link";
 import styles from "./Header.module.scss";
 import { LoginPill } from "components/index";
 
@@ -9,18 +10,18 @@ interface Props {
 
 
 const Header: FunctionComponent<Props> = (props: Props) => (
-	<header id={styles.header}>
-		<h1 id={styles.title}>Conversant</h1>
+	<header id={styles["header"]}>
+		<h1 id={styles["title"]}>
+			<Link href="/">
+				<a id={styles["home-link"]}>
+					Conversant
+				</a>
+			</Link>
+		</h1>
 
-		{
-			(props.showNav) ? (
-				<>
-					<div className={styles.spacer} />
+		<div className={styles["spacer"]} />
 
-					<LoginPill />
-				</>
-			) : ""
-		}		
+		{ (props.showNav) ? <LoginPill /> : "" }		
 
 	</header>
 );

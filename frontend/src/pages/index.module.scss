@@ -1,5 +1,6 @@
 @use "colours";
 @use "fonts";
+@use "ui";
 
 
 #page {
@@ -13,8 +14,17 @@
 	padding-bottom: 5rem;
 }
 
-
-#hero {
-	height: calc(100vh - 4rem - 3rem);
+#hero-container {
+	height: calc(100vh - 4rem - 6rem);
 	position: relative;
+}
+
+
+#about-box {
+	@include ui.box;
+
+	#about-title {
+		font-weight: 500;
+		margin-bottom: 0.25rem;
+	}
 }
