@@ -1,0 +1,28 @@
+@use "colours";
+
+
+@mixin base {
+	border-width: 1.5px;
+	border-style: solid;
+	padding: 0.325rem 1rem;
+	font-size: 0.85rem;
+	cursor: pointer;
+}
+
+
+@mixin pill {
+	border-radius: 100rem;
+}
+
+
+@mixin green {
+	background-color: colours.$btn-green-background;
+	border-color: colours.$btn-green-border;
+	color: colours.$btn-green-font;
+
+	&:active {
+		background-color: colours.$btn-green-active-background;
+		border-color: colours.$btn-green-border;
+		color: colours.$btn-green-active-font;
+	}
+}

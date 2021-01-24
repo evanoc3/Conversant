@@ -1,5 +1,6 @@
 @use "colours";
 
+
 @mixin input {
 	display: inline-block;
 	width: 100%;
@@ -17,15 +18,13 @@
 
 
 @mixin date-input {
-	width: calc(50% - 0.25rem);
-
-	&.empty {
+	&:not(:placeholder-shown) {
 		color: colours.$placeholder-font;
 	}
 }
 
 
-@mixin form-row {
+@mixin row {
 	display: grid;
 	grid-template-rows: auto;
 	grid-auto-columns: 1fr;
@@ -36,10 +35,12 @@
 	}
 }
 
-@mixin checkbox {
-	font-size: 0.85rem;
 
-	input[type="checkbox"] {
-		margin-right: 0.5rem;
-	}
+@mixin label {
+	font-size: 0.85rem;
+}
+
+
+@mixin checkbox {
+	margin-right: 0.5rem;
 }

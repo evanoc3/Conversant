@@ -37,7 +37,7 @@ const RegularLoginBox: FunctionComponent<Props> = (props: Props) => {
 		setErrorMessage("");
 
 		// Make the POST request to the auth service to receive a JWT
-		const resp = await fetch(`${process.env.NEXT_PUBLIC_AUTH_SERVICE_HOST}/login`, {
+		const resp = await fetch(`${process.env.NEXT_PUBLIC_AUTH_SERVICE}/login`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -95,6 +95,7 @@ const RegularLoginBox: FunctionComponent<Props> = (props: Props) => {
 
 	return (
 		<details open={props.open}>
+
 			<summary id={styles["box-summary"]} onClick={props.onOpen}>
 				<h2>Login with Password</h2>
 			</summary>
@@ -104,7 +105,7 @@ const RegularLoginBox: FunctionComponent<Props> = (props: Props) => {
 
 				<input type="password" className={`${styles["input"]}`} placeholder="Password" value={inputPassword} onChange={e => setInputPassword(e.target.value)} minLength={8} maxLength={255} required />
 
-				<label className={styles["checkbox-lbl"]}>
+				<label className={styles["label"]}>
 					<input type="checkbox" className={styles["checkbox"]} checked={rememberLogin} onChange={e => setRememberLogin(e.target.checked)} />
 					Remember Me
 				</label>
@@ -116,12 +117,10 @@ const RegularLoginBox: FunctionComponent<Props> = (props: Props) => {
 				</Link>
 
 				<br />
-				{
-					(errorMessage) ? (
-						<div className={styles["error-msg"]}>{errorMessage}</div>
-					) : ""
-				}
-				<button className={styles["button"]}>Log In</button>
+
+				{ (errorMessage) ? <div className={styles["error-msg"]}>{errorMessage}</div> : "" }
+
+				<button id={styles["submit"]}>Log In</button>
 			</form>
 		</details>
 	);

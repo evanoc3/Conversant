@@ -9,13 +9,7 @@
 	flex-flow: row nowrap;
 }
 
-details.login-box {
-	summary.login-box-title {
-		text-decoration: none;
-	}
-}
-
-form#signup-form {
+div#register-container {
 	width: calc(60% - 0.5px);
 	padding-right: 2.5rem;
 }
@@ -26,7 +20,7 @@ div.v-separator {
 	background-color: colours.$separating-border;
 }
 
-#login {
+div#login-container {
 	width: calc(40% - 0.5px);
 	padding-left: 2.5rem;
 }

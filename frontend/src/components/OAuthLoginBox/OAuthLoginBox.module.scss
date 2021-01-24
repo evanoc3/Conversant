@@ -1,3 +1,12 @@
 @use "forms";
 
 @import "login-forms.scss";
+
+
+#sso-box[open] {
+	padding-bottom: 0.5rem;
+}
+
+#box-summary {
+	padding-bottom: 0.5rem;
+}

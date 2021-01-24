@@ -6,6 +6,7 @@ import LandingHeroBox from "./LandingHeroBox";
 import LoginPill from "./LoginPill";
 import OAuthloginBox from "./OAuthLoginBox";
 import PageHead from "./PageHead";
+import RegisterForm from "./RegisterForm";
 import RegularLoginBox from "./RegularLoginBox";
 import SearchResults from "./SearchResults";
 
@@ -19,6 +20,7 @@ export {
 	LoginPill,
 	OAuthloginBox,
 	PageHead,
+	RegisterForm,
 	RegularLoginBox,
 	SearchResults
 };

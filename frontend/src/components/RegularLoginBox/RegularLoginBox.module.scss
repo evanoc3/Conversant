@@ -1,16 +1,28 @@
 @use "colours";
 @use "ui";
 @use "forms";
+@use "buttons";
 
 
 @import "login-forms.scss";
+
+
+#box-summary {
+	cursor: default !important;
+}
+
 
 .input {
 	@include forms.input;
 }
 
-.checkbox-lbl {
-	@include forms.checkbox;
+
+.label {
+	@include forms.label;
+
+	> .checkbox {
+		@include forms.checkbox;
+	}
 }
 
 
@@ -19,6 +31,7 @@
 	font-size: 0.85rem;
 }
 
+
 .forgot-link {
 	float: right;
 	font-size: 0.85rem;
@@ -26,16 +39,11 @@
 	color: colours.$link-colour;
 }
 
-button.button {
-	margin-top: 0.5rem;
-	@include ui.btn;
-	background-color: colours.$btn-green-background;
-	border-color: colours.$btn-green-border;
-	color: colours.$btn-green-font;
 
-	&:active {
-		background-color: colours.$btn-green-active-background;
-		border-color: colours.$btn-green-border;
-		color: colours.$btn-green-active-font;
-	}
+button#submit {
+	@include buttons.base;
+	@include buttons.pill;
+	@include buttons.green;
+
+	margin-top: 0.5rem;
 }

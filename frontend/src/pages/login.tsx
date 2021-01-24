@@ -3,10 +3,8 @@ import { withRouter, NextRouter } from "next/router";
 import authManager from "utils/auth-manager";
 
 import styles from "./login.module.scss";
-import { Background, PageHead, Header, Box, RegularLoginBox, OAuthloginBox } from "components/index";
+import { Background, PageHead, Header, Box, RegisterForm, RegularLoginBox/*, OAuthloginBox */ } from "components/index";
 
-
-type InputName = "loginEmail" | "loginPwd" | "loginRemember" | "signupFirstName" | "signupLastName" | "signupEmail" | "signupPwd" | "signupConfirmPwd" | "signupDOB";
 
 interface Props {
 	router: NextRouter
@@ -14,13 +12,6 @@ interface Props {
 
 interface State {
 	topLoginBoxOpen: boolean,
-	signupFirstName: string,
-	signupLastName: string,
-	signupEmail: string,
-	signupPwd: string,
-	signupConfirmPwd: string,
-	signupDOB: string,
-	signupErrorMsg: string | undefined,
 }
 
 
@@ -28,17 +19,8 @@ class LoginPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			topLoginBoxOpen: true,
-			signupFirstName: "",
-			signupLastName: "",
-			signupEmail: "",
-			signupPwd: "",
-			signupConfirmPwd: "",
-			signupDOB: "",
-			signupErrorMsg: undefined
+			topLoginBoxOpen: false, // TODO: Disable OAuth login for now
 		};
-		this.inputChangeHandler = this.inputChangeHandler.bind(this);
-		this.postSignupForm = this.postSignupForm.bind(this);
 		this.openOAuthLogin = this.openOAuthLogin.bind(this);
 		this.openRegularLogin = this.openRegularLogin.bind(this);
 	}
@@ -51,47 +33,22 @@ class LoginPage extends Component<Props, State> {
 				<PageHead title="Login or Sign Up | Conversant" />
 		
 				<Background>
-
 					<Header />
 					
 					<Box id={styles["form-box"]}>
-						<form id={styles["signup-form"]} onSubmit={this.postSignupForm}>
-							<h2>Sign Up</h2>
-
-							<div className={styles["form-row"]}>
-								<input type="text" className={`${styles["input"]}`} placeholder="First Name" value={state.signupFirstName} onChange={e => this.inputChangeHandler(e, "signupFirstName")} maxLength={255} required />
-
-								<input type="text" className={`${styles["input"]}`} placeholder="Last Name" value={state.signupLastName} onChange={e => this.inputChangeHandler(e, "signupLastName")} maxLength={255} required />
-							</div>
-
-							<input type="email" className={`${styles["input"]}`} placeholder="Email address" value={state.signupEmail} onChange={e => this.inputChangeHandler(e, "signupEmail")} maxLength={255} required />
-
-							<div className={styles["form-row"]}>
-								<input type="password" className={`${styles["input"]}`} placeholder="Password" value={state.signupPwd} onChange={e => this.inputChangeHandler(e, "signupPwd")} minLength={8} maxLength={255} required />
-
-								<input type="password" className={`${styles["input"]}`} placeholder="Confirm Password" value={state.signupConfirmPwd} onChange={e => this.inputChangeHandler(e, "signupConfirmPwd")} minLength={8} maxLength={255} required />
-							</div>
-
-							<input type="date" className={`${styles["input"]} ${styles["date"]} ${!state.signupDOB ? styles["empty"] : ""}`} placeholder="Date of Birth" value={state.signupDOB} onChange={e => this.inputChangeHandler(e, "signupDOB")} required />
-
-							{
-								(state.signupErrorMsg) ? (
-									<div className={styles["error-msg"]}>{state.signupErrorMsg}</div>
-								) : ""
-							}
-
-							<br />
-
-							<button className={styles["button"]}>Register</button>
-						</form>
-		
+						<div id={styles["register-container"]}>
+							<RegisterForm />
+						</div>
+						
 						<div className={styles["v-separator"]} />
 
-						<div id={styles["login"]}>
-							<OAuthloginBox open={state.topLoginBoxOpen} onOpen={this.openOAuthLogin} />
+						<div id={styles["login-container"]}>
+							{/*
+								TODO: Disable OAuth login for now
+								<OAuthloginBox open={state.topLoginBoxOpen} onOpen={this.openOAuthLogin} />
+							*/}
 							<RegularLoginBox open={!state.topLoginBoxOpen} onOpen={this.openRegularLogin} />
 						</div>
-
 					</Box>
 				</Background>
 			</>
@@ -106,27 +63,8 @@ class LoginPage extends Component<Props, State> {
 		}
 	}
 
-
-	private inputChangeHandler(e: any, input: InputName): void {
-		const newState: {[key in InputName]?: string | boolean} = {};
-		if(input === "loginRemember") {
-			newState[input] = e.target.checked;
-		} else {
-			newState[input] = e.target.value;
-		}
-		// @ts-expect-error
-		this.setState(newState);
-	}
-
-
-	private postSignupForm(e: any): void {
-		e.preventDefault();
-		alert();
-		return;
-	}
-
-
-	private openOAuthLogin(e: any): void {
+	
+	private openOAuthLogin(e: Event): void {
 		e.preventDefault();
 		this.setState({
 			topLoginBoxOpen: true
@@ -134,7 +72,7 @@ class LoginPage extends Component<Props, State> {
 	}
 
 
-	private openRegularLogin(e: any): void {
+	private openRegularLogin(e: Event): void {
 		e.preventDefault();
 		this.setState({
 			topLoginBoxOpen: false

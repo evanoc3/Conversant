@@ -19,7 +19,7 @@ const OAuthLoginBox: FunctionComponent<Props> = (props: Props) => {
 	}
 
 	return (
-		<details open={props.open}>
+		<details open={props.open} id={styles["sso-box"]}>
 			<summary id={styles["box-summary"]} onClick={props.onOpen}>
 				<h2>SSO</h2>
 			</summary>
