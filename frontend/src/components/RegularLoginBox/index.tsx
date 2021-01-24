@@ -1,8 +1,10 @@
 import { FunctionComponent, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import validator from "validator";
 import styles from "./RegularLoginBox.module.scss";
 import type { Login } from "types/auth-service";
+import authManager from "utils/auth-manager";
 
 
 interface Props {
@@ -12,11 +14,15 @@ interface Props {
 
 
 const RegularLoginBox: FunctionComponent<Props> = (props: Props) => {
+	const router = useRouter();
+
+	// State variables
 	const [inputEmail, setInputEmail] = useState("");
 	const [inputPassword, setInputPassword] = useState("");
 	const [rememberLogin, setRememberLogin] = useState(true);
 	const [errorMessage, setErrorMessage] = useState("");
 
+	// Event handlers
 	async function postLoginForm(e: any): Promise<void> {
 		// Prevent the default form submission
 		e.preventDefault();
@@ -72,9 +78,10 @@ const RegularLoginBox: FunctionComponent<Props> = (props: Props) => {
 
 		if(!("login" in body)) {
 			console.error("Error: Could not parse the response from the auth service", body);
+			return
 		}
 
-		if(! body.login.success) {
+		if(!body.login.success) {
 			setErrorMessage("Could not log in");
 			return;
 		}
@@ -83,14 +90,10 @@ const RegularLoginBox: FunctionComponent<Props> = (props: Props) => {
 		const token = (body.login as Login.SuccessPayload).auth_token;
 
 		// Store the auth_token in either permanent or session client-side storage based on whether the "remember me" checkbox was ticked
-		if("localStorage" in window && rememberLogin) {
-			console.debug("Storing auth_token in localStorage");
-			localStorage.setItem("auth_token", token);
-		}
-		else if("sessionStorage" in window && !rememberLogin) {
-			console.debug("Storing auth_token in sessionStorage");
-			sessionStorage.setItem("auth_token", token);
-		}
+		authManager.setLogin(token, rememberLogin);
+
+		// redirect to the /home route
+		router.push("/home");
 	}
 
 	return (
