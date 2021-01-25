@@ -65,7 +65,7 @@ const RegisterForm: FunctionComponent<Props> = (props: Props) => {
 
 		try {
 			// Send a POST request to the /register endpoint of the Auth service
-			const resp = await fetch(`${process.env.AUTH_SERVICE}/register`, {
+			const resp = await fetch(`${process.env.NEXT_PUBLIC_AUTH_SERVICE}/register`, {
 				method: "POST",
 				body: JSON.stringify({
 					first_name: firstName,
