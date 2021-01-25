@@ -1,7 +1,7 @@
 import React from "react";
 import type { NextPage } from "next";
 import styles from "./index.module.scss";
-import { Background, Box, PageHead, Header, LandingHeroBox } from "components/index";
+import { Background, Box, Footer, Header, LandingHeroBox, PageHead } from "components/index";
 
 
 const LandingPage: NextPage = (props) => (
@@ -19,6 +19,8 @@ const LandingPage: NextPage = (props) => (
 				<h2 id={styles["about-title"]}>About Conversant</h2>
 				<p>Conversant is a learning platform that aims to teach people the way they learn the best, through conversation.</p>
 			</Box>
+
+			<Footer />
 		</Background>
 	</>
 );

@@ -11,18 +11,16 @@
 }
 
 
+h1#title {
+	@include fonts.title;
+	font-size: 2.5rem;
+	color: colours.$contrast-primary-font;
 
-
-	h1#title {
-		@include fonts.title;
-		font-size: 2.5rem;
-		color: colours.$contrast-title;
-
-		a#home-link {
-			color: inherit;
-			text-decoration: none;
-		}
+	a#home-link {
+		color: inherit;
+		text-decoration: none;
 	}
+}
 
 
 .spacer {

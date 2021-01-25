@@ -1,37 +1,43 @@
-/* Actual Colours */
-
-
 /* Semantic Colours  */
-$primary-background: white;
-$contrast-background: #08060b;
-$highlighted-primary-background: #e2e2e2;
 
+// Background Colours
+$primary-background: #f0f0f0;
+$contrast-background: #1b1a1c;
+$highlighted-primary-background: #e2e2e2;
+$input-background: #e6e6e6;
+
+// Font Colours
 $primary-font: #333;
 $secondary-font: #555;
 $placeholder-font: #828282;
-$contrast-title: white;
+$contrast-primary-font: #dcdcdc;
+$contrast-secondary-font: #808080;
 
+// Input Border Colours
 $input-inactive-border: #ccc;
 $input-active-border: #e9a16bd0;
 $input-active-shadow:#eb6804c2;
 
+// Link Colours
 $link-colour: #3192ed;
 
+// Button colours
 $btn-orange-background: #ff8400;
 $btn-orange-active-background: #d17128;
 $btn-orange-border: #ca6c24;
 $btn-orange-active-border: #bd621c;
-$btn-orange-font: #ffffff;
+$btn-orange-font: #fff;
 $btn-orange-active-font: #ebebeb;
-
 $btn-green-background: #18aa31;
 $btn-green-active-background: #128826;
 $btn-green-border: #15a02c;
 $btn-green-active-border: #0c641b;
-$btn-green-font: #ffffff;
+$btn-green-font: #fff;
 $btn-green-active-font: #ebebeb;
 
+// Separator colours
 $separating-border: #b1b1b1;
 
+// Shadow colours
 $light-shadow: rgba(100,100,100,0.25);
 $medium-shadow: rgba(0,0,0, 0.4);

@@ -1,5 +1,6 @@
 import Background from "./Background";
 import Box from "./Box";
+import Footer from "./Footer";
 import Header from "./Header";
 import LandingHeroBox from "./LandingHeroBox";
 import LoginPill from "./LoginPill";
@@ -13,6 +14,7 @@ import SearchResults from "./SearchResults";
 export {
 	Background,
 	Box,
+	Footer,
 	Header,
 	LandingHeroBox,
 	LoginPill,

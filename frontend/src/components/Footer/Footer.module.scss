@@ -1,0 +1,9 @@
+@use "colours";
+
+
+#footer {
+	margin-top: 2rem;
+	padding: 3rem;
+	background-color: colours.$contrast-background;
+	color: colours.$contrast-secondary-font;
+}
