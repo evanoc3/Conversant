@@ -1,7 +1,7 @@
 import { Component, createRef } from "react";
 import type { FormEvent, ChangeEvent, RefObject } from "react";
 import styles from "./LandingHeroBox.module.scss";
-import searchIcon from "./search.svg";
+import searchIcon from "icons/search-white.svg";
 import { Box, SearchResults } from "components/index";
 import type { TopicSearchResult } from "types/topic-search";
 

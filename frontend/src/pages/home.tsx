@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter, NextRouter } from "next/router";
 import styles from "./home.module.scss";
-import { Background, PageHead } from "components/index";
+import { PageHead, HomeHeader } from "components/index";
 import authManager from "utils/auth-manager";
 
 
@@ -18,10 +18,10 @@ class HomePage extends Component<Props, State> {
 		return (
 			<>
 				<PageHead title="Home | Conversant" />
-		
-				<Background>
-		
-				</Background>
+
+				<div id={styles["page"]}>
+					<HomeHeader />
+				</div>
 			</>
 		);
 
