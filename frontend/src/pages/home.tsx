@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter, NextRouter } from "next/router";
 import styles from "./home.module.scss";
-import { Background, PageHead, Header } from "components/index";
+import { Background, PageHead } from "components/index";
 import authManager from "utils/auth-manager";
 
 
@@ -20,7 +20,6 @@ class HomePage extends Component<Props, State> {
 				<PageHead title="Home | Conversant" />
 		
 				<Background>
-					<Header />
 		
 				</Background>
 			</>

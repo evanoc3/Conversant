@@ -1,7 +1,7 @@
 import React from "react";
 import type { NextPage } from "next";
 import styles from "./index.module.scss";
-import { Background, Box, Footer, Header, LandingHeroBox, PageHead } from "components/index";
+import { Background, Box, Footer, LandingHeader, LandingHeroBox, PageHead } from "components/index";
 
 
 const LandingPage: NextPage = (props) => (
@@ -9,7 +9,7 @@ const LandingPage: NextPage = (props) => (
 		<PageHead />
 
 		<Background>
-			<Header showNav={true} />
+			<LandingHeader showNav={true} />
 
 			<div id={styles["hero-container"]}>
 				<LandingHeroBox />

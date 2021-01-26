@@ -1,7 +1,7 @@
 import Background from "./Background";
 import Box from "./Box";
 import Footer from "./Footer";
-import Header from "./Header";
+import LandingHeader from "./LandingHeader";
 import LandingHeroBox from "./LandingHeroBox";
 import LoginPill from "./LoginPill";
 import OAuthloginBox from "./OAuthLoginBox";
@@ -15,7 +15,7 @@ export {
 	Background,
 	Box,
 	Footer,
-	Header,
+	LandingHeader,
 	LandingHeroBox,
 	LoginPill,
 	OAuthloginBox,

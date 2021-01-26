@@ -3,7 +3,7 @@ import { withRouter, NextRouter } from "next/router";
 import authManager from "utils/auth-manager";
 
 import styles from "./login.module.scss";
-import { Background, PageHead, Header, Box, RegisterForm, RegularLoginBox/*, OAuthloginBox */ } from "components/index";
+import { Background, PageHead, LandingHeader, Box, RegisterForm, RegularLoginBox/*, OAuthloginBox */ } from "components/index";
 
 
 interface Props {
