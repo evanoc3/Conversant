@@ -6,7 +6,7 @@ module.exports = {
   moduleNameMapper: {
     // Add cases here to mock SCSS & image files
     "\\.(css|scss)$": "identity-obj-proxy",
-    "\\.(svg|png)$": "identity-obj-proxy"
+    "\\.(svg|jpg|png)$": "identity-obj-proxy"
   },
   setupFilesAfterEnv: [
     "<rootDir>/test/setup.ts"
