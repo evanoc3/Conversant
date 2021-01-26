@@ -1,13 +1,29 @@
 "use strict";
 
+const { defaults } = require("jest-config");
+
 module.exports = {
-  bail: 1,
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx", "json"],
-  moduleNameMapper: {
-    // Add cases here to mock SCSS & image files
-    "\\.(css|scss)$": "identity-obj-proxy",
-    "\\.(svg|jpg|png)$": "identity-obj-proxy"
+  globals: {
+    "ts-jest": {
+      tsconfig: "./tsconfig.json",
+      babelConfig: "./.babelrc"
+    }
   },
+  moduleDirectories: [
+    "node_modules",
+    "src",
+    "test"
+  ],
+  moduleFileExtensions: [
+    ...defaults.moduleFileExtensions,
+    "ts",
+    "tsx"
+  ],
+  moduleNameMapper: { // Add cases here to mock not-real modules
+    "\\.(css|scss)$": "identity-obj-proxy",
+    "\\.(svg|jpg|png)$": "<rootDir>/test/__mocks__/file-mock"
+  },
+  preset: "ts-jest",
   setupFilesAfterEnv: [
     "<rootDir>/test/setup.ts"
   ],
@@ -20,9 +36,6 @@ module.exports = {
     "<rootDir>[/\\\\](node_modules|.next)[/\\\\]"
   ],
   testURL: "http://localhost:8080/",
-  transform: {
-    "^.+\\.(ts|tsx)$": "babel-jest",
-  },
   transformIgnorePatterns: [
     "[/\\\\]node_modules[/\\\\].+\\.(ts|tsx)$"
   ],
