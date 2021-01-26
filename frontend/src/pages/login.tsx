@@ -33,7 +33,7 @@ class LoginPage extends Component<Props, State> {
 				<PageHead title="Login or Sign Up | Conversant" />
 		
 				<Background>
-					<Header />
+					<LandingHeader />
 					
 					<Box id={styles["form-box"]}>
 						<div id={styles["register-container"]}>
