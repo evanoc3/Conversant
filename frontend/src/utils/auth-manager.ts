@@ -1,6 +1,4 @@
-class AuthManager {
-
-	
+export class AuthManager {
 
 	public isLoggedIn(): boolean {
 		return (window.localStorage && localStorage.getItem("auth_token") !== null) || (window.sessionStorage && sessionStorage.getItem("auth_token") !== null);
