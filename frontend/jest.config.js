@@ -3,10 +3,11 @@
 const { defaults } = require("jest-config");
 
 module.exports = {
+  clearMocks: true,
   globals: {
     "ts-jest": {
-      tsconfig: "./tsconfig.json",
-      babelConfig: "./.babelrc"
+      tsconfig: "tsconfig.json",
+      babelConfig: ".babelrc"
     }
   },
   moduleDirectories: [
@@ -21,7 +22,7 @@ module.exports = {
   ],
   moduleNameMapper: { // Add cases here to mock not-real modules
     "\\.(css|scss)$": "identity-obj-proxy",
-    "\\.(svg|jpg|png)$": "<rootDir>/test/__mocks__/file-mock"
+    "\\.(svg|jpg|png)$": "<rootDir>/test/mocks/file"
   },
   preset: "ts-jest",
   setupFilesAfterEnv: [

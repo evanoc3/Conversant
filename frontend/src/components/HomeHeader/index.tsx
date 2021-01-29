@@ -39,7 +39,7 @@ class HomeHeader extends Component<Props, State>{
 				<div className={styles["spacer"]} />
 
 				<form id={styles["search-form"]} onSubmit={this.onSearchSubmit}>
-					<input type="text" id={styles["search-input"]} onChange={this.onSearchTermChange} />
+					<input type="text" id={styles["search-input"]} placeholder="Search..." onChange={this.onSearchTermChange} />
 					<button id={styles["search-button"]}>
 						<img src={searchSvg} id={styles["search-icon"]} />
 					</button>

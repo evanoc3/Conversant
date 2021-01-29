@@ -1,14 +1,14 @@
 import { describe, it, expect } from "@jest/globals";
 import { mount } from "enzyme";
-import "../mocks/next/router";
-import HomePage from "pages/home";
+import "../../../test/mocks/next/router";
+import AuthRequired from "./index";
 
 
-describe("<HomePage> Component", () => {
+describe("<AuthRequired> Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<HomePage />);
+			const wrapper = mount(<AuthRequired></AuthRequired>);
 			wrapper.unmount();
 		}).not.toThrow();
 	});

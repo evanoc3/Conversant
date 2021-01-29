@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter, NextRouter } from "next/router";
 import styles from "./home.module.scss";
-import { PageHead, HomeHeader } from "components/index";
+import { AuthRequired, PageHead, HomeHeader } from "components/index";
 import authManager from "utils/auth-manager";
 
 
@@ -16,13 +16,13 @@ interface State {
 class HomePage extends Component<Props, State> {
 	public render(): JSX.Element {
 		return (
-			<>
+			<AuthRequired>
 				<PageHead title="Home | Conversant" />
 
 				<div id={styles["page"]}>
 					<HomeHeader />
 				</div>
-			</>
+			</AuthRequired>
 		);
 
 	}

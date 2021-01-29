@@ -1,3 +1,4 @@
+import AuthRequired from "./AuthRequired";
 import Background from "./Background";
 import Box from "./Box";
 import Footer from "./Footer";
@@ -13,6 +14,7 @@ import SearchResults from "./SearchResults";
 
 
 export {
+	AuthRequired,
 	Background,
 	Box,
 	Footer,

@@ -1,14 +1,15 @@
+// @ts-nocheck
 import { describe, it, expect } from "@jest/globals";
 import { mount } from "enzyme";
 import "../mocks/next/router";
-import HomePage from "pages/home";
+import LessonPage from "pages/lesson";
 
 
-describe("<HomePage> Component", () => {
+describe("<LessonPage> Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<HomePage />);
+			const wrapper = mount<LessonPage>(<LessonPage />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});

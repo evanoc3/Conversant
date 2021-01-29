@@ -1,16 +1,13 @@
 import { describe, it, expect } from "@jest/globals";
-import { shallow } from "enzyme";
-import LogoutPage from "pages/logout";
+import { mount } from "enzyme";
+import LessonHeader from "./index";
 
 
-
-
-
-describe("<LogoutPage> Component", () => {
+describe("<LessonHeader> Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = shallow(<LogoutPage />);
+			const wrapper = mount(<LessonHeader />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});
