@@ -4,7 +4,9 @@ DEFAULT_GOAL := dev
 
 build:
 	go build -o ./build/www-service -ldflags "-s" -tags "production" conversant/www/src
-	if [[ -f .env ]]; then cp .env build/.env; fi
+	if [[ -f .env ]]; then \
+		cp .env build/.env; \
+	fi
 
 
 dev:
@@ -12,8 +14,8 @@ dev:
 
 
 clean:
-	rm -rf ./build/
-	rm -rf ./frontend/.next/ .frontend/out/
+	rm -rf ./build
+	rm -rf ./frontend/.next .frontend/out
 
 
 bindata:
