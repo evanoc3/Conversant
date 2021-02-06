@@ -1,8 +1,8 @@
 import { describe, it, expect } from "@jest/globals";
-import { mount, ReactWrapper } from "enzyme";
+import { mount } from "enzyme";
 import { act } from "react-dom/test-utils";
-import "../mocks/next/router";
-import "../mocks/utils/auth-manager";
+import "./__mocks__/next-router";
+import "./__mocks__/auth-manager";
 import HomePage from "pages/home";
 
 

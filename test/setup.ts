@@ -15,7 +15,8 @@ const jsdom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
 	url: "http://localhost:8080"
 });
 
-// @ts-expect-error
+
+// @ts-ignore
 global.window = jsdom.window;
 global.document = jsdom.window.document;
 
