@@ -1,18 +1,19 @@
 import React from "react";
 import type { NextPage } from "next";
 import styles from "./index.module.scss";
-import { Background, Box, Footer, LandingHeader, LandingHeroBox, PageHead } from "components/index";
+import { Background, Box, Footer, Head } from "@components/index";
+import { Header, HeroBox, } from "@components/pages/landing/index";
 
 
 const LandingPage: NextPage = (props) => (
 	<>
-		<PageHead />
+		<Head />
 
 		<Background>
-			<LandingHeader showNav={true} />
+			<Header showNav={true} />
 
 			<div id={styles["hero-container"]}>
-				<LandingHeroBox />
+				<HeroBox />
 			</div>
 
 			<Box id={styles["about-box"]}>

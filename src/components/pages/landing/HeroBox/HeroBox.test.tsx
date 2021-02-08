@@ -1,15 +1,15 @@
 import { describe, it, expect } from "@jest/globals";
 import { mount } from "enzyme";
-import "@mocks/next/router";
-import HomePage from "@pages/home";
+import HeroBox from "./index";
 
 
-describe("<HomePage> Component", () => {
+describe("<HeroBox> (landing page) Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<HomePage />);
+			const wrapper = mount(<HeroBox />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});
+
 });

@@ -1,13 +1,14 @@
 @use "colours";
 
 
-#login {
+#pill {
 	display: inline-block;
 	padding: 0.25rem 1rem 0.25rem 0.75rem;
 	color: colours.$contrast-primary-font;
 	border-radius: 1rem;
 	text-decoration: none;
 	transition: 0.5s;
+	cursor: pointer;
 
 	&:hover {
 		background: colours.$primary-background;
