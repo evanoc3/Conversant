@@ -1,6 +1,10 @@
-node-modules/
+# Standard Node.js ignoreable files
+node_modules/
+
+# Next.js artifacts
 .next/
 out/
 
+# Environment variable files
 .env
 .env*.local

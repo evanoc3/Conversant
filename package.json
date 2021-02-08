@@ -5,10 +5,9 @@
   "scripts": {
     "start": "next dev -p 8080",
     "build": "next build",
-    "serve": "next start",
     "test": "jest"
   },
-  "devDependencies": {
+  "dependencies": {
     "@types/enzyme": "^3.10.8",
     "@types/jest": "^26.0.20",
     "@types/jsdom": "^16.2.6",
