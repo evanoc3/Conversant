@@ -1,5 +1,4 @@
 import { FunctionComponent, PropsWithChildren } from "react";
-import styles from "./Header.module.scss";
 
 
 type Props = PropsWithChildren<{

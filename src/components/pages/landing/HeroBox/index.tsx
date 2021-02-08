@@ -1,5 +1,5 @@
 import { Component, createRef, FormEvent, ChangeEvent, RefObject } from "react";
-import styles from "./LandingHeroBox.module.scss";
+import styles from "./HeroBox.module.scss";
 import searchIcon from "@images/icons/search-white.svg";
 import { Box } from "@components/index";
 import { SearchResults } from "@components/pages/landing/index"; 
