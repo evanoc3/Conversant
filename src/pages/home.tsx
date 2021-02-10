@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Background, Box, Head } from "@components/index";
+import { Background, Head } from "@components/index";
 import { Header } from "@components/pages/home/index";
+import styles from "./home.module.scss";
 
 
 interface Props {
@@ -18,7 +19,9 @@ class HomePage extends Component<Props, State> {
 
 				<Background>
 					<Header />
-					<Box></Box>
+					<div id={styles["main"]}>
+
+					</div>
 				</Background>
 			</>
 		);

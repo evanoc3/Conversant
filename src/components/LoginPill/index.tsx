@@ -21,11 +21,12 @@ const LoginPill: FunctionComponent<Props> = (props) => {
 	}
 
 	if(session) {
+		const firstName = session.user.name?.split(" ")[0];
 		return (
 			<Link href="/home">
 				<a id={styles["pill"]}>
-					<img id={styles["icon"]} src={session.user.image!} />
-					{ session.user.name }
+					<img id={styles["icon"]} className={styles["profile-pic"]} src={session.user.image!} />
+					<span>{ firstName }</span>
 				</a>
 			</Link>
 		);
