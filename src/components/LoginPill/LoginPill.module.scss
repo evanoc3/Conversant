@@ -1,28 +1,59 @@
 @use "colours";
 
 
+// Container
 #pill {
-	display: inline-block;
-	padding: 0.25rem 1rem 0.25rem 0.75rem;
-	color: colours.$contrast-primary-font;
-	border-radius: 1rem;
+	display: inline-flex;
+	align-items: center;
+	border-radius: 5rem;
 	text-decoration: none;
-	transition: 0.5s;
 	cursor: pointer;
+	background-color: transparent;
+	transition: background-color 0.5s;
+	padding: 0.25rem 1rem 0.25rem 0.75rem;
+
+	&.signed-in {
+		padding: 0.1rem 0.75rem 0.1rem 0.1rem;
+	}
 
 	&:hover {
-		background: colours.$primary-background;
-		color: colours.$primary-font;
+		background-color: colours.$primary-background;
 	}
 }
 
+
+// Icon (Could be a SVG or image, or an empty div)
 #icon {
+	margin-right: 0.4rem;
 	width: 1.1rem;
 	height: 1.1rem;
-	vertical-align: middle;
-	margin: -3px 0.25rem 0 0;
 }
 
-.profile-pic {
+svg#icon {
+	transition: color 0.5s;
+}
+
+img#icon {
 	border-radius: 50%;
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+.not-signed-in > #icon {
+	color: colours.$contrast-primary-font;
+}
+
+#pill:hover > svg#icon {
+	color: colours.$primary-font;
+}
+
+
+// Label
+#label {
+	transition: color 0.5s;
+	color: colours.$contrast-primary-font;
+}
+
+#pill:hover > #label {
+	color: colours.$primary-font;
 }

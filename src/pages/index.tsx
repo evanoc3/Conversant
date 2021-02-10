@@ -1,13 +1,16 @@
 import React from "react";
 import type { NextPage } from "next";
+import Head from "next/head";
 import styles from "./index.module.scss";
-import { Background, Footer, Head } from "@components/index";
+import { Background, Footer } from "@components/index";
 import { Header, SearchInput } from "@components/pages/landing/index";
 
 
 const LandingPage: NextPage = (props) => (
 	<>
-		<Head />
+		<Head>
+			<title>Home | Conversant</title>
+		</Head>
 
 		<Background>
 			<Header showNav={true} />

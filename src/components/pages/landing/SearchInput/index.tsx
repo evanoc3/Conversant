@@ -1,6 +1,7 @@
 import { FunctionComponent, PropsWithRef, useState } from "react";
 import type { ChangeEvent, FormEvent, FocusEvent, MouseEventHandler } from "react"
-import searchIcon from "@images/icons/search-white.svg";
+// import { search as SearchIcon } from "@images/icons/index";
+import { Search as SearchIcon } from "react-feather";
 import styles from "./SearchInput.module.scss";
 import type { TopicSearchResult } from "@customTypes/topic-search";
 
@@ -71,7 +72,7 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 			<input id={styles["input"]} onChange={changeHandler} placeholder={placeholder} onFocus={focusHandler} onBlur={blurHandler} value={searchTerm} />
 
 			<button id={styles["submit-btn"]}>
-				<img src={searchIcon} id={styles["submit-icon"]} draggable={false} />
+				<SearchIcon id={styles["submit-icon"]} />
 			</button>
 
 			

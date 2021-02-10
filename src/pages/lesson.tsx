@@ -1,7 +1,7 @@
 import { Component, PropsWithChildren } from "react";
+import Head from "next/head";
 import { withRouter, NextRouter } from "next/router";
 import styles from "./lesson.module.scss";
-import { Head } from "@components/index";
 
 
 type Props = PropsWithChildren<{
@@ -17,7 +17,9 @@ class LessonPage extends Component<Props, State> {
 	public render(): JSX.Element {
 		return (
 			<>
-				<Head />
+				<Head>
+					<title>Home | Conversant</title>
+				</Head>
 
 				<div id={styles["page"]}>
 

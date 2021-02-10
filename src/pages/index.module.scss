@@ -32,6 +32,10 @@
 			width: 65vw;
 		}
 
+		@media only screen and (min-width: breakpoints.$widescreen) {
+			width: 50rem;
+		}
+
 
 		#title {
 			font-size: 2rem;
@@ -45,6 +49,7 @@
 
 #about-box {
 	@include ui.box;
+	border-radius: 2rem;
 
 	#about-title {
 		font-weight: 500;
