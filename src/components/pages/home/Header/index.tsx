@@ -1,7 +1,8 @@
 import { ChangeEvent, Component, FormEvent, PropsWithChildren } from "react";
 import Link from "next/link";
 import styles from "./Header.module.scss";
-import searchSvg from "@images/icons/search-black.svg";
+// import { search as SearchIcon } from "@images/icons/index";
+import { Search as SearchIcon } from "react-feather";
 import { LoginPill } from "@components/index";
 
 
@@ -42,7 +43,7 @@ export default class Header extends Component<Props, State> {
 				<form id={styles["search-form"]} onSubmit={this.onSearchSubmit}>
 					<input type="text" id={styles["search-input"]} placeholder="Search..." onChange={this.onSearchTermChange} />
 					<button id={styles["search-button"]}>
-						<img src={searchSvg} id={styles["search-icon"]} />
+						<SearchIcon id={styles["search-icon"]} />
 					</button>
 				</form>
 

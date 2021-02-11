@@ -1,7 +1,9 @@
-import { FunctionComponent, PropsWithChildren, MouseEvent } from "react";
+import { FunctionComponent, PropsWithChildren, MouseEventHandler } from "react";
 import Link from "next/link";
 import { useSession, signIn } from "next-auth/client";
 import styles from "./LoginPill.module.scss";
+// import { user as UserIcon } from "@images/icons/index";
+import { User as UserIcon } from "react-feather";
 
 
 type Props = PropsWithChildren<{
@@ -11,41 +13,43 @@ type Props = PropsWithChildren<{
 const LoginPill: FunctionComponent<Props> = (props) => {
 	const [session, loading] = useSession();
 
+	// Display "Loading...""
 	if(loading) {
 		return (
-			<a id={styles["pill"]}>
-				<div id={styles["icon"]}></div>
-				Loading...
+			<a id={styles["pill"]} className={styles["loading"]}>
+				<span id={styles["label"]}>Loading...</span>
 			</a>
 		);
 	}
 
+	// Display user badge
 	if(session) {
+		const firstName = session.user.name?.split(" ")[0];
 		return (
 			<Link href="/home">
-				<a id={styles["pill"]}>
-					<img id={styles["icon"]} src={session.user.image!} />
-					{ session.user.name }
+				<a id={styles["pill"]}  className={styles["signed-in"]}>
+					<img id={styles["icon"]} className={styles["profile-pic"]} src={session.user.image!} />
+
+					<span id={styles["label"]}>
+						{ firstName }
+					</span>
 				</a>
 			</Link>
 		);
 	}
 
-	function onClickSignIn(e: MouseEvent<HTMLAnchorElement>): void {
+	// Display "Sign In" button
+	const clickHandler: MouseEventHandler<HTMLAnchorElement> = (e) => {
 		e.preventDefault();
 		signIn(undefined, {
 			callbackUrl: "/home"
 		});
-	}
-
+	};
 
 	return (
-		<a id={styles["pill"]} onClick={onClickSignIn}>
-			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" id={styles.icon}>
-				<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-				<circle cx="12" cy="7" r="4" />
-			</svg>
-			Login / Signup
+		<a id={styles["pill"]} onClick={clickHandler} className={styles["not-signed-in"]}>
+			<UserIcon id={styles["icon"]} />
+			<span id={styles["label"]}>Sign In</span>
 		</a>
 	);
 };

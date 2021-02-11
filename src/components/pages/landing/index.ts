@@ -1,9 +1,7 @@
 import Header from "./Header";
-import HeroBox from "./HeroBox";
-import SearchResults from "./SearchResults";
+import SearchInput from "./SearchInput";
 
 export {
 	Header,
-	HeroBox,
-	SearchResults
+	SearchInput,
 };

@@ -1,3 +1,4 @@
+@use "breakpoints";
 @use "colours";
 @use "fonts";
 @use "ui";
@@ -17,11 +18,38 @@
 #hero-container {
 	height: calc(100vh - 4rem - 6rem);
 	position: relative;
+
+
+	#hero-box {
+		@include ui.box;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -75%);
+		padding: 3rem 2.5rem 3.5rem !important;
+	
+		@media only screen and (min-width: breakpoints.$laptop) {
+			width: 65vw;
+		}
+
+		@media only screen and (min-width: breakpoints.$widescreen) {
+			width: 50rem;
+		}
+
+
+		#title {
+			font-size: 2rem;
+			text-align: center;
+			margin-bottom: 1.5rem;
+			@include fonts.title;
+		}
+	}
 }
 
 
 #about-box {
 	@include ui.box;
+	border-radius: 2rem;
 
 	#about-title {
 		font-weight: 500;

@@ -1,13 +1,13 @@
 import { describe, it, expect } from "@jest/globals";
 import { mount } from "enzyme";
-import Head from "./index";
+import SearchInput from "./index";
 
 
-describe("<Head> Component", () => {
+describe("<SearchInput> (landing page) Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<Head />);
+			const wrapper = mount(<SearchInput placeholder="" />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});
