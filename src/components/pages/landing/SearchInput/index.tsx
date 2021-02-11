@@ -59,7 +59,7 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 		}
 	}
 
-	function createResultClickHandler(topic: string): MouseEventHandler<HTMLButtonElement> {
+	function createResultClickHandler(topic: string): MouseEventHandler<HTMLLIElement> {
 		return (e) => {
 			e.preventDefault();
 			setSearchTerm(topic);
@@ -80,15 +80,13 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 				{
 					(results.length) ? (
 						results.map<JSX.Element>(result => (
-							<li key={result.topic} className={styles["result-row"]}>
-								<button onClick={createResultClickHandler(result.topic)} className={styles["result"]}>
-									{result.label}
-								</button>
+							<li key={result.topic} className={styles["result"]} onClick={createResultClickHandler(result.topic)} >
+								{ result.label }
 							</li>
 						))
 					) : (
 						<li key={"no-results"} id={styles["no-results-msg"]}>
-							There are no results to display
+							There are no results for this term
 						</li>
 					)
 				}
