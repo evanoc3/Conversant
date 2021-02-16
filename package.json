@@ -5,7 +5,8 @@
   "scripts": {
     "start": "next dev -p 8080",
     "build": "next build",
-    "test": "jest"
+    "test": "jest",
+    "debug": "NODE_OPTIONS='--inspect' next dev -p 8080"
   },
   "dependencies": {
     "@types/enzyme": "^3.10.8",

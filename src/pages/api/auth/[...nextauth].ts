@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
+import type { IAuthSession, IUser } from "@customTypes/auth";
 
 
 export default (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, {
@@ -21,4 +22,12 @@ export default (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res,
   secret: process.env.AUTH_SECRET,
   database: process.env.AUTH_DATABASE,
   debug: process.env.NODE_ENV === "development",
+  callbacks: {
+    session: async (session: IAuthSession, user: IUser) => {
+      if(user?.id) {
+        session.user.id = user.id;
+      }
+      return session;
+    }
+  }
 });
