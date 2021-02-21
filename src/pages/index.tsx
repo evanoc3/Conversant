@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "./index.module.scss";
 import { Background, Footer } from "@components/index";
-import { Header, SearchInput } from "@components/pages/landing/index";
+import { Header, SearchInput } from "@components/LandingPage/index";
 
 
 const LandingPage: NextPage = (props) => (
