@@ -29,6 +29,7 @@ module.exports = {
     "@styles/(.*)": "<rootDir>/src/styles/$1",
     "@customTypes/(.*)": "<rootDir>/src/types/$1",
     "@mocks/(.*)": "<rootDir>/test/__mocks__/$1",
+    "@util/(.*)": "<rootDir>/src/util/$1"
   },
   preset: "ts-jest",
   setupFilesAfterEnv: [

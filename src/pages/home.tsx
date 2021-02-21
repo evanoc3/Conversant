@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useSession, signOut } from "next-auth/client";
 import { Background } from "@components/index";
-import { Header } from "@components/pages/home/index";
+import { Header } from "@components/HomePage/index";
 import styles from "./home.module.scss";
 
 
