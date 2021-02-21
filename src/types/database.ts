@@ -20,3 +20,10 @@ export interface ITopicsTableRow {
 	id: string,
 	label: string
 }
+
+
+export interface IEnrolledTopicsQueryResultRow {
+	topic: string,
+	label: string,
+	timestamp: Date | string
+}

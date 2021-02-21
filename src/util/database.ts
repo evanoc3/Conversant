@@ -1,7 +1,7 @@
-import { createConnection } from "mysql";
+import { createConnection, format } from "mysql";
 import type { Connection, MysqlError } from "mysql";
 import type { TopicSearchResult } from "@customTypes/topic-search";
-import type { ITopicsTableRow, IEnrolmentsTableRow } from "@customTypes/database";
+import type { ITopicsTableRow ,IEnrolledTopicsQueryResultRow } from "@customTypes/database";
 
 
 /**
@@ -66,17 +66,25 @@ export async function getTopics(conn: Connection): Promise<TopicSearchResult[]> 
  * * Resolves to the list of topics that the user has started lessons in, or
  * * Rejects with a `MysqlError` error and logs the error message to `console.error`
  */
-export async function getEnrolledTopics(conn: Connection, userId: string): Promise<string[]> {
+export async function getEnrolledTopics(conn: Connection, userId: string): Promise<IEnrolledTopicsQueryResultRow[]> {
 	return new Promise((resolve, reject) => {
-		conn.query("SELECT * FROM enrolments WHERE userId = ? ORDER BY timestamp DESC LIMIT 25", [ userId ], (err, res: IEnrolmentsTableRow[]) =>{
+
+		const sql = format(`
+			SELECT enrolments.\`timestamp\`, enrolments.\`topic\`, topics.\`label\`
+			FROM \`enrolments\`
+			LEFT JOIN \`topics\` ON enrolments.\`topic\` = topics.\`id\`
+			WHERE enrolments.\`userId\` = ?
+			ORDER BY \`timestamp\` DESC
+			LIMIT 25
+		`, [ userId ]);
+
+		conn.query(sql, (err, res: IEnrolledTopicsQueryResultRow[]) =>{
 			if(err) {
 				console.error(`Error: failed to query database for enrolled topics for user "${userId}". Error message: `, err);
 				reject(err);
 			}
 
-			resolve(
-				res.map(result => result.topic)
-			);
+			resolve(res);
 		});
 	});
 }

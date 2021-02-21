@@ -4,7 +4,7 @@ import { getDatabaseConnection, getTopics } from "@util/database";
 
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	let conn: Connection | undefined
+	let conn: Connection | undefined;
 
 	try {
 		const query = req.query["query"] as string ?? "";
