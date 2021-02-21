@@ -24,7 +24,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^26.6.3",
     "jsdom": "^16.4.0",
-    "mongodb": "^3.6.4",
+    "mysql": "^2.18.1",
     "next": "^10.0.3",
     "next-auth": "^3.2.0",
     "next-images": "^1.6.0",
@@ -40,5 +40,8 @@
   },
   "engines": {
     "node": "^14.15.4"
+  },
+  "devDependencies": {
+    "@types/mysql": "^2.15.17"
   }
 }
