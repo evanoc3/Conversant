@@ -1,12 +1,13 @@
 @use "colours";
+@use "ui";
 
 
 #main {
 	width: calc(100% - 3rem);
 	margin: 0 1.5rem;
-	border-top-left-radius: 1rem;
-	border-top-right-radius: 1rem;
+	border-top-left-radius: ui.$med-curve;
+	border-top-right-radius: ui.$med-curve;
 	height: calc(100vh - 5rem);
 	background-color: colours.$primary-background;
-	padding: 0.75rem 1rem;
+	padding: 1rem 1.25rem;
 }

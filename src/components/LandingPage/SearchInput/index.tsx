@@ -100,7 +100,7 @@ export default SearchInput;
 
 
 async function getSearchResults(): Promise<TopicSearchResult[]> {
-	const resp = await fetch("/api/get-topics");
+	const resp = await fetch("/api/topics");
 
 	if(! resp.ok) {
 		console.error(`Error: GET request failed to API route "/api/get-topics" failed. Status: ${resp.status} (${resp.statusText}) `);

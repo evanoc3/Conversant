@@ -1,6 +1,5 @@
 import type { User as NextAuthUser } from "next-auth";
 import type { SessionBase as NextAuthSessionBase } from "next-auth/_utils";
-import { IUserProfile } from "./profile";
 
 
 export interface IUser extends NextAuthUser {
@@ -17,8 +16,7 @@ export interface IUserDocument {
 	image: string | null,
 	createdAt: Date,
 	updatedAt: Date,
-	emailVerified: boolean,
-	profile: IUserProfile
+	emailVerified: boolean
 }
 
 

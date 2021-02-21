@@ -1,21 +1,25 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Connection } from "mysql";
-import { getDatabaseConnection, getTopics } from "src/database";
+import { getSession } from "next-auth/client";
+import { getDatabaseConnection, getEnrolledTopics } from "@util/database";
+import type { IAuthSession } from "@customTypes/auth";
 
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	let conn: Connection | undefined;
 
 	try {
-		const query = req.query["query"] as string ?? "";
+		const session = await getSession({ req }) as IAuthSession;
+		const userId = session.user.id!;
 
 		conn = getDatabaseConnection();
 
-		const topics = await getTopics(conn);
+		const enrolledTopics = await getEnrolledTopics(conn, userId);
 
 		res.status(200).json({
 			timestamp: (new Date()).toISOString(),
-			results: topics
+			userId: userId,
+			enrolledTopics: enrolledTopics
 		});
 	}
 	catch(err) {

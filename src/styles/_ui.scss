@@ -1,6 +1,8 @@
 @use "colours";
 @use "breakpoints";
 
+$med-curve: 1.75rem;
+
 
 @mixin box {
 	display: block;
@@ -16,7 +18,7 @@
 @mixin btn {
 	border-width: 1.5px;
 	border-style: solid;
-	border-radius: 2rem;
+	border-radius: $med-curve;
 	padding: 0.325rem 1rem;
 	font-size: 0.85rem;
 	cursor: pointer;
