@@ -1,9 +1,9 @@
 import { FunctionComponent, PropsWithRef, useState } from "react";
-import type { ChangeEvent, FormEvent, FocusEvent, MouseEventHandler } from "react"
-// import { search as SearchIcon } from "@images/icons/index";
+import type { ChangeEvent, FormEvent, FocusEvent, MouseEventHandler } from "react";
 import { Search as SearchIcon } from "react-feather";
 import styles from "./SearchInput.module.scss";
-import type { TopicSearchResult } from "@customTypes/topic-search";
+import type { TopicSearchResult, GetTopicsApiRouteResponse } from "@customTypes/topic-search";
+
 
 
 type Props = PropsWithRef<{
@@ -80,7 +80,7 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 				{
 					(results.length) ? (
 						results.map<JSX.Element>(result => (
-							<li key={result.topic} className={styles["result"]} onClick={createResultClickHandler(result.topic)} >
+							<li key={result.id} className={styles["result"]} onClick={createResultClickHandler(result.id)} >
 								{ result.label }
 							</li>
 						))
@@ -100,14 +100,19 @@ export default SearchInput;
 
 
 async function getSearchResults(): Promise<TopicSearchResult[]> {
-	return [
-		{
-			label: "React (UI framework)",
-			topic: "react"
-		},
-		{
-			label: "Java (Programming language)",
-			topic: "java"
-		}
-	];
+	const resp = await fetch("/api/get-topics");
+
+	if(! resp.ok) {
+		console.error(`Error: GET request failed to API route "/api/get-topics" failed. Status: ${resp.status} (${resp.statusText}) `);
+		throw new Error();
+	}
+
+	const body: GetTopicsApiRouteResponse = await resp.json();
+
+	if("error" in body) {
+		console.error("Error: GET request failed to API route \"/api/get-topics\" failed. Error message: ", body.error);
+		throw new Error(body.error);
+	}
+
+	return body.results;
 }
