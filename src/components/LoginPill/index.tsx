@@ -13,8 +13,6 @@ type Props = PropsWithChildren<{
 const LoginPill: FunctionComponent<Props> = (props) => {
 	const [session, loading] = useSession();
 
-	console.log(session);
-
 	// Display "Loading...""
 	if(loading) {
 		return (
