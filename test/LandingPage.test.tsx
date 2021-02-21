@@ -3,7 +3,7 @@ import { mount } from "enzyme";
 import LandingPage from "@pages/index";
 
 
-describe("<LandingPage> Component", () => {
+describe("<LandingPage> Route", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {

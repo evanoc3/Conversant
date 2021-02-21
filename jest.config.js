@@ -46,6 +46,5 @@ module.exports = {
   testURL: "http://localhost:8080/",
   transformIgnorePatterns: [
     "[/\\\\]node_modules[/\\\\].+\\.(ts|tsx)$"
-  ],
-  verbose: true
+  ]
 };

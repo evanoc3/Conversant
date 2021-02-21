@@ -4,7 +4,7 @@ import "@mocks/next/router";
 import HomePage from "@pages/home";
 
 
-describe("<HomePage> Component", () => {
+describe("<HomePage> Route", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
