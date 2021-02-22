@@ -1,4 +1,3 @@
-import React from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "./index.module.scss";
@@ -17,13 +16,13 @@ const LandingPage: NextPage = (props) => (
 
 			<div id={styles["hero-container"]}>
 				<div id={styles["hero-box"]} className={styles["box"]}>
-					<h1 id={styles.title}>What would you like to learn?</h1>
-					<SearchInput placeholder="Enter the topic e.g. Next.js, or Java programming..." />
+					<h1 className={styles["title"]} id={styles["hero-title"]}>What would you like to learn?</h1>
+					<SearchInput placeholder="e.g. Next.js, or Java programming..." />
 				</div>
 			</div>
 
 			<div id={styles["about-box"]} className={styles["box"]}>
-				<h2 id={styles["about-title"]}>About Conversant</h2>
+				<h2 className={styles["title"]} id={styles["about-title"]}>About Conversant</h2>
 				<p>Conversant is a learning platform that aims to teach people the way they learn the best, through conversation.</p>
 			</div>
 

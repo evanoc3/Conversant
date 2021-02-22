@@ -1,5 +1,5 @@
 import { FunctionComponent, PropsWithRef, useState } from "react";
-import type { ChangeEvent, FormEvent, FocusEvent, MouseEventHandler } from "react";
+import type { ChangeEvent, FormEvent, FocusEvent, MouseEventHandler, TouchEventHandler, MouseEvent, TouchEvent } from "react";
 import { Search as SearchIcon } from "react-feather";
 import styles from "./SearchInput.module.scss";
 import type { TopicSearchResult, GetTopicsApiRouteResponse } from "@customTypes/topic-search";
@@ -59,8 +59,8 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 		}
 	}
 
-	function createResultClickHandler(topic: string): MouseEventHandler<HTMLLIElement> {
-		return (e) => {
+	function createResultClickHandler(topic: string): MouseEventHandler<HTMLLIElement> | TouchEventHandler<HTMLLIElement> {
+		return (e: MouseEvent<HTMLLIElement> | TouchEvent<HTMLLIElement>) => {
 			e.preventDefault();
 			setSearchTerm(topic);
 			submitHandler(undefined, topic);
@@ -80,7 +80,7 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 				{
 					(results.length) ? (
 						results.map<JSX.Element>(result => (
-							<li key={result.id} className={styles["result"]} onClick={createResultClickHandler(result.id)} >
+							<li key={result.id} className={styles["result"]} onClick={createResultClickHandler(result.id) as MouseEventHandler} onTouchEnd={createResultClickHandler(result.id) as TouchEventHandler}>
 								{ result.label }
 							</li>
 						))
