@@ -1,20 +1,30 @@
+@use "breakpoints";
 @use "colours";
 @use "fonts";
 
 
 #header {
+	margin-top: env(safe-area-inset-top);
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
 	height: 4rem;
-	padding: 0 2rem;
+	padding: 0 1rem;
+	
+	@media(min-width: breakpoints.$tablet) {
+		padding: 0 2rem;
+	}
 }
 
 
 h1#title {
 	@include fonts.title;
-	font-size: 2.5rem;
+	font-size: 1.75rem;
 	color: colours.$contrast-primary-font;
+
+	@media(min-width: breakpoints.$tablet) {
+		font-size: 2.5rem;
+	}
 
 	a#home-link {
 		color: inherit;

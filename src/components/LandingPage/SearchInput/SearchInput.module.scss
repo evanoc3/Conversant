@@ -12,15 +12,21 @@
 	#input {
 		position: relative;
 		z-index: 100;
-		font-size: 1.15rem;
-		padding: 0.6rem 1rem;
-		border-top-left-radius: 0.75rem;
-		border-bottom-left-radius: 0.75rem;
+		font-size: 1rem;
+		padding: 0.3rem 0.75rem;
+		border-radius: 0.75rem 0 0 0.75rem;
 		border: 1.5px solid colours.$input-inactive-border;
 		border-right: none !important;
 		outline: none;
 		transition: 0.4s;
 		flex-grow: 1;
+		-webkit-appearance: none;
+		border-image: none;
+
+		@media(min-width: breakpoints.$tablet) {
+			font-size: 1.15rem;
+			padding: 0.6rem 1rem;
+		}
 	
 		&:focus {
 			border: 1.5px solid colours.$input-active-border;

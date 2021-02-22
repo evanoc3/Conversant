@@ -6,19 +6,25 @@ $med-curve: 1.75rem;
 
 @mixin box {
 	display: block;
-	margin: auto;
-	width: calc(100vw - 8rem);
+	margin: 0 0.75rem;
+	width: calc(100% - 1.5rem);
+	border-radius: 1.5rem;
 	background-color: colours.$primary-background;
-	border-radius: 2.5rem;
-	padding: 2.5rem;
+	padding: 1.25rem 1rem;
 	box-shadow: 0.5rem 0.5rem 1rem colours.$medium-shadow;
+
+	@media(min-width: breakpoints.$tablet) {
+		margin: 0 auto;
+		width: calc(100vw - 8rem);
+		padding: 1.5rem 2rem;
+	}
 }
 
 
 @mixin btn {
 	border-width: 1.5px;
 	border-style: solid;
-	border-radius: $med-curve;
+	border-radius: 1.75rem;
 	padding: 0.325rem 1rem;
 	font-size: 0.85rem;
 	cursor: pointer;
