@@ -1,6 +1,8 @@
 @use "colours";
 @use "breakpoints";
 
+$med-curve: 1.75rem;
+
 
 @mixin box {
 	display: block;
