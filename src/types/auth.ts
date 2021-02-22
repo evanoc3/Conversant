@@ -6,9 +6,11 @@ export interface IUser extends NextAuthUser {
 	id?: string
 }
 
+
 export interface IAuthSession extends NextAuthSessionBase {
 	user: IUser
 }
+
 
 export interface IUserDocument {
 	name: string | null,

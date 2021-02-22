@@ -70,11 +70,11 @@ export async function getEnrolledTopics(conn: Connection, userId: string): Promi
 	return new Promise((resolve, reject) => {
 
 		const sql = format(`
-			SELECT enrolments.\`timestamp\`, enrolments.\`topic\`, topics.\`label\`
-			FROM \`enrolments\`
-			LEFT JOIN \`topics\` ON enrolments.\`topic\` = topics.\`id\`
-			WHERE enrolments.\`userId\` = ?
-			ORDER BY \`timestamp\` DESC
+			SELECT enrolments.timestamp, enrolments.topic as id, topics.label
+			FROM enrolments
+			LEFT JOIN topics ON enrolments.topic = topics.id
+			WHERE enrolments.userId = ?
+			ORDER BY timestamp DESC
 			LIMIT 25
 		`, [ userId ]);
 

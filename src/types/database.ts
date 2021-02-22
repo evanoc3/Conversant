@@ -22,8 +22,6 @@ export interface ITopicsTableRow {
 }
 
 
-export interface IEnrolledTopicsQueryResultRow {
-	topic: string,
-	label: string,
+export interface IEnrolledTopicsQueryResultRow extends ITopicsTableRow {
 	timestamp: Date | string
 }
