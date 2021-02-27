@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useSession, signOut } from "next-auth/client";
 import { Background } from "@components/index";
-import { Header } from "@components/HomePage/index";
+import { Header, LessonList } from "@components/HomePage/index";
 import styles from "./home.module.scss";
 
 
@@ -33,7 +33,10 @@ const HomePage: NextPage<Props> = (props) => {
 				<div id={styles["main"]}>
 					{
 						(!loading && session) ? (
-							<a href="/api/auth/signout" onClick={signOutClickHandler}>Sign Out</a>
+							<>
+								<a href="/api/auth/signout" onClick={signOutClickHandler}>Sign Out</a>
+								<LessonList />
+							</>
 						) : (
 							<span>Loading...</span>
 						)

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "@jest/globals";
 import { mount } from "enzyme";
 import "@mocks/next/router";
-import LessonPage from "@pages/lesson";
+import LessonPage from "@pages/lesson/[lessonId]";
 
 
 describe("<LessonPage> Route", () => {
