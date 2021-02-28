@@ -4,7 +4,8 @@ import { withRouter, NextRouter } from "next/router";
 import styles from "./[lessonId].module.scss";
 import type { GetLessonApiRouteResponse } from "@customTypes/api";
 import type { Lesson } from "@customTypes/lesson";
-import { debug } from "console";
+import { Background } from "@components/index";
+import { Sidebar } from "@components/LessonPage/index";
 
 
 type Props = PropsWithChildren<{
@@ -36,11 +37,12 @@ class LessonPage extends Component<Props, State> {
 					<title>Home | Conversant</title>
 				</Head>
 
-				<div id={styles["page"]}>
+				<Background>
 					{
 						(this.state.lesson) ? this.renderLesson() : this.renderLoading()
 					}
-				</div>
+				</Background>
+
 			</>
 		);
 	}
@@ -79,8 +81,14 @@ class LessonPage extends Component<Props, State> {
 		const lesson = this.state.lesson!;
 
 		return (
-			<div>
-				<h1>{ lesson.title }</h1>
+			<div id={styles["page"]}>
+				<div id={styles["sidebar"]}>
+					<Sidebar />
+				</div>
+
+				<div id={styles["message-area"]}>
+					<h1>{ lesson.title }</h1>
+				</div>
 			</div>
 		);
 	}
