@@ -1,6 +1,7 @@
-import { Component, PropsWithChildren } from "react";
+import { Component, PropsWithChildren} from "react";
 import Head from "next/head";
 import { withRouter, NextRouter } from "next/router";
+import { Menu as MenuSvg } from "react-feather";
 import styles from "./[lessonId].module.scss";
 import type { GetLessonApiRouteResponse } from "@customTypes/api";
 import type { Lesson } from "@customTypes/lesson";
@@ -14,7 +15,8 @@ type Props = PropsWithChildren<{
 
 interface State {
 	lesson: Lesson | undefined,
-	currentStep: number
+	currentStep: number,
+	sidebarOpen: boolean
 }
 
 
@@ -23,9 +25,12 @@ class LessonPage extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
+		this.toggleSidebarOpen = this.toggleSidebarOpen.bind(this);
+
 		this.state = {
 			lesson: undefined,
-			currentStep: 0
+			currentStep: 0,
+			sidebarOpen: false
 		};
 	}
 
@@ -82,12 +87,29 @@ class LessonPage extends Component<Props, State> {
 
 		return (
 			<div id={styles["page"]}>
-				<div id={styles["sidebar"]}>
+				<Head>
+					<title>
+						{ (this.state.lesson) ? `${this.state.lesson.title} (${this.state.lesson.topic}) | Conversant` : "Lesson | Conversant"}
+					</title>
+				</Head>
+
+				<div id={styles["sidebar"]} className={(this.state.sidebarOpen) ? styles["open"] : ""}>
 					<Sidebar />
 				</div>
 
+				<div id={styles["title-bar"]}>
+					<button id={styles["sidebar-button"]} onClick={this.toggleSidebarOpen} className={(this.state.sidebarOpen) ? styles["sidebar-open"] : ""}>
+						<MenuSvg id={styles["sidebar-button-icon"]} />
+					</button>
+
+					<h1 id={styles["title"]}>{ lesson.title }</h1>
+				</div>
+
 				<div id={styles["message-area"]}>
-					<h1>{ lesson.title }</h1>
+				</div>
+
+				<div id={styles["reply-bar"]}>
+					<textarea id={styles["reply-textarea"]} placeholder={"Write your message here..."}></textarea>
 				</div>
 			</div>
 		);
@@ -97,6 +119,12 @@ class LessonPage extends Component<Props, State> {
 		return (
 			<div>Loading</div>
 		);
+	}
+
+	private toggleSidebarOpen(): void {
+		this.setState({
+			sidebarOpen: !this.state.sidebarOpen
+		});
 	}
 }
 
