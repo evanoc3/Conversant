@@ -6,13 +6,16 @@
 
 
 #page {
+	$title-bar-height: 4rem;
+	$reply-bar-height: 4rem;
+
 	position: relative;
 	width: 100%;
 	height: 100vh;
 	height: -webkit-fill-available;
 	display: grid;
-	grid-template-rows: 4rem 1fr 4rem;
-	grid-template-columns: 30% 70%;
+	grid-template-rows: $title-bar-height 1fr $reply-bar-height;
+	grid-template-columns: 25% 75%;
 
 
 	#sidebar {
@@ -41,49 +44,11 @@
 	#title-bar {
 		grid-row: 1 / span 1;
 		grid-column: 1 / -1;
-		background: colours.$page-background;
-		display: flex;
-		flex-flow: row nowrap;
 
 		@media(min-width: breakpoints.$tablet) {
 			grid-column: 2 / span 1; 
 		}
 
-		#sidebar-button {
-			@include buttons.no-style;
-			width: 4rem;
-			height: 4rem;
-			color: colours.$contrast-primary-font;
-			position: relative;
-			left: 0;
-			transition: 0.5s left;
-
-			@media(min-width: breakpoints.$tablet) {
-				display: none;
-			}
-
-			&.sidebar-open {
-				left: calc(100vw - 4rem);
-			}
-
-			svg#sidebar-button-icon {
-				width: 2rem;
-				height: 2rem;
-				margin: 1rem;
-			}
-
-		}
-
-		#title {
-			font-size: 2rem;
-			line-height: 1;
-			color: colours.$contrast-primary-font;
-			margin: 1rem 1rem 1rem 0;
-
-			@media(min-width: breakpoints.$tablet) {
-				margin: 1rem;
-			}
-		}
 	}
 
 
@@ -100,30 +65,9 @@
 	#reply-bar {
 		grid-row: 3 / span 1;
 		grid-column: 1 / -1; 
-		background-color: colours.$page-background;
 
 		@media(min-width: breakpoints.$tablet) {
 			grid-column: 2  / span 1;
-		}
-
-		#reply-textarea {
-			width: calc(100% - 2rem);
-			margin: 0.75rem 1rem;
-			height: calc(100% - 1.5rem);
-			padding: 0.75rem;
-			resize: none;
-			border-radius: 5rem;
-			border: none; //1px solid colours.$separating-border;
-			background: colours.$contrast-background;
-			overflow: hidden scroll;
-			color: colours.$contrast-primary-font;
-			font-family: fonts.$native-stack;
-			font-size: 1rem;
-			line-height: 1;
-
-			&::placeholder {
-				color: colours.$placeholder-font;
-			}
 		}
 	}
 }

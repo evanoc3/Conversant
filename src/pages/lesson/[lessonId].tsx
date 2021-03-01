@@ -1,12 +1,11 @@
 import { Component, PropsWithChildren} from "react";
 import Head from "next/head";
 import { withRouter, NextRouter } from "next/router";
-import { Menu as MenuSvg } from "react-feather";
 import styles from "./[lessonId].module.scss";
 import type { GetLessonApiRouteResponse } from "@customTypes/api";
 import type { Lesson } from "@customTypes/lesson";
 import { Background } from "@components/index";
-import { Sidebar } from "@components/LessonPage/index";
+import { ConversationArea, SendMessageForm, Sidebar, TitleBar } from "@components/LessonPage/index";
 
 
 type Props = PropsWithChildren<{
@@ -82,34 +81,32 @@ class LessonPage extends Component<Props, State> {
 		}
 	}
 
+
 	private renderLesson(): JSX.Element {
-		const lesson = this.state.lesson!;
+		const { sidebarOpen, lesson } = this.state;
 
 		return (
 			<div id={styles["page"]}>
 				<Head>
 					<title>
-						{ (this.state.lesson) ? `${this.state.lesson.title} (${this.state.lesson.topic}) | Conversant` : "Lesson | Conversant"}
+						{ (lesson) ? `${lesson.title} (${lesson.topic}) | Conversant` : "Lesson | Conversant"}
 					</title>
 				</Head>
 
-				<div id={styles["sidebar"]} className={(this.state.sidebarOpen) ? styles["open"] : ""}>
+				<div id={styles["sidebar"]} className={(sidebarOpen) ? styles["open"] : ""}>
 					<Sidebar />
 				</div>
 
 				<div id={styles["title-bar"]}>
-					<button id={styles["sidebar-button"]} onClick={this.toggleSidebarOpen} className={(this.state.sidebarOpen) ? styles["sidebar-open"] : ""}>
-						<MenuSvg id={styles["sidebar-button-icon"]} />
-					</button>
-
-					<h1 id={styles["title"]}>{ lesson.title }</h1>
+					<TitleBar toggleSidebarOpen={this.toggleSidebarOpen} sidebarOpen={sidebarOpen} lessonTitle={lesson!.title} lessonTopic={lesson!.topic} />
 				</div>
 
 				<div id={styles["message-area"]}>
+					<ConversationArea content={lesson!.content} currentStep={0} />
 				</div>
 
 				<div id={styles["reply-bar"]}>
-					<textarea id={styles["reply-textarea"]} placeholder={"Write your message here..."}></textarea>
+					<SendMessageForm />
 				</div>
 			</div>
 		);

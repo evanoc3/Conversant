@@ -1,7 +1,11 @@
-import Header from "./Header";
+import ConversationArea from "./ConversationArea";
+import SendMessageForm from "./SendMessageForm";
 import Sidebar from "./Sidebar";
+import TitleBar from "./TitleBar";
 
 export {
-	Header,
-	Sidebar
+	ConversationArea,
+	SendMessageForm,
+	Sidebar,
+	TitleBar
 };
