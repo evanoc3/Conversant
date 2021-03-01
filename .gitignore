@@ -8,3 +8,7 @@ out/
 # Environment variable files
 .env
 .env*.local
+
+# PWA
+public/sw.js
+public/workbox-*.js
