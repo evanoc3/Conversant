@@ -8,22 +8,23 @@
     "test": "jest",
     "debug": "NODE_OPTIONS='--inspect' next dev -p 8080"
   },
-  "dependencies": {
+  "devDependencies": {
     "@types/enzyme": "^3.10.8",
     "@types/jest": "^26.0.20",
     "@types/jsdom": "^16.2.6",
-    "@types/mongodb": "^3.6.7",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1",
+    "enzyme": "^3.11.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^26.6.3",
+    "jsdom": "^16.4.0"
+  },
+  "dependencies": {
     "@types/mysql": "^2.15.17",
     "@types/next-auth": "^3.1.24",
     "@types/node": "^14.11.8",
     "@types/react": "^16.9.52",
     "@types/react-dom": "^17.0.0",
     "@types/validator": "^13.1.1",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1",
-    "enzyme": "^3.11.0",
-    "identity-obj-proxy": "^3.0.0",
-    "jest": "^26.6.3",
-    "jsdom": "^16.4.0",
     "mysql": "^2.18.1",
     "next": "^10.0.3",
     "next-auth": "^3.5.1",
