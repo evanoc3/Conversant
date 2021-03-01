@@ -1,6 +1,14 @@
 @use "colours";
 
 
+@mixin no-style {
+	appearance: none;
+	background: none;
+	border: none;
+	border-radius: 0;
+}
+
+
 @mixin base {
 	border-width: 1.5px;
 	border-style: solid;

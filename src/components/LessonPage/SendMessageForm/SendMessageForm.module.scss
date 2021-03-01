@@ -1,0 +1,50 @@
+@use "buttons";
+@use "colours";
+@use "fonts";
+
+
+#form {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	padding: 0 1rem;
+	background-color: colours.$contrast-background;
+
+	#reply-textarea {
+		width: calc(100% - 2rem);
+		margin-right: 0.5rem;
+		height: 2.5rem;
+		padding: 0.75rem;
+		resize: none;
+		border-radius: 5rem;
+		border: none; //1px solid colours.$separating-border;
+		background: colours.$input-background;
+		overflow: hidden scroll;
+		color: colours.$primary-font;
+		font-family: fonts.$native-stack;
+		font-size: 1rem;
+		line-height: 1;
+
+		&::placeholder {
+			color: colours.$placeholder-font;
+		}
+	}
+
+	#send-button {
+		@include buttons.no-style;
+		@include buttons.orange;
+		padding: 0.8rem 0.8rem 0.7rem 0.7rem;
+
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 10rem;
+		cursor: pointer;
+
+		#send-button-icon {
+			width: 1rem;
+			height: 1rem;
+		}
+	}
+}

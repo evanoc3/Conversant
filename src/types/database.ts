@@ -2,7 +2,8 @@ export interface IEnrolmentsTableRow {
 	id: number,
 	userId: number,
 	topic: string,
-	timestamp: Date | string
+	timestamp: Date | string,
+	currentLesson: number
 }
 
 
@@ -22,6 +23,7 @@ export interface ITopicsTableRow {
 }
 
 
-export interface IEnrolledTopicsQueryResultRow extends ITopicsTableRow {
-	timestamp: Date | string
-}
+export type IEnrolledTopicsQueryResultRow = (
+	Pick<ITopicsTableRow, "id" | "label"> &
+	Pick<IEnrolmentsTableRow, "userId" | "timestamp" | "currentLesson">
+);

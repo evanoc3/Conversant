@@ -2,6 +2,7 @@ import { createConnection, format } from "mysql";
 import type { Connection, MysqlError } from "mysql";
 import type { TopicSearchResult } from "@customTypes/topic-search";
 import type { ITopicsTableRow ,IEnrolledTopicsQueryResultRow } from "@customTypes/database";
+import type { Lesson } from "@customTypes/lesson";
 
 
 /**
@@ -70,12 +71,12 @@ export async function getEnrolledTopics(conn: Connection, userId: string): Promi
 	return new Promise((resolve, reject) => {
 
 		const sql = format(`
-			SELECT enrolments.timestamp, enrolments.topic as id, topics.label
+			SELECT enrolments.topic as id, enrolments.timestamp, topics.label, enrolments.currentLesson
 			FROM enrolments
 			LEFT JOIN topics ON enrolments.topic = topics.id
 			WHERE enrolments.userId = ?
 			ORDER BY timestamp DESC
-			LIMIT 25
+			LIMIT 10
 		`, [ userId ]);
 
 		conn.query(sql, (err, res: IEnrolledTopicsQueryResultRow[]) =>{
@@ -85,6 +86,35 @@ export async function getEnrolledTopics(conn: Connection, userId: string): Promi
 			}
 
 			resolve(res);
+		});
+	});
+}
+
+
+/**
+ * Queries the database for a lesson with the specified id
+ * 
+ * @param {Connection} conn - A database connection object, obtained by the API page from the `getDatabaseConnection()` function above.
+ * 
+ * @param {String} lessonId - 
+ * 
+ * @returns {Promise<any>} - 
+ */
+export async function getLesson(conn: Connection, lessonId: string): Promise<Lesson> {
+	return new Promise((resolve, reject) => {
+		const sql = format("SELECT id, title, topic, content FROM lessons WHERE id = ?", [ lessonId ]);
+
+		conn.query(sql, (err, res) => {
+			if(err) {
+				console.error(`Error: failed to query database for lesson ${lessonId}. Error message: `, err);
+				reject(err);
+			}
+
+			if(res) {
+				resolve(res[0]);
+			}
+
+			reject();
 		});
 	});
 }
