@@ -19,8 +19,7 @@ This project is structured as a PWA _(Progressive Web App)_, which allows it to 
 
 Once these conditions have been met, most modern browsers will recognise the website as a PWA, and allow some mechanism for installing it locally, for example, on iOS, a PWA can be added to the home screen and looks indistinguishable from a native app. Even though it is still run in a web browser, it can run in a separate window and the UI of the browser can be hidden, allowing the app complete control over the UI.
 
-
-**TL;DR:**  
+**TL;DR**  
 | Purpose | Technology |
 |-|-|
 | UI | React |
@@ -31,3 +30,16 @@ Once these conditions have been met, most modern browsers will recognise the web
 | Persistence (Database) | MySQL |
 | Testing | Jest |
 | Service Worker | Workbox (via next-pwa) |
+
+
+## Testing
+
+This project has unit test suites for each react component, ensuring that build errors will never be put into the production release.
+
+
+### Cloc
+
+To generate a cloc report of the overall composition of this project, run:
+```sh
+cloc --exclude-dir=.next,node_modules --not-match-f=package-lock.json .
+```
