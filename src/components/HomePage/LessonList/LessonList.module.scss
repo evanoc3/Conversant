@@ -1,7 +1,13 @@
-#lesson-list {
+div#container {
 
-}
+	h2#title {
+	}
 
-#loading {
-	
+	ol#lesson-list {
+		list-style-position: inside;
+
+		li.list-item {
+
+		}
+	}
 }

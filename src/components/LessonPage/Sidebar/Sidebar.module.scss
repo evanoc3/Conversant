@@ -1,0 +1,9 @@
+@use "colours";
+
+
+#sidebar {
+	width: 100%;
+	height: 100%;
+	background-color: colours.$contrast-background;
+	border-right: 1px solid colours.$page-background;
+}

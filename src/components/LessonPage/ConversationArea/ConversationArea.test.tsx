@@ -1,14 +1,13 @@
 import { describe, it, expect } from "@jest/globals";
 import { mount } from "enzyme";
-import "@mocks/next/router";
-import LessonPage from "@pages/lesson/[lessonId]";
+import ConversationArea from "./index";
 
 
-describe("<LessonPage> Route", () => {
+describe("<ConversationArea> (lesson page) Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<LessonPage />);
+			const wrapper = mount(<ConversationArea content={[]} currentStep={0} />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});

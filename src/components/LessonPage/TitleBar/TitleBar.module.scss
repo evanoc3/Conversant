@@ -1,0 +1,59 @@
+@use "breakpoints";
+@use "buttons";
+@use "colours";
+
+
+#title-bar {
+	width: 100%;
+	height: 100%;
+	background-color: colours.$contrast-background;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+
+
+	#sidebar-button {
+		@include buttons.no-style;
+		width: 4rem;
+		height: 4rem;
+		color: colours.$contrast-primary-font;
+		background-color: colours.$contrast-background;
+		position: relative;
+		left: 0;
+		transition: 0.5s left;
+
+		@media(min-width: breakpoints.$tablet) {
+			display: none;
+		}
+
+		&.sidebar-open {
+			left: calc(100vw - 4rem);
+		}
+
+		svg#sidebar-button-icon {
+			width: 1.75rem;
+			height: 1.75rem;
+			margin: 1.125rem;
+		}
+
+	}
+
+	#title {
+		font-size: 1.75rem;
+		line-height: 1;
+		color: colours.$contrast-primary-font;
+		font-weight: 500;
+		margin: 0 1rem 0 0;
+		
+
+		@media(min-width: breakpoints.$tablet) {
+			margin-left: 1rem;
+		}
+	}
+
+	#sub-title {
+		font-weight: 400;
+		font-size: 1.5rem;
+		line-height: 1;
+	}
+}
