@@ -25,7 +25,7 @@
 		top: 50%;
 		transform: translateY(-50%);
 
-		@media only screen and (min-width: breakpoints.$tablet) {
+		@media(min-width: breakpoints.$tablet) {
 			left: 50%;
 			transform: translate(-50%, -50%);
 			width: min(65vw, 40rem);
@@ -34,6 +34,12 @@
 
 		#hero-title {
 			text-align: center;
+			font-size: 1.5rem;
+			margin-bottom: 1rem;
+
+			@media(min-width: breakpoints.$tablet) {
+				font-size: 2rem;
+			}
 		}
 	}
 }

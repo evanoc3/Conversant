@@ -26,7 +26,7 @@ const LandingPage: NextPage = (props) => {
 
 				<div id={styles["hero-container"]}>
 					<div id={styles["hero-box"]} className={styles["box"]}>
-						<h1 id={styles.title}>What would you like to learn?</h1>
+						<h1 id={styles["hero-title"]}>What would you like to learn?</h1>
 						<SearchInput placeholder="Enter the topic e.g. Next.js, or Java programming..." />
 					</div>
 				</div>
