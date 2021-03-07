@@ -12,7 +12,7 @@ const ConversantApp: FunctionComponent<AppProps> = ({ Component, pageProps }: Ap
 			<meta name="author" content="Evan O'Connor <e.oconnor47@nuigalway.ie>" />
 
       {/* PWA meta tags */}
-      <link rel="manifest" href="/static/manifest.json" />
+      <link rel="manifest" href="/manifest.json" />
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="application-name" content="Conversant" />
       <meta name="description" content="The natural language learning platform" />
