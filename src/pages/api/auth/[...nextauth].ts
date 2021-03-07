@@ -10,6 +10,15 @@ export default (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res,
       server: process.env.AUTH_SMTP_SERVER!,
       from: process.env.AUTH_SMTP_FROM_ADDR!
     }),
+    Providers.Apple({
+      clientId: process.env.OAUTH_APPLE_CLIENT_ID!,
+      clientSecret: {
+        appleId: process.env.OAUTH_APPLE_CLIENT_ID!,
+        teamId: process.env.OAUTH_APPLE_TEAM_ID!,
+        keyId: process.env.OAUTH_APPLE_KEY_ID!,
+        privateKey: process.env.OAUTH_APPLE_PRIVATE_KEY!
+      }
+    }),
 		Providers.Google({
 			clientId: process.env.OAUTH_GOOGLE_CLIENT_ID!,
       clientSecret: process.env.OAUTH_GOOGLE_SECRET!
