@@ -14,7 +14,7 @@
 	height: 100vh;
 	height: -webkit-fill-available;
 	display: grid;
-	grid-template-rows: $title-bar-height 1fr $reply-bar-height;
+	grid-template-rows: calc(#{$title-bar-height} + env(safe-area-inset-top)) 1fr calc(#{$reply-bar-height} + env(safe-area-inset-bottom));
 	grid-template-columns: 25% 75%;
 
 

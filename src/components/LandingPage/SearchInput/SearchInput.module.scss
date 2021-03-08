@@ -96,8 +96,9 @@
 		
 
 
-		> li#no-result-msg {
-			font-weight: bold;
+		> li#no-results-msg {
+			padding: 0.6rem 1rem;
+			cursor: default;
 		}
 	}
 }

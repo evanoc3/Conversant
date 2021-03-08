@@ -11,6 +11,7 @@
 	align-items: center;
 	padding: 0 1rem;
 	background-color: colours.$contrast-background;
+	padding-bottom: env(safe-area-inset-bottom);
 
 	#reply-textarea {
 		width: calc(100% - 2rem);

@@ -5,11 +5,13 @@
 
 #title-bar {
 	width: 100%;
+	max-width: 100vw;
 	height: 100%;
 	background-color: colours.$contrast-background;
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
+	padding-top: env(safe-area-inset-top);
 
 
 	#sidebar-button {
@@ -45,7 +47,6 @@
 		font-weight: 500;
 		margin: 0 1rem 0 0;
 		
-
 		@media(min-width: breakpoints.$tablet) {
 			margin-left: 1rem;
 		}
@@ -55,5 +56,6 @@
 		font-weight: 400;
 		font-size: 1.5rem;
 		line-height: 1;
+		white-space: nowrap;
 	}
 }

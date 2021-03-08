@@ -1,5 +1,6 @@
 import type { PropsWithChildren, MouseEventHandler } from "react";
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import { useSession, signOut } from "next-auth/client";
 import { Background } from "@components/index";
@@ -13,6 +14,11 @@ type Props = PropsWithChildren<{
 
 const HomePage: NextPage<Props> = (props) => {
 	const [session, loading] = useSession();
+
+	if(!loading && !session) {
+		const router = useRouter();
+		router.replace("/");
+	}
 
 	const signOutClickHandler: MouseEventHandler<HTMLAnchorElement> = (e) => {
 		e.preventDefault();
