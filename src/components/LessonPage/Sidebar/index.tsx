@@ -1,6 +1,7 @@
 import { FunctionComponent, PropsWithChildren } from "react";
 import Link from "next/link";
 import { useSession, Session } from "next-auth/client";
+import { ArrowLeft as ArrowLeftSvg } from "react-feather";
 import styles from "./Sidebar.module.scss";
 
 
@@ -13,11 +14,18 @@ const Sidebar: FunctionComponent<Props> = () => {
 
 	return (
 		<div id={styles["sidebar"]}>
+
+			<Link href="/home">
+				<a id={styles["home-link"]}>
+					<ArrowLeftSvg id={styles["home-icon"]} />
+					<span id={styles["home-label"]}>Return Home</span>
+				</a>
+			</Link>
+
+			<div className={styles["separator"]} />
+
 			{ UserBadge(session, loading) }
 
-				<Link href="/home">
-					<a id={styles["home-link"]}>Return Home</a>
-				</Link>
 		</div>
 	);
 };

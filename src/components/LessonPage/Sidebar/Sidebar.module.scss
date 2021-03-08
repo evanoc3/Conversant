@@ -14,22 +14,49 @@
 }
 
 
+a#home-link {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	color: colours.$contrast-primary-font;
+	text-decoration: none;
+
+	svg#home-icon {
+		width: 1.5rem;
+		height: 1.5rem;
+		margin-right: 0.5rem;
+	}
+
+	span#home-label {
+		font-size: 1.35rem;
+	}
+}
+
+
+div.separator {
+	display: block;
+	height: 1.5px; 
+	width: 100%;
+	margin: 1rem auto;
+	background-color: colours.$page-background;
+}
+
+
 #user-badge {
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
-	margin-bottom: 1.5rem;
 
 	img#profile-img {
-		width: 2rem;
-		height: 2rem;
+		width: 1.75rem;
+		height: 1.75rem;
 		border-radius: 50%;
-		margin-right: 1rem;
+		margin-right: 0.75rem;
 	}
 
 	span.label {
-		font-size: 1.35rem;
-		font-weight: 500;
+		font-size: 1.1rem;
+		font-weight: 400;
 	}
 
 
@@ -39,8 +66,6 @@
 }
 
 
-a#home-link {
-	font-size: 1.35rem;
-	margin-bottom: 1.5rem;
-	color: colours.$contrast-primary-font;
-}
+
+
+
