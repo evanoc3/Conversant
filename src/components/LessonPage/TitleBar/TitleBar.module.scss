@@ -10,6 +10,7 @@
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
+	padding-top: env(safe-area-inset-top);
 
 
 	#sidebar-button {
