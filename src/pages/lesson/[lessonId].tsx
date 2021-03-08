@@ -38,7 +38,7 @@ class LessonPage extends Component<Props, State> {
 		return (
 			<>
 				<Head>
-					<title>Home | Conversant</title>
+					<title>Lesson | Conversant</title>
 				</Head>
 
 				<Background>
@@ -53,16 +53,22 @@ class LessonPage extends Component<Props, State> {
 
 
 	public componentDidMount(): void {
+		document.body.style.overflowY = "auto";
+
 		let counter: number = 0;
 
 		const interval = setInterval(() => {
 			if(this.props.router.isReady) {
-				console.debug(`Router was ready at counter ${counter}`);
 				this.getLesson();
 				clearInterval(interval);
 			}
 			counter += 1;
 		}, 10);
+	}
+
+
+	public componentWillUnmount() {
+		document.body.style.overflowY = "hidden";
 	}
 
 
@@ -89,7 +95,7 @@ class LessonPage extends Component<Props, State> {
 			<div id={styles["page"]}>
 				<Head>
 					<title>
-						{ (lesson) ? `${lesson.title} (${lesson.topic}) | Conversant` : "Lesson | Conversant"}
+						{ (lesson) ? `${lesson.title} (${lesson.topicLabel}) | Conversant` : "Lesson | Conversant"}
 					</title>
 				</Head>
 
@@ -98,7 +104,7 @@ class LessonPage extends Component<Props, State> {
 				</div>
 
 				<div id={styles["title-bar"]}>
-					<TitleBar toggleSidebarOpen={this.toggleSidebarOpen} sidebarOpen={sidebarOpen} lessonTitle={lesson!.title} lessonTopic={lesson!.topic} />
+					<TitleBar toggleSidebarOpen={this.toggleSidebarOpen} sidebarOpen={sidebarOpen} lessonTitle={lesson!.title} lessonTopic={lesson!.topicLabel} />
 				</div>
 
 				<div id={styles["message-area"]}>

@@ -102,7 +102,7 @@ export async function getEnrolledTopics(conn: Connection, userId: string): Promi
  */
 export async function getLesson(conn: Connection, lessonId: string): Promise<Lesson> {
 	return new Promise((resolve, reject) => {
-		const sql = format("SELECT id, title, topic, content FROM lessons WHERE id = ?", [ lessonId ]);
+		const sql = format("SELECT lessons.id, title, topic, content, topics.label as topicLabel FROM lessons LEFT JOIN topics ON lessons.topic = topics.id WHERE lessons.id = ?", [ lessonId ]);
 
 		conn.query(sql, (err, res) => {
 			if(err) {
