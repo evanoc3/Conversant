@@ -1,0 +1,45 @@
+@use "buttons";
+@use "colours";
+@use "messages";
+
+
+.container {
+	@include messages.container;
+
+	text-align: left;
+}
+
+
+.choice-message {
+	@include messages.base;
+	display: inline-block;
+	border-radius: messages.$message-border-radius;
+	background: colours.$highlighted-primary-background;
+	overflow: hidden;
+}
+
+
+.message-inner {
+	padding: messages.$message-padding;
+}
+
+.message-choice {
+	@include buttons.no-style;
+	width: 50%;
+	background: colours.$highlighted-primary-background;
+	border-top: 1px solid colours.$input-inactive-border;
+	padding: 0.25rem 0;
+
+	&:first-of-type {
+		border-bottom-left-radius: messages.$message-border-radius;
+		border-right: 1px solid colours.$input-inactive-border;
+	}
+
+	&:last-of-type {
+		border-bottom-right-radius: messages.$message-border-radius;
+	}
+
+	&:disabled {
+		background-color: messages.$message-border-radius;
+	}
+}

@@ -4,6 +4,7 @@ import SendMessageForm from "./SendMessageForm";
 import Sidebar from "./Sidebar";
 import TitleBar from "./TitleBar";
 import UserMessage from "./UserMessage";
+import YesNoChoiceMessage from "./YesNoChoiceMessage";
 
 export {
 	ConversationArea,
@@ -11,5 +12,6 @@ export {
 	SendMessageForm,
 	Sidebar,
 	TitleBar,
-	UserMessage
+	UserMessage,
+	YesNoChoiceMessage
 };
