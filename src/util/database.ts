@@ -1,8 +1,44 @@
 import { createConnection, format } from "mysql";
-import type { Connection, MysqlError } from "mysql";
-import type { TopicSearchResult } from "@customTypes/topic-search";
-import type { ITopicsTableRow ,IEnrolledTopicsQueryResultRow } from "@customTypes/database";
+import type { Connection, ConnectionConfig } from "mysql";
+import serverlessMysql, { ServerlessMysql } from "serverless-mysql";
+import type { IEnrolledTopicsQueryResultRow } from "@customTypes/database";
 import type { Lesson } from "@customTypes/lesson";
+
+
+export function getConnectionConfig(): ConnectionConfig {
+	const matches = /mysql:\/\/(\w+):(\w+)@([\.\w+]+)\/(\w+)/gi.exec(process.env.AUTH_DATABASE!);
+
+	if(matches === null || matches.length < 5) {
+		throw new Error("failed to parse the database connection string");
+	}
+
+	return {
+		user: matches[1],
+		password: matches[2],
+		host: matches[3],
+		database: matches[4]
+	};
+}
+
+
+export async function connectToDatabase(): Promise<ServerlessMysql> {
+	// Create the ServerlessMysql object with a config from `getDatabaseConfig()`
+	const mysql = serverlessMysql({
+		config: getConnectionConfig(),
+		onConnect: () => console.log("Connection to the database was successful"),
+		onConnectError: () => { throw new Error("failed to connect to the database"); },
+		onClose: () => console.log("Closed the connection to the database successfully")
+	});
+
+	// Wait for it to actually connect, otherwise throw an error
+	await mysql.connect().catch(err => {
+		console.error(`Error: failed to connect to the database. Error message: ${err}`);
+		throw err;
+	});
+
+	// return the ServerlessMysql instance for use by API routes
+	return mysql;
+}
 
 
 /**
@@ -28,30 +64,7 @@ export function getDatabaseConnection(): Connection {
 }
 
 
-/**
- * Queries the database to return a list of all available topics offered by the service.
- * 
- * It is called by the `pages/api/topics.ts` route, in response to a request from the `components/LandingPage/SearchInput` component, to get the drop-down options
- * for the search input.
- * 
- * @param {Connection} conn - A `mysql.Connection` object, generally obtained by the API page from the `getDatabaseConnection()` function above.
- * 
- * @returns {Promise<TopicSearchResult[]>} A promise which either:
- * * Resolves to an array of `TopicSearchResult` objects, or
- * * Rejects with a `MysqlError` error and logs the error message to `console.error`
- */
-export async function getTopics(conn: Connection): Promise<TopicSearchResult[]> {
-	return new Promise<TopicSearchResult[]>((resolve, reject) => {
-		conn.query("SELECT * FROM topics LIMIT 20", (err, res: ITopicsTableRow[]) => {
-			if(err) {
-				console.error("Error: failed to query database for topics. Error message: ", err);
-				reject(err);
-			}
 
-			resolve(res);
-		});
-	});
-} 
 
 
 /**
