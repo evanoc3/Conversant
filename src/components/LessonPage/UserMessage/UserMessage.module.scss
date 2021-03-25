@@ -1,0 +1,16 @@
+@use "colours";
+@use "messages";
+
+
+.container {
+	@include messages.container;
+	text-align: right;
+}
+
+
+.user-message {
+	@include messages.base;
+
+	background-color: colours.$light-blue;
+	color: white;
+}

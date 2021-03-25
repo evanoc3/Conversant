@@ -1,0 +1,16 @@
+@use "colours";
+@use "messages";
+
+
+.container {
+	@include messages.container;
+
+	text-align: left;
+}
+
+
+.plain-message {
+	@include messages.base;
+	
+	background: colours.$highlighted-primary-background;
+}

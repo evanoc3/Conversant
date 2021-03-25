@@ -1,0 +1,14 @@
+@use "colours";
+
+
+@mixin container {
+	padding: 0.35rem 0.7rem;
+}
+
+
+@mixin base {
+	display: inline-block;
+	padding: 0.35rem 0.5rem;
+	border-radius: 1rem;
+	max-width: min(calc(100vw - 1.5rem), 30rem);
+}
