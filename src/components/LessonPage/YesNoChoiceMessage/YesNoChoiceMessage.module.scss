@@ -11,7 +11,7 @@
 
 
 .choice-message {
-	@include messages.base;
+	// @include messages.base;
 	display: inline-block;
 	border-radius: messages.$message-border-radius;
 	background: colours.$highlighted-primary-background;
@@ -28,7 +28,9 @@
 	width: 50%;
 	background: colours.$highlighted-primary-background;
 	border-top: 1px solid colours.$input-inactive-border;
-	padding: 0.25rem 0;
+	padding: 0.5rem 0;
+	cursor: pointer;
+	font-size: 0.85rem;
 
 	&:first-of-type {
 		border-bottom-left-radius: messages.$message-border-radius;
@@ -41,5 +43,6 @@
 
 	&:disabled {
 		background-color: messages.$message-border-radius;
+		cursor: default;
 	}
 }
