@@ -65,7 +65,7 @@ class LessonPage extends Component<Props, State> {
 				clearInterval(interval);
 			}
 			counter += 1;
-		}, 10);
+		}, 100);
 	}
 
 

@@ -24,7 +24,6 @@ export async function connectToDatabase(): Promise<ServerlessMysql> {
 	const mysql = serverlessMysql({
 		config: getConnectionConfig(),
 		onConnect: () => console.log("Connection to the database was successful"),
-		onConnectError: () => { throw new Error("failed to connect to the database"); },
 		onClose: () => console.log("Closed the connection to the database successfully")
 	});
 
