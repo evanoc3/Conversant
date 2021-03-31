@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import styles from "./[topicId].module.scss";
 import { Background } from "@components/index";
+import { Header } from "@components/TopicPage/index";
 
 import type { NextPage } from "next";
 import type { Response as ApiRouteResponse, TopicInformation } from "@pages/api/topic/[topicId]";
@@ -42,9 +43,7 @@ const TopicPage: NextPage = (props) => {
 			<Background>
 				{
 					(topicInfo !== undefined) ? (
-						<header>
-							<h1>{topicInfo.label}</h1>
-						</header>
+						<Header title={topicInfo.label} />
 					) : (
 						<div>
 							Loading...
