@@ -2,8 +2,7 @@ import { FunctionComponent, PropsWithChildren, useState, useEffect } from "react
 import Link from "next/link";
 import { useSession } from "next-auth/client";
 import styles from "./LessonList.module.scss";
-import type { GetMyTopicsApiRouteResponse } from "@customTypes/api";
-import type { IEnrolledTopicsQueryResultRow } from "@customTypes/database";
+import type { Response as ApiRouteResponse, IEnrolledTopicsQueryResultRow } from "@pages/api/my/topics";
 
 
 type Props = PropsWithChildren<{
@@ -61,7 +60,7 @@ async function getTopics(): Promise<IEnrolledTopicsQueryResultRow[]> {
 		throw new Error("Failed API request to get current users enrolled lessons");
 	}
 
-	const body = await resp.json() as GetMyTopicsApiRouteResponse;
+	const body = await resp.json() as ApiRouteResponse;
 
 	if("error" in body) {
 		console.error("Error: failed API request to get current users enrolled lessons. Error message: ", body.error);

@@ -9,7 +9,7 @@ import type { BaseApiResponse, ErrorApiResponse } from "@customTypes/api";
  * Typescript interface for the JSON serialized value returned by this API route.
  */
 export type Response = BaseApiResponse & (ErrorApiResponse | {
-	results?: ITopicsTableRow[]
+	results: ITopicsTableRow[]
 })
 
 
@@ -57,7 +57,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
  * @throws {Error} if the database query fails for any reason
  */
 async function getTopics(mysql: ServerlessMysql): Promise<ITopicsTableRow[]> {
-	const rows = await mysql.query<ITopicsTableRow[]>("SELECT * FROM topics LIMIT 20").then(rows => rows).catch(err => {
+	const rows = await mysql.query<ITopicsTableRow[]>("SELECT * FROM topics LIMIT 20").catch(err => {
 		console.error("Error: failed to query database for topics. Error message: ", err);
 		throw err;
 	});

@@ -1,8 +1,10 @@
-import { FunctionComponent, PropsWithRef, useState } from "react";
-import type { ChangeEvent, FormEvent, FocusEvent, MouseEventHandler, TouchEventHandler, MouseEvent, TouchEvent } from "react";
+import { FunctionComponent, useState } from "react";
 import { Search as SearchIcon } from "react-feather";
 import styles from "./SearchInput.module.scss";
-import type { TopicSearchResult, GetTopicsApiRouteResponse } from "@customTypes/topic-search";
+
+import type { PropsWithRef, ChangeEvent, FormEvent, FocusEvent, MouseEventHandler, TouchEventHandler, MouseEvent, TouchEvent } from "react";
+import type { Response as ApiRouteResponse } from "@pages/api/topics";
+import type { ITopicsTableRow } from "@customTypes/database";
 
 
 
@@ -16,7 +18,7 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 	const [ searchTerm, setSearchTerm ] = useState("");
 	const [ isFocused, setIsFocused ] = useState(false);
 	const [ shouldShowResults, setShouldShowResults ] = useState(false);
-	const [ results, setResults ] = useState<TopicSearchResult[]>([]);
+	const [ results, setResults ] = useState<ITopicsTableRow[]>([]);
 
 	function submitHandler(e?: FormEvent<HTMLFormElement>, selectedSearchTerm?: string): void {
 		if(e) {
@@ -99,7 +101,10 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 export default SearchInput;
 
 
-async function getSearchResults(): Promise<TopicSearchResult[]> {
+/**
+ * Helper function which queries the API route `/api/topics` and parses the response
+ */
+async function getSearchResults(): Promise<ITopicsTableRow[]> {
 	const resp = await fetch("/api/topics");
 
 	if(! resp.ok) {
@@ -107,7 +112,7 @@ async function getSearchResults(): Promise<TopicSearchResult[]> {
 		throw new Error();
 	}
 
-	const body: GetTopicsApiRouteResponse = await resp.json();
+	const body = await resp.json() as ApiRouteResponse;
 
 	if("error" in body) {
 		console.error("Error: GET request failed to API route \"/api/get-topics\" failed. Error message: ", body.error);

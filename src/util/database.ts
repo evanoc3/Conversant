@@ -1,7 +1,6 @@
-import { createConnection, format } from "mysql";
+import { createConnection } from "mysql";
 import type { Connection, ConnectionConfig } from "mysql";
 import serverlessMysql, { ServerlessMysql } from "serverless-mysql";
-import type { Lesson } from "@customTypes/lesson";
 
 
 export function getConnectionConfig(): ConnectionConfig {
@@ -60,33 +59,4 @@ export function getDatabaseConnection(): Connection {
 	});
 
 	return conn;
-}
-
-
-/**
- * Queries the database for a lesson with the specified id
- * 
- * @param {Connection} conn - A database connection object, obtained by the API page from the `getDatabaseConnection()` function above.
- * 
- * @param {String} lessonId - 
- * 
- * @returns {Promise<any>} - 
- */
-export async function getLesson(conn: Connection, lessonId: string): Promise<Lesson> {
-	return new Promise((resolve, reject) => {
-		const sql = format("SELECT lessons.id, title, topic, content, topics.label as topicLabel FROM lessons LEFT JOIN topics ON lessons.topic = topics.id WHERE lessons.id = ?", [ lessonId ]);
-
-		conn.query(sql, (err, res) => {
-			if(err) {
-				console.error(`Error: failed to query database for lesson ${lessonId}. Error message: `, err);
-				reject(err);
-			}
-
-			if(res) {
-				resolve(res[0]);
-			}
-
-			reject();
-		});
-	});
 }

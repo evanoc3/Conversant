@@ -1,11 +1,13 @@
-import { Component, PropsWithChildren} from "react";
+import { Component } from "react";
 import Head from "next/head";
 import { withRouter, NextRouter } from "next/router";
 import styles from "./[lessonId].module.scss";
-import type { GetLessonApiRouteResponse } from "@customTypes/api";
-import type { Lesson } from "@customTypes/lesson";
 import { Background } from "@components/index";
 import { ConversationArea, SendMessageForm, Sidebar, TitleBar } from "@components/LessonPage/index";
+
+import type { PropsWithChildren } from "react";
+import type { Lesson } from "@customTypes/lesson";
+import type { Response as ApiRouteResponse } from "@pages/api/lesson/[lessonId]";
 
 
 type Props = PropsWithChildren<{
@@ -141,7 +143,7 @@ async function fetchLesson(lessonId: string): Promise<Lesson> {
 		throw new Error(`API request to retrieve lesson information failed with status ${resp.status} (${resp.statusText})`);
 	}
 
-	const body = await resp.json() as GetLessonApiRouteResponse;
+	const body = await resp.json() as ApiRouteResponse;
 
 	if("error" in body) {
 		throw new Error(body.error);

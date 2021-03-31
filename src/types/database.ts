@@ -1,3 +1,6 @@
+/**
+ * Typescript interface for the Schema of the `enrolments` table of the database.
+ */
 export interface IEnrolmentsTableRow {
 	id: number,
 	userId: number,
@@ -7,6 +10,9 @@ export interface IEnrolmentsTableRow {
 }
 
 
+/**
+ * Typescript interface for the Schema of the `lessons` table of the database.
+ */
 export interface ILessonsTableRow {
 	id: number,
 	topic: string,
@@ -17,6 +23,9 @@ export interface ILessonsTableRow {
 }
 
 
+/**
+ * Typescript interface for the Schema of the `topics` table of the database.
+ */
 export interface ITopicsTableRow {
 	id: string,
 	label: string

@@ -19,7 +19,7 @@ export type IEnrolledTopicsQueryResultRow = Pick<ITopicsTableRow, "id" | "label"
  */
 export type Response = BaseApiResponse & (ErrorApiResponse | {
 	userId: string,
-	enrolledTopics: any[]
+	enrolledTopics: IEnrolledTopicsQueryResultRow[]
 })
 
 
@@ -39,7 +39,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		const mysql = await connectToDatabase();
 
 		// query the database for topics the current user is enrolled in
-		const enrolledTopics = await getEnrolledTopics(mysql, userId).then(rows => rows).catch(err => { throw err; });
+		const enrolledTopics = await getEnrolledTopics(mysql, userId).catch(err => { throw err; });
 
 		// send the happy-route response
 		res.status(200).json({
@@ -69,7 +69,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
  * 
  * @throws if the database query fails for any reason.
  */
- export async function getEnrolledTopics(mysql: ServerlessMysql, userId: string): Promise<IEnrolledTopicsQueryResultRow[]> {
+async function getEnrolledTopics(mysql: ServerlessMysql, userId: string): Promise<IEnrolledTopicsQueryResultRow[]> {
 	const rows = await mysql.query<IEnrolledTopicsQueryResultRow[]>(`
 		SELECT enrolments.topic as id, enrolments.timestamp, topics.label, enrolments.currentLesson
 		FROM enrolments
@@ -77,7 +77,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		WHERE enrolments.userId = ?
 		ORDER BY timestamp DESC
 		LIMIT 10
-	`, [ userId ]).then(rows => rows).catch(err => {
+	`, [ userId ]).catch(err => {
 		console.error(`Error: failed to query database for enrolled topics for user \"${userId}\". Error message: `, err);
 		throw err;
 	});
