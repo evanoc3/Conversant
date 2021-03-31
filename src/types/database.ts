@@ -21,9 +21,3 @@ export interface ITopicsTableRow {
 	id: string,
 	label: string
 }
-
-
-export type IEnrolledTopicsQueryResultRow = (
-	Pick<ITopicsTableRow, "id" | "label"> &
-	Pick<IEnrolmentsTableRow, "userId" | "timestamp" | "currentLesson">
-);

@@ -1,7 +1,6 @@
 import { createConnection, format } from "mysql";
 import type { Connection, ConnectionConfig } from "mysql";
 import serverlessMysql, { ServerlessMysql } from "serverless-mysql";
-import type { IEnrolledTopicsQueryResultRow } from "@customTypes/database";
 import type { Lesson } from "@customTypes/lesson";
 
 
@@ -61,46 +60,6 @@ export function getDatabaseConnection(): Connection {
 	});
 
 	return conn;
-}
-
-
-
-
-
-/**
- * Queries the database to return all the topics that the specified user has started lessons in.
- * 
- * It is called by the `pages/api/my/topics.ts` route, in response to a request from the `pages/home.tsx` client-side route.
- * 
- * @param {Connection} conn - A database connection object, obtained by the API page from the `getDatabaseConnection()` function above.
- * 
- * @param {string} userId - The Id of the current user, obtained by the API page from the users session via the `next-auth/client.getSession` function.
- * 
- * @returns {Promise<string[]>} A promise which either:
- * * Resolves to the list of topics that the user has started lessons in, or
- * * Rejects with a `MysqlError` error and logs the error message to `console.error`
- */
-export async function getEnrolledTopics(conn: Connection, userId: string): Promise<IEnrolledTopicsQueryResultRow[]> {
-	return new Promise((resolve, reject) => {
-
-		const sql = format(`
-			SELECT enrolments.topic as id, enrolments.timestamp, topics.label, enrolments.currentLesson
-			FROM enrolments
-			LEFT JOIN topics ON enrolments.topic = topics.id
-			WHERE enrolments.userId = ?
-			ORDER BY timestamp DESC
-			LIMIT 10
-		`, [ userId ]);
-
-		conn.query(sql, (err, res: IEnrolledTopicsQueryResultRow[]) =>{
-			if(err) {
-				console.error(`Error: failed to query database for enrolled topics for user "${userId}". Error message: `, err);
-				reject(err);
-			}
-
-			resolve(res);
-		});
-	});
 }
 
 

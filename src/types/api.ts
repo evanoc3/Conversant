@@ -3,6 +3,15 @@ import type { IEnrolledTopicsQueryResultRow } from "./database";
 import type { Lesson } from "./lesson";
 
 
+export interface BaseApiResponse {
+	timestamp: string
+}
+
+export interface ErrorApiResponse {
+	error: string
+}
+
+
 interface ErrorApiRouteResponse {
 	timestamp: string,
 	error: string
