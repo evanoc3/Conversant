@@ -45,6 +45,8 @@ const TopicPage: NextPage = (props) => {
 					(topicInfo !== undefined) ? (
 						<>
 							<Header title={topicInfo.label} />
+
+							<LessonCarousel lessons={topicInfo.lessons} />
 						</>
 					) : (
 						<div>

@@ -1,3 +1,60 @@
-#container {
-	width: 100%;
+@use "breakpoints";
+@use "colours";
+
+
+$usable-viewport-size: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+$carriage-size: min(30rem, calc(100vw - 3rem));
+
+
+#outer-container {
+	$height: calc(100vh - (4rem + env(safe-area-inset-top)));
+
+	height: $height;
+	width: 100vw;
+	overflow-x: auto;
+	padding-top: calc((#{$height} / 2) - 12.5rem);
+
+	@media(min-width: breakpoints.$tablet) {
+		padding-top: calc((#{$height} / 2) - 7.5rem);
+
+	}
+}
+
+
+#inner-container {
+	$padding-horizontal: 1.5rem;
+
+	display: grid;
+	grid-auto-columns: 3rem $carriage-size;
+	grid-template-rows: 10rem;
+	column-gap: 2rem;
+	padding: 0 $padding-horizontal;
+
+	@media (min-width: breakpoints.$tablet) {
+		$padding-horizontal: calc(50vw - (#{$carriage-size} / 2));
+		padding: 0 $padding-horizontal;
+
+		column-gap: 4rem;
+	}
+}
+
+
+
+
+.arrow {
+	width: 3rem;
+	height: 3rem;
+	place-self: center;
+	grid-row: 1 / span 1;
+	color: colours.$primary-font;
+}
+
+
+.lesson-container {
+	display: inline-block;
+	border-radius: 3rem;
+	background-color: white;
+	grid-row: 1 / span 1;
+	padding: 2rem;
+	place-self: stretch;
 }

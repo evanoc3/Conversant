@@ -7,7 +7,7 @@ import type { BaseApiResponse, ErrorApiResponse } from "@customTypes/api";
 /**
  * Typescript interface used to model the result of the database query for lessons about a particular topic.
  */
-interface ITopicLesson {
+export interface TopicLessonInformation {
 	id: number,
 	title: string,
 	href: string
@@ -22,7 +22,7 @@ export interface TopicInformation {
 	label: string,
 	enrolledUsers: number,
 	lessonCount: number,
-	lessons: ITopicLesson[],
+	lessons: TopicLessonInformation[],
 }
 
 
@@ -89,11 +89,11 @@ async function getTopicInformation(mysql: ServerlessMysql, topicId: string): Pro
 	}
 
 	// get lessons that are part of the topic
-	const topicLessonRows = await mysql.query<ITopicLesson[]>(`
+	const topicLessonRows = await mysql.query<TopicLessonInformation[]>(`
 	SELECT id, title FROM lessons WHERE lessons.topic = ? ORDER BY id ASC
 	`, [ topicId ]).then(rows => {
 		// mutate the database returned rows to include calculated fields
-		rows = rows.map<ITopicLesson>(row => {
+		rows = rows.map<TopicLessonInformation>(row => {
 			return {
 				...row,
 				href: `/lesson/${encodeURIComponent(row.id)}`
