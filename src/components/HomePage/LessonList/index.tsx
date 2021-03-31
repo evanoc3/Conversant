@@ -31,7 +31,7 @@ const LessonList: FunctionComponent<Props> = () => {
 					{
 						topics.map(topic => (
 							<li key={topic.id} className={styles["list-item"]}>
-								<Link href={`/lesson/${topic.currentLesson}`}>{ topic.label }</Link>
+								<Link href={`/topic/${topic.id}`}>{ topic.label }</Link>
 								<div>Started at { new Date(topic.timestamp).toDateString() }</div>
 							</li>
 						))

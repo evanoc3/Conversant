@@ -1,4 +1,5 @@
 import { FunctionComponent, useState } from "react";
+import { useRouter } from "next/router";
 import { Search as SearchIcon } from "react-feather";
 import styles from "./SearchInput.module.scss";
 
@@ -14,7 +15,8 @@ type Props = PropsWithRef<{
 
 
 const SearchInput: FunctionComponent<Props> = (props) => {
-	const { placeholder } = props;
+	const router = useRouter();
+
 	const [ searchTerm, setSearchTerm ] = useState("");
 	const [ isFocused, setIsFocused ] = useState(false);
 	const [ shouldShowResults, setShouldShowResults ] = useState(false);
@@ -28,7 +30,7 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 		const term = selectedSearchTerm ?? searchTerm;
 
 		if(term !== "") {
-			alert("Searching for " + term);
+			router.push(`/topic/${selectedSearchTerm}`);
 		}
 	}
 
@@ -71,7 +73,7 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 
 	return (
 		<form id={styles["container"]} autoComplete="off" onSubmit={submitHandler}>
-			<input id={styles["input"]} onChange={changeHandler} placeholder={placeholder} onFocus={focusHandler} onBlur={blurHandler} value={searchTerm} />
+			<input id={styles["input"]} onChange={changeHandler} placeholder={props.placeholder} onFocus={focusHandler} onBlur={blurHandler} value={searchTerm} />
 
 			<button id={styles["submit-btn"]}>
 				<SearchIcon id={styles["submit-icon"]} />
