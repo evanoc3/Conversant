@@ -16,6 +16,7 @@
     "enzyme": "^3.11.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^26.6.3",
+    "jest-fetch-mock": "^3.0.3",
     "jsdom": "^16.4.0",
     "ts-jest": "^26.5.2"
   },

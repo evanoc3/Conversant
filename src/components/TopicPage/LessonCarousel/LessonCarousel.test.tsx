@@ -7,7 +7,7 @@ describe("<LessonCarousel> (topic page) Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<LessonCarousel />);
+			const wrapper = mount(<LessonCarousel lessons={[]} />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});

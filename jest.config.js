@@ -3,7 +3,6 @@
 const { defaults } = require("jest-config");
 
 module.exports = {
-  clearMocks: true,
   globals: {
     "ts-jest": {
       tsconfig: "tsconfig.json",
@@ -46,5 +45,6 @@ module.exports = {
   testURL: "http://localhost:8080/",
   transformIgnorePatterns: [
     "[/\\\\]node_modules[/\\\\].+\\.(ts|tsx)$"
-  ]
+  ],
+  verbose: false
 };
