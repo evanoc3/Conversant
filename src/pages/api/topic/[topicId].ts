@@ -10,6 +10,7 @@ import type { BaseApiResponse, ErrorApiResponse } from "@customTypes/api";
 export interface TopicLessonInformation {
 	id: number,
 	title: string,
+	description: string,
 	href: string
 }
 
@@ -90,7 +91,7 @@ async function getTopicInformation(mysql: ServerlessMysql, topicId: string): Pro
 
 	// get lessons that are part of the topic
 	const topicLessonRows = await mysql.query<TopicLessonInformation[]>(`
-	SELECT id, title FROM lessons WHERE lessons.topic = ? ORDER BY id ASC
+	SELECT id, title, description FROM lessons WHERE lessons.topic = ? ORDER BY id ASC
 	`, [ topicId ]).then(rows => {
 		// mutate the database returned rows to include calculated fields
 		rows = rows.map<TopicLessonInformation>(row => {

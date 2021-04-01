@@ -1,52 +1,50 @@
 @use "breakpoints";
 @use "colours";
 
-
-$usable-viewport-size: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
 $carriage-size: min(30rem, calc(100vw - 3rem));
 
 
-#outer-container {
-	$height: calc(100vh - (4rem + env(safe-area-inset-top)));
+#container {
+	--height: calc(100% - (4rem + env(safe-area-inset-top)));
 
-	height: $height;
+	@supports(height: -webkit-fill-available) {
+		--height: -webkit-fill-available;
+	}
+
+	height: var(--height);
 	width: 100vw;
 	overflow-x: auto;
-	padding-top: calc((#{$height} / 2) - 12.5rem);
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+
+	> * {
+		flex-grow: 1;
+		flex-shrink: 0;
+	}
+
+	> *:nth-child(2) {
+		margin-left: 0;
+
+	}
+}
+
+
+.h-spacer {
+	width: 1.5rem;
+	height: 1px;
 
 	@media(min-width: breakpoints.$tablet) {
-		padding-top: calc((#{$height} / 2) - 7.5rem);
-
+		width: calc(50vw - (#{$carriage-size} / 2));
 	}
 }
-
-
-#inner-container {
-	$padding-horizontal: 1.5rem;
-
-	display: grid;
-	grid-auto-columns: 3rem $carriage-size;
-	grid-template-rows: 10rem;
-	column-gap: 2rem;
-	padding: 0 $padding-horizontal;
-
-	@media (min-width: breakpoints.$tablet) {
-		$padding-horizontal: calc(50vw - (#{$carriage-size} / 2));
-		padding: 0 $padding-horizontal;
-
-		column-gap: 4rem;
-	}
-}
-
-
 
 
 .arrow {
 	width: 3rem;
 	height: 3rem;
-	place-self: center;
-	grid-row: 1 / span 1;
 	color: colours.$primary-font;
+	margin: 0 2rem;
 }
 
 
@@ -54,7 +52,7 @@ $carriage-size: min(30rem, calc(100vw - 3rem));
 	display: inline-block;
 	border-radius: 3rem;
 	background-color: white;
-	grid-row: 1 / span 1;
-	padding: 2rem;
-	place-self: stretch;
+	padding: 1rem 1.5rem;
+	width: $carriage-size;
+	height: 20rem;
 }

@@ -17,6 +17,7 @@ export interface ILessonsTableRow {
 	id: number,
 	topic: string,
 	title: string,
+	description: string,
 	content: string,
 	preceededBy: number | null,
 	followedBy: number | null
