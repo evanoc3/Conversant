@@ -7,7 +7,7 @@ describe("<InfoBox> (topic page) Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<InfoBox />);
+			const wrapper = mount(<InfoBox description="" enrolledUsers={0} lessonCount={0} />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});
