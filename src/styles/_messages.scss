@@ -1,0 +1,17 @@
+@use "colours";
+
+$message-padding: 0.35rem 0.7rem;
+$message-border-radius: 1rem;
+
+
+@mixin container {
+	padding: 0.35rem 0.7rem;
+}
+
+
+@mixin base {
+	display: inline-block;
+	padding: $message-padding;
+	border-radius: $message-border-radius;
+	max-width: min(calc(100vw - 1.5rem), 30rem);
+}

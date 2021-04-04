@@ -1,0 +1,34 @@
+@use "breakpoints";
+@use "colours";
+@use "ui";
+
+
+#info-box {
+	width: calc(100% - 2rem);
+	height: calc(100% - 2rem);
+	margin: 1rem;
+	background-color: colours.$primary-background;
+	border-radius: ui.$med-curve;
+	display: flex;
+	flex-flow: column nowrap;
+	padding: 1rem 1.25rem;
+
+	@media(min-width: breakpoints.$widescreen) {
+		width: calc(100% - 4rem);
+		height: calc(100% - 3rem);
+		margin: 1.5rem 2rem;
+	}
+
+	#description {
+		flex: 1;
+	}
+
+	#bottom-row {
+		display: flex;
+		flex-flow: row nowrap;
+		justify-content: space-around;
+		line-height: 1;
+		font-size: 1rem;
+		color: colours.$secondary-font;
+	}
+}

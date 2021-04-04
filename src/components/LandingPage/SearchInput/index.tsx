@@ -1,8 +1,11 @@
-import { FunctionComponent, PropsWithRef, useState } from "react";
-import type { ChangeEvent, FormEvent, FocusEvent, MouseEventHandler, TouchEventHandler, MouseEvent, TouchEvent } from "react";
+import { FunctionComponent, useState } from "react";
+import { useRouter } from "next/router";
 import { Search as SearchIcon } from "react-feather";
 import styles from "./SearchInput.module.scss";
-import type { TopicSearchResult, GetTopicsApiRouteResponse } from "@customTypes/topic-search";
+
+import type { PropsWithRef, ChangeEvent, FormEvent, FocusEvent, MouseEventHandler, TouchEventHandler, MouseEvent, TouchEvent } from "react";
+import type { Response as ApiRouteResponse } from "@pages/api/topics";
+import type { ITopicsTableRow } from "@customTypes/database";
 
 
 
@@ -12,11 +15,12 @@ type Props = PropsWithRef<{
 
 
 const SearchInput: FunctionComponent<Props> = (props) => {
-	const { placeholder } = props;
+	const router = useRouter();
+
 	const [ searchTerm, setSearchTerm ] = useState("");
 	const [ isFocused, setIsFocused ] = useState(false);
 	const [ shouldShowResults, setShouldShowResults ] = useState(false);
-	const [ results, setResults ] = useState<TopicSearchResult[]>([]);
+	const [ results, setResults ] = useState<ITopicsTableRow[]>([]);
 
 	function submitHandler(e?: FormEvent<HTMLFormElement>, selectedSearchTerm?: string): void {
 		if(e) {
@@ -26,7 +30,7 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 		const term = selectedSearchTerm ?? searchTerm;
 
 		if(term !== "") {
-			alert("Searching for " + term);
+			router.push(`/topic/${selectedSearchTerm}`);
 		}
 	}
 
@@ -69,7 +73,7 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 
 	return (
 		<form id={styles["container"]} autoComplete="off" onSubmit={submitHandler}>
-			<input id={styles["input"]} onChange={changeHandler} placeholder={placeholder} onFocus={focusHandler} onBlur={blurHandler} value={searchTerm} />
+			<input id={styles["input"]} onChange={changeHandler} placeholder={props.placeholder} onFocus={focusHandler} onBlur={blurHandler} value={searchTerm} />
 
 			<button id={styles["submit-btn"]}>
 				<SearchIcon id={styles["submit-icon"]} />
@@ -99,7 +103,10 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 export default SearchInput;
 
 
-async function getSearchResults(): Promise<TopicSearchResult[]> {
+/**
+ * Helper function which queries the API route `/api/topics` and parses the response
+ */
+async function getSearchResults(): Promise<ITopicsTableRow[]> {
 	const resp = await fetch("/api/topics");
 
 	if(! resp.ok) {
@@ -107,7 +114,7 @@ async function getSearchResults(): Promise<TopicSearchResult[]> {
 		throw new Error();
 	}
 
-	const body: GetTopicsApiRouteResponse = await resp.json();
+	const body = await resp.json() as ApiRouteResponse;
 
 	if("error" in body) {
 		console.error("Error: GET request failed to API route \"/api/get-topics\" failed. Error message: ", body.error);
