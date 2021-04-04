@@ -7,7 +7,7 @@
 #
 # Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
 # Database: mydb5201
-# Generation Time: 2021-04-04 13:55:10 +0000
+# Generation Time: 2021-04-04 15:56:59 +0000
 # ************************************************************
 
 
@@ -46,24 +46,6 @@ CREATE TABLE `accounts` (
 
 
 
-# Dump of table conversations
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `conversations`;
-
-CREATE TABLE `conversations` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `lesson` int(11) NOT NULL,
-  `user` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `lesson` (`lesson`),
-  KEY `user` (`user`),
-  CONSTRAINT `conversations_ibfk_1` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`),
-  CONSTRAINT `conversations_ibfk_2` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
 # Dump of table enrolments
 # ------------------------------------------------------------
 
@@ -80,6 +62,24 @@ CREATE TABLE `enrolments` (
   CONSTRAINT `enrolments_ibfk_1` FOREIGN KEY (`topic`) REFERENCES `topics` (`id`),
   CONSTRAINT `enrolments_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
   CONSTRAINT `enrolments_ibfk_3` FOREIGN KEY (`currentLesson`) REFERENCES `lessons` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+# Dump of table lesson_completions
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `lesson_completions`;
+
+CREATE TABLE `lesson_completions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user` int(11) NOT NULL,
+  `lesson` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`),
+  KEY `lesson` (`lesson`),
+  CONSTRAINT `lesson_completions_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`),
+  CONSTRAINT `lesson_completions_ibfk_2` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
