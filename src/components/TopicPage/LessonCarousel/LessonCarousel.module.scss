@@ -49,10 +49,34 @@ $carriage-size: min(30rem, calc(100vw - 3rem));
 
 
 .lesson-container {
-	display: inline-block;
-	border-radius: 3rem;
+	display: inline-flex;
+	border-radius: 2.5rem;
 	background-color: white;
-	padding: 1rem 1.5rem;
+	padding: 1rem 1.5rem 1.5rem 1.5rem;
 	width: $carriage-size;
 	height: 20rem;
+	flex-flow: column nowrap;
 }
+
+.lesson-description-container {
+	flex: 1;
+}
+
+.lesson-bottom-row {
+	display: flex;
+	flex-flow: row nowrap;
+
+	.lesson-link-icon {
+		width: 1rem;
+		height: 1rem;
+		color: inherit;
+		position: relative;
+		top: 0.2rem;
+		left: 0.25rem;
+	}
+
+	.lesson-h-spacer {
+		flex: 1;
+	}
+}
+
