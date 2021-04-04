@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import Link from "next/link";
-import { ArrowRight as ArrowRightSvg, ExternalLink as ExternalLinkSvg } from "react-feather";
+import { ArrowRight as ArrowRightSvg, ExternalLink as ExternalLinkSvg, CheckCircle as CheckCircleSvg } from "react-feather";
 import styles from "./LessonCarousel.module.scss";
 
 import { FunctionComponent, PropsWithChildren } from "react";
@@ -8,13 +8,14 @@ import type { TopicLessonInformation } from "@pages/api/topic/[topicId]";
 
 
 type Props = PropsWithChildren<{
+	className?: string,
 	lessons: TopicLessonInformation[]
 }>
 
 
 const LessonCarousel: FunctionComponent<Props> = (props) => {
 	return (
-		<div id={styles["container"]}>
+		<div id={styles["container"]} className={props.className}>
 			<div className={styles["h-spacer"]} />
 
 			{
@@ -45,7 +46,11 @@ const LessonCarousel: FunctionComponent<Props> = (props) => {
 										<div className={styles["lesson-h-spacer"]} />
 
 										{
-
+											(lesson.is_completed) ? (
+												<div className={styles["completed-icon-container"]} title="Lesson completed">
+													<CheckCircleSvg className={styles["completed-icon"]} />
+												</div>
+											) : ""
 										}
 									</div>
 									

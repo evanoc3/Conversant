@@ -1,7 +1,26 @@
+@use "colours";
+@use "ui";
+
+
 #page {
 	height: 100vh;
-	
-	@supports(height: -webkit-fill-available) {
-		height: -webkit-fill-available;
-	}
+	padding-top: env(safe-area-inset-top);
+	padding-bottom: env(safe-area-inset-bottom);
+	display: flex;
+	flex-flow: column nowrap;
+}
+
+
+.header {
+	flex: 0;
+}
+
+
+.info-box {
+	flex: 0.25 0.25;
+}
+
+
+.lesson-carousel {
+	flex: 0.75 0.75;
 }

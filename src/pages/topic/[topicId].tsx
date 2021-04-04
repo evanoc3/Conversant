@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import styles from "./[topicId].module.scss";
 import { Background } from "@components/index";
-import { Header, LessonCarousel } from "@components/TopicPage/index";
+import { Header, InfoBox, LessonCarousel } from "@components/TopicPage/index";
 
 import type { NextPage } from "next";
 import type { Response as ApiRouteResponse, TopicInformation } from "@pages/api/topic/[topicId]";
@@ -45,9 +45,11 @@ const TopicPage: NextPage = (props) => {
 					{
 						(topicInfo !== undefined) ? (
 							<>
-								<Header title={topicInfo.label} />
+								<Header title={topicInfo.label} className={styles["header"]} />
 
-								<LessonCarousel lessons={topicInfo.lessons} />
+								<InfoBox className={styles["info-box"]} description={topicInfo.description} enrolledUsers={topicInfo.enrolledUsers} lessonCount={topicInfo.lessonCount} />
+
+								<LessonCarousel lessons={topicInfo.lessons} className={styles["lesson-carousel"]} />
 							</>
 						) : (
 							<div>

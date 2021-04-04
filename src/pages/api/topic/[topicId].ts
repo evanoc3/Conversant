@@ -25,6 +25,7 @@ export interface TopicLessonInformation {
 export interface TopicInformation {
 	id: number,
 	label: string,
+	description: string,
 	enrolledUsers: number,
 	lessonCount: number,
 	lessons: TopicLessonInformation[],
@@ -83,16 +84,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 
-interface TopicMetadata {
-	id: number,
-	label: string,
-	lessonCount: number
-}
+type TopicMetadata = Pick<TopicInformation, "id" | "label" | "description" | "lessonCount">
 
 async function getTopicMetadata(mysql: ServerlessMysql, topicId: string): Promise<TopicMetadata> {
 	// get metadata about the topic
 	const topicInfoRow = await mysql.query<TopicMetadata[]>(`
-		SELECT topics.id, label, COUNT(*) as lessonCount
+		SELECT topics.id, label, topics.description, COUNT(*) as lessonCount
 		FROM topics
 		RIGHT JOIN lessons ON lessons.topic = topics.id
 		WHERE topics.id = ?

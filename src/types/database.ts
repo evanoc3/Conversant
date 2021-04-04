@@ -29,5 +29,6 @@ export interface ILessonsTableRow {
  */
 export interface ITopicsTableRow {
 	id: string,
-	label: string
+	label: string,
+	description: string | null
 }

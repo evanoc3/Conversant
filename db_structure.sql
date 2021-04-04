@@ -7,7 +7,7 @@
 #
 # Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
 # Database: mydb5201
-# Generation Time: 2021-04-04 17:12:05 +0000
+# Generation Time: 2021-04-04 18:03:33 +0000
 # ************************************************************
 
 
@@ -136,6 +136,7 @@ DROP TABLE IF EXISTS `topics`;
 CREATE TABLE `topics` (
   `id` varchar(255) NOT NULL,
   `label` varchar(255) NOT NULL,
+  `description` mediumtext,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
