@@ -6,15 +6,10 @@ $carriage-size: min(30rem, calc(100vw - 3rem));
 
 
 #container {
-	--height: calc(100% - (4rem + env(safe-area-inset-top)));
-
-	@supports(height: -webkit-fill-available) {
-		--height: -webkit-fill-available;
-	}
-
-	height: var(--height);
+	height: 100%;
+	height: stretch;
 	width: 100vw;
-	overflow: scroll visible;
+	overflow: scroll hidden;
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
