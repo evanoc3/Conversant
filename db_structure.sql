@@ -7,7 +7,7 @@
 #
 # Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
 # Database: mydb5201
-# Generation Time: 2021-04-04 15:56:59 +0000
+# Generation Time: 2021-04-04 17:12:05 +0000
 # ************************************************************
 
 
@@ -76,7 +76,7 @@ CREATE TABLE `lesson_completions` (
   `user` int(11) NOT NULL,
   `lesson` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user` (`user`),
+  UNIQUE KEY `user` (`user`,`lesson`),
   KEY `lesson` (`lesson`),
   CONSTRAINT `lesson_completions_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`),
   CONSTRAINT `lesson_completions_ibfk_2` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`)
