@@ -10,7 +10,7 @@ import type { FunctionComponent, PropsWithChildren } from "react";
 import type { NextRouter } from "next/router";
 import type { Lesson } from "@customTypes/lesson";
 import type { Response as LessonApiRouteResponse } from "@pages/api/lesson/[lessonId]";
-import type { Response as PartApiRouteResponse } from "@pages/api/lesson/[lessonId]/parts/[partNumber]";
+import type { Response as PartApiRouteResponse } from "@pages/api/lesson/[lessonId]/part/[partNumber]";
 import type { IMessage } from "@customTypes/messages";
 
 
@@ -152,7 +152,7 @@ async function fetchLesson(lessonId: number): Promise<Lesson> {
  * Helper function to retrieve an individual message as part of a lesson from the API.
  */
 async function getLessonPart(lessonId: number, part: number): Promise<string> {
-	const resp = await fetch(`/api/lesson/${lessonId}/parts/${part}`).catch(err => { throw err; });
+	const resp = await fetch(`/api/lesson/${lessonId}/part/${part}`).catch(err => { throw err; });
 
 	if(! resp.ok) {
 		throw new Error("failed to fetch the lesson part");
