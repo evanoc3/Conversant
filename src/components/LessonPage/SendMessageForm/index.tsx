@@ -16,12 +16,15 @@ const SendMessageForm: FunctionComponent<Props> = (props) => {
 	async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
 		e.preventDefault();
 
-		if(userInput !== "" && props.messageSentHandler !== undefined) {
-			console.debug("Sending message: ", userInput);
-			props.messageSentHandler(userInput);
+		if(userInput === "") {
+			return;
 		}
 
 		setUserInput("");
+
+		if(props.messageSentHandler !== undefined) {
+			props.messageSentHandler(userInput);
+		}
 	}
 
 	

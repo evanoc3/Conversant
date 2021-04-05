@@ -12,5 +12,24 @@
 	@include messages.base;
 
 	background-color: colours.$light-blue;
-	color: white;
+	color: colours.$contrast-primary-font;
+	position: relative;
+
+	&::before {
+		content: "";
+		position: absolute;
+		width: 0;
+		height: 0;
+		bottom: -0.3rem;
+		right: -0.2rem;
+		border-top: 0.75rem solid colours.$light-blue;
+		border-right: 0.35rem solid transparent;
+		border-bottom: none;
+		border-left: 0.35rem solid transparent;
+		transform: rotate(315deg);
+	}
+}
+
+.inner-text {
+	@include messages.inner-text;
 }

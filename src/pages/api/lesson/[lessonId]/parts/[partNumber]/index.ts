@@ -1,6 +1,9 @@
 import { connectToDatabase } from "@util/database";
+import { getSession } from "next-auth/client";
 
 import type { NextApiRequest, NextApiResponse } from "next";
+import type { Session } from "next-auth/client";
+import type { User } from "next-auth";
 import type { ServerlessMysql } from "serverless-mysql";
 import type { BaseApiResponse, ErrorApiResponse } from "@customTypes/api";
 
@@ -10,7 +13,7 @@ import type { BaseApiResponse, ErrorApiResponse } from "@customTypes/api";
  * Typescript interface for the JSON serialized response sent by this API route.
  */
 export type Response = BaseApiResponse & (ErrorApiResponse | {
-	part: any,
+	part: string,
 });
 
 
@@ -19,8 +22,12 @@ export type Response = BaseApiResponse & (ErrorApiResponse | {
  */
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	let mysql: ServerlessMysql | undefined;
+	let session: Session | null;
 
 	try {
+		// get the user's session
+		session = await getSession({ req });
+
 		// parse the relevant query parameters
 		const lessonId = parseInt(req.query["lessonId"] as string);
 		const partNumber = parseInt(req.query["partNumber"] as string);
@@ -41,17 +48,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			throw err;
 		});
 
+		const processedLessonPart = processMessage(lessonPart, session?.user ?? null);
+
 		// send the happy-route response
 		res.status(200).json({
 			timestamp: (new Date()).toISOString(),
-			part: lessonPart
+			part: processedLessonPart
 		} as Response);
 	}
 	catch(err) {
 		// Send an error response if any errors are thrown
 		res.status(500).json({
 			timestamp: (new Date()).toISOString(),
-			error: (err as Error).message
+			error: (err as Error).message,
+			stack: (err as Error).stack
 		} as Response);
 	}
 	finally {
@@ -78,4 +88,16 @@ async function getLessonPart(mysql: ServerlessMysql, lessonId: number, partNumbe
 	}
 
 	return lessonPartRows[0].content;
+}
+
+function processMessage(messageText: string, user: User | null): string {
+	// Replace "[[NAME]]" with the user's first name
+	const nameRegex = /\s\[\[NAME\]\]/gmi;
+
+	if(nameRegex.test(messageText)) {
+		const name = (user && user.name) ? ` ${user.name.split(" ")[0]}` : "";
+		messageText = messageText.replace(nameRegex, name);
+	}
+
+	return messageText;
 }

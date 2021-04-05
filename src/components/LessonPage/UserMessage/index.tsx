@@ -11,7 +11,7 @@ const UserMessage: FunctionComponent<Props> = (props) => {
 	return (
 		<div className={styles["container"]}>
 			<div className={styles["user-message"]}>
-				<span>{ props.message }</span>
+				<span className={styles["inner-text"]}>{ props.message }</span>
 			</div>
 		</div>
 	);

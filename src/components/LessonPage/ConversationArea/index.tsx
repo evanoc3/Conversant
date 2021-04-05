@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import styles from "./ConversationArea.module.scss";
 import { Message, UserMessage } from "@components/LessonPage/index";
 import { Sender } from "@customTypes/messages";

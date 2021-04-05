@@ -1,5 +1,6 @@
-import type { FunctionComponent, PropsWithChildren } from "react";
 import styles from "./Message.module.scss";
+
+import type { FunctionComponent, PropsWithChildren } from "react";
 
 
 type Props = PropsWithChildren<{
@@ -11,7 +12,7 @@ const Message: FunctionComponent<Props> = (props) => {
 	return (
 		<div className={styles["container"]}>
 			<div className={styles["plain-message"]}>
-				<span>{ props.message }</span>
+				<span className={styles["inner-text"]}>{ props.message }</span>
 			</div>
 		</div>
 	);

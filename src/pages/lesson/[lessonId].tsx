@@ -23,7 +23,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	// State & Other Hooks
 	const [lessonId, setLessonId] = useState<number | undefined>(undefined);
 	const [lesson, setLesson] = useState<Lesson | undefined>();
-	const [currentPart, setCurrentPart] = useState(0);
+	const [currentPart] = useState(0);
 	const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const router = useRouter();
@@ -43,9 +43,9 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 
 	// Effects
 	useEffect(() => {
-		try {
-			// when the router is ready, parse the lessonId query parameter and save it as state
-			if(router.isReady) {
+		if(router.isReady) {
+			try {
+				// when the router is ready, parse the lessonId query parameter and save it as state
 				const parsedLessonId = parseInt(router.query["lessonId"] as string);
 
 				if(isNaN(parsedLessonId)) {
@@ -53,17 +53,23 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 				}
 
 				setLessonId(parsedLessonId);
-
-				// then fetch the lesson details from the API
-				fetchLesson(parsedLessonId).then(lesson => {
-					setLesson(lesson);
-				}).catch(err => { throw err; });
 			}
-		} catch(err) {
-			alert("Error: failed to fetch the lesson! Please try again later.");
-			console.error(err);
+			catch(err) {
+				alert("Error: failed to fetch the lesson! Please try again later.");
+				console.error(err);
+			}
+
+			if(lessonId !== undefined) {
+				// then fetch the lesson details from the API
+				fetchLesson(lessonId!).then(lesson => {
+					setLesson(lesson);
+				}).catch(err => {
+					alert("Error: failed to fetch the lesson! Please try again later.");
+					console.error(err);
+				});
+			}
 		}
-	}, [ router.isReady ]);
+	}, [ router.isReady, lessonId ]);
 
 
 	useEffect(() => {
@@ -75,7 +81,10 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 					sender: Sender.SYSTEM,
 					content: resp
 				}]);
-			}).catch(err => { throw err; });
+			}).catch(err => {
+				alert("Error: failed to fetch the lesson part! Please try again later.");
+				console.error(err);
+			});
 		}
 	}, [ lessonId ]);
 
@@ -154,6 +163,6 @@ async function getLessonPart(lessonId: number, part: number): Promise<string> {
 	if("error" in body) {
 		throw new Error(body.error);
 	}
-
+	
 	return body.part;
 }
