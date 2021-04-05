@@ -1,153 +1,159 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
-import { withRouter, NextRouter } from "next/router";
+import { useRouter } from "next/router";
 import styles from "./[lessonId].module.scss";
 import { Background } from "@components/index";
 import { ConversationArea, SendMessageForm, Sidebar, TitleBar } from "@components/LessonPage/index";
+import { Sender } from "@customTypes/messages";
 
-import type { PropsWithChildren } from "react";
+import type { FunctionComponent, PropsWithChildren } from "react";
+import type { NextRouter } from "next/router";
 import type { Lesson } from "@customTypes/lesson";
-import type { Response as ApiRouteResponse } from "@pages/api/lesson/[lessonId]";
+import type { Response as LessonApiRouteResponse } from "@pages/api/lesson/[lessonId]";
+import type { Response as PartApiRouteResponse } from "@pages/api/lesson/[lessonId]/parts/[partNumber]";
+import type { IMessage } from "@customTypes/messages";
 
 
 type Props = PropsWithChildren<{
 	router: NextRouter,
 }>
 
-interface State {
-	lesson: Lesson | undefined,
-	currentStep: number,
-	sidebarOpen: boolean
-}
 
+const LessonPage: FunctionComponent<Props> = (props) => {
+	// State & Other Hooks
+	const [lessonId, setLessonId] = useState<number | undefined>(undefined);
+	const [lesson, setLesson] = useState<Lesson | undefined>();
+	const [currentPart, setCurrentPart] = useState(0);
+	const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+	const [messages, setMessages] = useState<IMessage[]>([]);
+	const router = useRouter();
 
-class LessonPage extends Component<Props, State> {
+	// Methods
+	const toggleSidebarOpen = () => { setSidebarIsOpen(!sidebarIsOpen); };
 
-	constructor(props: Props) {
-		super(props);
+	const sendMessageHandler = (message: string) => {
+		if(lesson !== undefined) {
+			setMessages([... messages, {
+				timestamp: new Date(),
+				sender: Sender.USER,
+				content: message
+			}]);
+		}
+	};
 
-		this.toggleSidebarOpen = this.toggleSidebarOpen.bind(this);
-
-		this.state = {
-			lesson: undefined,
-			currentStep: 0,
-			sidebarOpen: false
-		};
-	}
-
-
-	public render(): JSX.Element {
-		return (
-			<>
-				<Head>
-					<title>Lesson | Conversant</title>
-				</Head>
-
-				<Background>
-					{
-						(this.state.lesson) ? this.renderLesson() : this.renderLoading()
-					}
-				</Background>
-
-			</>
-		);
-	}
-
-
-	public componentDidMount(): void {
-		document.body.style.overflowY = "auto";
-
-		let counter: number = 0;
-
-		const interval = setInterval(() => {
-			if(this.props.router.isReady) {
-				this.getLesson();
-				clearInterval(interval);
-			}
-			counter += 1;
-		}, 100);
-	}
-
-
-	public componentWillUnmount() {
-		document.body.style.overflowY = "hidden";
-	}
-
-
-	private async getLesson(): Promise<void> {
-		const lessonId = this.props.router.query["lessonId"] as string;
-
+	// Effects
+	useEffect(() => {
 		try {
-			const lesson = await fetchLesson(lessonId).catch(err => { throw err; }) 
+			// when the router is ready, parse the lessonId query parameter and save it as state
+			if(router.isReady) {
+				const parsedLessonId = parseInt(router.query["lessonId"] as string);
 
-			this.setState({
-				lesson: lesson
-			});
+				if(isNaN(parsedLessonId)) {
+					throw new Error("Error: the lesson ID in the query is invalid");
+				}
+
+				setLessonId(parsedLessonId);
+
+				// then fetch the lesson details from the API
+				fetchLesson(parsedLessonId).then(lesson => {
+					setLesson(lesson);
+				}).catch(err => { throw err; });
+			}
+		} catch(err) {
+			alert("Error: failed to fetch the lesson! Please try again later.");
+			console.error(err);
 		}
-		catch(err) {
-			console.error("Error: failed to retrieve lesson from API. Error message: ", err);
+	}, [ router.isReady ]);
+
+
+	useEffect(() => {
+		// When the lesson is retrieved, request the first part of the lesson content
+		if(lessonId !== undefined) {
+			getLessonPart(lessonId, currentPart).then(resp => {
+				setMessages([... messages, {
+					timestamp: new Date(),
+					sender: Sender.SYSTEM,
+					content: resp
+				}]);
+			}).catch(err => { throw err; });
 		}
-	}
+	}, [ lessonId ]);
 
 
-	private renderLesson(): JSX.Element {
-		const { sidebarOpen, lesson } = this.state;
+	// Render
+	return (
+		<>
+			<Head>
+				<title>Lesson | Conversant</title>
+			</Head>
 
-		return (
-			<div id={styles["page"]}>
-				<Head>
-					<title>
-						{ (lesson) ? `${lesson.title} (${lesson.topicLabel}) | Conversant` : "Lesson | Conversant"}
-					</title>
-				</Head>
-
-				<div id={styles["sidebar"]} className={(sidebarOpen) ? styles["open"] : ""}>
-					<Sidebar />
+			<Background>
+				<div id={styles["page"]}>
+					<Head>
+						<title>
+							{ (lesson !== undefined) ? `${lesson.title} (${lesson.topicLabel})` : "Lesson"} | Conversant
+						</title>
+					</Head>
+	
+					<div id={styles["sidebar"]} className={(sidebarIsOpen) ? styles["open"] : ""}>
+						<Sidebar />
+					</div>
+	
+					<div id={styles["title-bar"]}>
+						<TitleBar toggleSidebarOpen={toggleSidebarOpen} sidebarOpen={sidebarIsOpen} lessonTitle={lesson?.title ?? "Loading..."} lessonTopic={lesson?.topicLabel ?? ""} />
+					</div>
+	
+					<div id={styles["message-area"]}>
+						<ConversationArea messages={messages} />
+					</div>
+	
+					<div id={styles["reply-bar"]}>
+						<SendMessageForm messageSentHandler={sendMessageHandler} disabled={lesson === undefined} />
+					</div>
 				</div>
+			</Background>
+		</>
+	);
+};
 
-				<div id={styles["title-bar"]}>
-					<TitleBar toggleSidebarOpen={this.toggleSidebarOpen} sidebarOpen={sidebarOpen} lessonTitle={lesson!.title} lessonTopic={lesson!.topicLabel} />
-				</div>
-
-				<div id={styles["message-area"]}>
-					<ConversationArea content={lesson!.content} currentStep={0} />
-				</div>
-
-				<div id={styles["reply-bar"]}>
-					<SendMessageForm />
-				</div>
-			</div>
-		);
-	}
-
-	private renderLoading(): JSX.Element {
-		return (
-			<div>Loading</div>
-		);
-	}
-
-	private toggleSidebarOpen(): void {
-		this.setState({
-			sidebarOpen: !this.state.sidebarOpen
-		});
-	}
-}
-
-export default withRouter(LessonPage);
+export default LessonPage;
 
 
-async function fetchLesson(lessonId: string): Promise<Lesson> {
+/**
+ * Helper function to retrieve the lesson's information from the API.
+ */
+async function fetchLesson(lessonId: number): Promise<Lesson> {
 	const resp = await fetch(`/api/lesson/${lessonId}`);
 
 	if(! resp.ok) {
 		throw new Error(`API request to retrieve lesson information failed with status ${resp.status} (${resp.statusText})`);
 	}
 
-	const body = await resp.json() as ApiRouteResponse;
+	const body = await resp.json() as LessonApiRouteResponse;
 
 	if("error" in body) {
 		throw new Error(body.error);
 	}
 
 	return body.lesson;
+}
+
+
+/**
+ * Helper function to retrieve an individual message as part of a lesson from the API.
+ */
+async function getLessonPart(lessonId: number, part: number): Promise<string> {
+	const resp = await fetch(`/api/lesson/${lessonId}/parts/${part}`).catch(err => { throw err; });
+
+	if(! resp.ok) {
+		throw new Error("failed to fetch the lesson part");
+	}
+
+	const body = await resp.json() as PartApiRouteResponse;
+
+	if("error" in body) {
+		throw new Error(body.error);
+	}
+
+	return body.part;
 }

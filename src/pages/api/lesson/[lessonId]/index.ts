@@ -76,7 +76,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
  */
 async function getLesson(mysql: ServerlessMysql, lessonId: string): Promise<Lesson> {
 	const lessonRows = await mysql.query<Lesson[]>(`
-		SELECT lessons.id, title, topic, content, topics.label as topicLabel FROM lessons LEFT JOIN topics ON lessons.topic = topics.id WHERE lessons.id = ?
+		SELECT lessons.id, title, topic, topics.label as topicLabel FROM lessons LEFT JOIN topics ON lessons.topic = topics.id WHERE lessons.id = ?
 	`, [ lessonId ]).catch(err => {
 		console.error(`Error: failed to query database for lesson ${lessonId}. Error message: `, err);
 		throw new Error(err);
