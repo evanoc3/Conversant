@@ -1,0 +1,12 @@
+### GET part of a lesson which does exist
+GET http://localhost:8080/api/lesson/1/part/0
+
+###
+
+# GET part of a lesson where the part doesn't exist
+GET http://localhost:8080/api/lesson/1/part/-1
+
+###
+
+# GET part of a lesson where the lesson doesn't exist
+GET http://localhost:8080/api/lesson/-1/part/0

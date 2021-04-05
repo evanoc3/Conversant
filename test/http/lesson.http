@@ -1,0 +1,8 @@
+# GET a lesson which exists
+GET http://localhost:8080/api/lesson/1 HTTP/1.1
+
+###
+
+# GET a lesson which does not exist
+GET http://localhost:8080/api/lesson/0 HTTP/1.1
+

@@ -1,0 +1,26 @@
+# POST a response to the message response endpoint
+POST http://localhost:8080/api/lesson/1/part/0/response
+content-type: application/json
+
+{
+	"message": "Hi there!"
+}
+
+###
+
+# POST a response to a message but the response is missing
+POST http://localhost:8080/api/lesson/1/part/0/response
+content-type: application/json
+
+{
+}
+
+###
+
+# POST a response to a message but the response is an invalid type
+POST http://localhost:8080/api/lesson/1/part/0/response
+content-type: application/json
+
+{
+	"message": null
+}
