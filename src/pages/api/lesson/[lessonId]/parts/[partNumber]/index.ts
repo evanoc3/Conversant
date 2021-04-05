@@ -5,16 +5,16 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type { Session } from "next-auth/client";
 import type { User } from "next-auth";
 import type { ServerlessMysql } from "serverless-mysql";
-import type { BaseApiResponse, ErrorApiResponse } from "@customTypes/api";
+import type { ApiResponse } from "@customTypes/api";
 
 
 
 /**
  * Typescript interface for the JSON serialized response sent by this API route.
  */
-export type Response = BaseApiResponse & (ErrorApiResponse | {
+export type Response = ApiResponse<{
 	part: string,
-});
+}>
 
 
 /**

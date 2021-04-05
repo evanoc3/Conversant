@@ -4,7 +4,7 @@ import { getSession } from "next-auth/client";
 import type { ITopicsTableRow, IEnrolmentsTableRow } from "@customTypes/database";
 import { connectToDatabase } from "@util/database";
 import type { IAuthSession } from "@customTypes/auth";
-import type { BaseApiResponse, ErrorApiResponse } from "@customTypes/api";
+import type { ApiResponse } from "@customTypes/api";
 
 
 
@@ -17,10 +17,10 @@ export type IEnrolledTopicsQueryResultRow = Pick<ITopicsTableRow, "id" | "label"
 /**
  * Typescript interface for the JSON serialized return value of this API route.
  */
-export type Response = BaseApiResponse & (ErrorApiResponse | {
+export type Response = ApiResponse<{
 	userId: string,
 	enrolledTopics: IEnrolledTopicsQueryResultRow[]
-})
+}>
 
 
 /**
@@ -46,14 +46,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			timestamp: (new Date()).toISOString(),
 			userId: userId,
 			enrolledTopics: enrolledTopics
-		});
+		} as Response);
 	}
 	catch(err) {
 		// Send an error response if any errors are thrown
 		res.status(500).json({
 			timestamp: (new Date()).toISOString(),
 			error: (err as Error).message
-		})
+		} as Response)
 	}
 	finally {
 		// Do serverless MySQL cleanup

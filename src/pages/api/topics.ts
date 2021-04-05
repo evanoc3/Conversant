@@ -2,15 +2,15 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type { ServerlessMysql } from "serverless-mysql";
 import { connectToDatabase } from "@util/database";
 import type { ITopicsTableRow } from "@customTypes/database";
-import type { BaseApiResponse, ErrorApiResponse } from "@customTypes/api";
+import type { ApiResponse } from "@customTypes/api";
 
 
 /**
  * Typescript interface for the JSON serialized value returned by this API route.
  */
-export type Response = BaseApiResponse & (ErrorApiResponse | {
+export type Response = ApiResponse<{
 	results: ITopicsTableRow[]
-})
+}>
 
 
 /**
@@ -33,14 +33,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		res.status(200).json({
 			timestamp: (new Date()).toISOString(),
 			results: topics
-		});
+		} as Response);
 	}
 	catch(err) {
 		// If any errors get thrown, send an Error response
 		res.status(500).json({
 			timestamp: (new Date()).toISOString(),
 			error: (err as Error).message
-		})
+		} as Response)
 	}
 	finally {
 		// Perform Serverless MySQL cleanup

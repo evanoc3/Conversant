@@ -1,7 +1,10 @@
-export interface BaseApiResponse {
+interface BaseApiResponse {
 	timestamp: string
 }
 
-export interface ErrorApiResponse {
-	error: string
+type ErrorApiResponse = BaseApiResponse & {
+	error: string,
+	stack?: string
 }
+
+export type ApiResponse<P> = ErrorApiResponse | (BaseApiResponse & P)

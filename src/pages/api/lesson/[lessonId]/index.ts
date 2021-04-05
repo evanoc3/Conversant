@@ -3,7 +3,7 @@ import { connectToDatabase } from "@util/database";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ServerlessMysql } from "serverless-mysql";
-import type { BaseApiResponse, ErrorApiResponse } from "@customTypes/api";
+import type {  ApiResponse } from "@customTypes/api";
 import type { Lesson } from "@customTypes/lesson";
 import type { IAuthSession } from "@customTypes/auth"; 
 
@@ -12,10 +12,10 @@ import type { IAuthSession } from "@customTypes/auth";
 /**
  * Typescript interface for the JSON serialized response sent by this API route.
  */
-export type Response = BaseApiResponse & (ErrorApiResponse | {
+export type Response = ApiResponse<{
 	lesson: Lesson,
 	completed: boolean
-});
+}>
 
 
 /**
