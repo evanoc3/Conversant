@@ -7,7 +7,7 @@
 #
 # Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
 # Database: mydb5201
-# Generation Time: 2021-04-04 18:03:33 +0000
+# Generation Time: 2021-04-05 00:17:19 +0000
 # ************************************************************
 
 
@@ -80,6 +80,23 @@ CREATE TABLE `lesson_completions` (
   KEY `lesson` (`lesson`),
   CONSTRAINT `lesson_completions_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`),
   CONSTRAINT `lesson_completions_ibfk_2` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+# Dump of table lesson_parts
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `lesson_parts`;
+
+CREATE TABLE `lesson_parts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `lesson` int(11) NOT NULL,
+  `part` int(11) NOT NULL,
+  `content` text NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `lesson` (`lesson`,`part`),
+  CONSTRAINT `lesson_parts_ibfk_1` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
