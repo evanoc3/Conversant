@@ -3,7 +3,7 @@ POST http://localhost:8080/api/lesson/1/part/0/response
 content-type: application/json
 
 {
-	"message": "Hi there!"
+	"message": "i do understand"
 }
 
 ###

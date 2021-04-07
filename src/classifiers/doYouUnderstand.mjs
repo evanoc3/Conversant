@@ -1,0 +1,97 @@
+import natural from "natural";
+
+const classifier = new natural.BayesClassifier();
+
+// positive cases
+classifier.addDocument("yes", "true");
+classifier.addDocument("ye", "true");
+classifier.addDocument("yea", "true");
+classifier.addDocument("yeah", "true");
+classifier.addDocument("totally", "true");
+classifier.addDocument("completely", "true");
+classifier.addDocument("absolutely", "true");
+classifier.addDocument("sure", "true");
+classifier.addDocument("i do", "true");
+classifier.addDocument("i sure do", "true");
+classifier.addDocument("i do ye", "true");
+classifier.addDocument("i do yes", "true");
+classifier.addDocument("i do yea", "true");
+classifier.addDocument("i do yeah", "true");
+classifier.addDocument("it is", "true");
+classifier.addDocument("i understand", "true");
+classifier.addDocument("i understand it clearly", "true");
+classifier.addDocument("i understand it completely", "true");
+classifier.addDocument("yes i understand", "true");
+classifier.addDocument("yes i, understand", "true");
+classifier.addDocument("i do understand", "true");
+classifier.addDocument("i do understand it", "true");
+classifier.addDocument("i think i understand", "true");
+classifier.addDocument("i think i do understand it", "true");
+classifier.addDocument("i think i do understand it, yes", "true");
+classifier.addDocument("its clear", "true");
+classifier.addDocument("it's clear", "true");
+classifier.addDocument("it is clear", "true");
+classifier.addDocument("i think its clear", "true");
+classifier.addDocument("i do get it", "true");
+classifier.addDocument("i get it", "true");
+classifier.addDocument("i get it", "true");
+classifier.addDocument("i think i get it", "true");
+classifier.addDocument("kind of", "true");
+classifier.addDocument("i kind of get it", "true");
+classifier.addDocument("i kind of understand", "true");
+classifier.addDocument("i kind of understand it", "true");
+classifier.addDocument("i kind of understand it", "true");
+classifier.addDocument("i totally understand", "true");
+classifier.addDocument("i totally get it", "true");
+classifier.addDocument("i completely get it", "true");
+classifier.addDocument("i sure do", "true");
+classifier.addDocument("i understand", "true");
+
+// negative cases
+classifier.addDocument("no", "false");
+classifier.addDocument("nope", "false");
+classifier.addDocument("not really", "false");
+classifier.addDocument("not at all", "false");
+classifier.addDocument("it is not", "false");
+classifier.addDocument("it isn't", "false");
+classifier.addDocument("i don't", "false");
+classifier.addDocument("i dont", "false");
+classifier.addDocument("i do not", "false");
+classifier.addDocument("i don't understand", "false");
+classifier.addDocument("i dont understand", "false");
+classifier.addDocument("no i don't understand", "false");
+classifier.addDocument("no i dont understand", "false");
+classifier.addDocument("it isn't clear", "false");
+classifier.addDocument("it isnt clear", "false");
+classifier.addDocument("it is not clear", "false");
+classifier.addDocument("i don't get it", "false");
+classifier.addDocument("i dont get it", "false");
+classifier.addDocument("i do not get it", "false");
+classifier.addDocument("i do not understand it", "false");
+classifier.addDocument("i don't understand it", "false");
+classifier.addDocument("i dont understand it", "false");
+classifier.addDocument("i don't think i understand", "false");
+classifier.addDocument("i dont think i understand", "false");
+classifier.addDocument("i don't think i understand it", "false");
+classifier.addDocument("i dont think i understand it", "false");
+classifier.addDocument("i don't think i understand it", "false");
+classifier.addDocument("i dont think i understand it", "false");
+classifier.addDocument("i do not think its clear", "false");
+classifier.addDocument("i dont think its clear", "false");
+classifier.addDocument("i don't think its clear", "false");
+classifier.addDocument("no sorry", "false");
+classifier.addDocument("no sorry, its not clear", "false");
+classifier.addDocument("no sorry i dont get it", "false");
+classifier.addDocument("sorry no", "false");
+classifier.addDocument("sorry nope", "false");
+classifier.addDocument("pardon me", "false");
+classifier.addDocument("no excuse", "false");
+classifier.addDocument("lol nope", "false");
+classifier.addDocument("lol no", "false");
+classifier.addDocument("lol no sorry", "false");
+
+classifier.train();
+
+console.log( JSON.stringify(classifier) );
+
+export default classifier;

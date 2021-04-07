@@ -6,6 +6,7 @@ import type { Session } from "next-auth/client";
 import type { User } from "next-auth";
 import type { ServerlessMysql } from "serverless-mysql";
 import type { ApiResponse } from "@customTypes/api";
+import type { ILessonPartsTableRow } from "@customTypes/database";
 
 
 
@@ -48,7 +49,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			throw err;
 		});
 
-		const processedLessonPart = processMessage(lessonPart, session?.user ?? null);
+		const lessonPartContent = lessonPart.content;
+
+		const processedLessonPart = processMessage(lessonPartContent, session?.user ?? null);
 
 		// send the happy-route response
 		res.status(200).json({
@@ -73,9 +76,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 
-async function getLessonPart(mysql: ServerlessMysql, lessonId: number, partNumber: number): Promise<string> {
-	const lessonPartRows = await mysql.query<{content: string}[]>(`
-		SELECT content FROM lesson_parts WHERE lesson = ? AND part = ?
+/**
+ * Helper function which queries the database for a particular part of a lesson  
+ *
+ * @throws if a database error occurs.
+ * @throws if anything other than 1 row is returned by the database query.
+ */
+export async function getLessonPart(mysql: ServerlessMysql, lessonId: number, partNumber: number): Promise<ILessonPartsTableRow> {
+	const lessonPartRows = await mysql.query<ILessonPartsTableRow[]>(`
+		SELECT id, lesson, part, content, responseType FROM lesson_parts WHERE lesson = ? AND part = ?
 	`, [ lessonId, partNumber ]).catch(err => {
 		console.error(`Error: failed to query database for lesson ${lessonId}. Error message: `, err);
 		throw new Error(err);
@@ -87,8 +96,9 @@ async function getLessonPart(mysql: ServerlessMysql, lessonId: number, partNumbe
 		throw new Error(`No lesson part was found matching the ID ${partNumber}`);
 	}
 
-	return lessonPartRows[0].content;
+	return lessonPartRows[0];
 }
+
 
 function processMessage(messageText: string, user: User | null): string {
 	// Replace "[[NAME]]" with the user's first name

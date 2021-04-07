@@ -29,3 +29,19 @@ export interface ITopicsTableRow {
 	label: string,
 	description: string | null
 }
+
+
+/**
+ * Typescript interface for the Schema of the `lesson_parts` table in the database
+ */
+export interface ILessonPartsTableRow {
+	id: number,
+	lesson: number,
+	part: number,
+	content: string,
+	responseType: LessonPartResponseType | null
+}
+
+export enum LessonPartResponseType {
+	doYouUnderstand = "doYouUnderstand"
+}
