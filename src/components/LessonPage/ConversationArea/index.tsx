@@ -1,13 +1,13 @@
 import styles from "./ConversationArea.module.scss";
-import { Message, UserMessage } from "@components/LessonPage/index";
+import { IsTypingMessageBubble, Message, UserMessage } from "@components/LessonPage/index";
 import { Sender } from "@customTypes/messages";
 
 import type { FunctionComponent, PropsWithChildren } from "react";
-import type { IMessage } from "@customTypes/messages";
+import type { MessageList } from "@customTypes/messages";
 
 
 type Props = PropsWithChildren<{
-	messages: IMessage[]
+	messages: MessageList
 }>
 
 const ConversationArea: FunctionComponent<Props> = (props) => {
@@ -15,15 +15,21 @@ const ConversationArea: FunctionComponent<Props> = (props) => {
 		<div id={styles["conversation-area"]}>
 			{ 
 				props.messages.map((message, i) => {
-					if(message.sender === Sender.USER) {
+					if(typeof message === "object") {
+						if(message.sender === Sender.USER) {
+							return (
+								<UserMessage key={i} message={message.content} />
+							);
+						}
+		
 						return (
-							<UserMessage key={i} message={message.content} />
+							<Message key={i} message={message.content} />
 						);
 					}
-		
+
 					return (
-						<Message key={i} message={message.content} />
-					);
+						<IsTypingMessageBubble key={"typing"} />
+					)
 				})
 			}
 		</div>

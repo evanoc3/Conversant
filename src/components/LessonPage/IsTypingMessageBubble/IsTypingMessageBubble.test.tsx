@@ -1,13 +1,13 @@
 import { describe, it, expect } from "@jest/globals";
 import { mount } from "enzyme";
-import YesNoChoiceMessage from "./index";
+import IsTypingMessageBubble from "./index";
 
 
-describe("<YesNoChoiceMessage> (lesson page) Component", () => {
+describe("<IsTypingMessageBubble> (lesson page) Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<YesNoChoiceMessage message="Hello, World!" />);
+			const wrapper = mount(<IsTypingMessageBubble />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});

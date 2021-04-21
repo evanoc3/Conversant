@@ -5,13 +5,14 @@ import styles from "./[lessonId].module.scss";
 import { Background } from "@components/index";
 import { ConversationArea, SendMessageForm, Sidebar, TitleBar } from "@components/LessonPage/index";
 import { Sender } from "@customTypes/messages";
+import { LessonPartResponseType } from "@customTypes/lesson";  
 
 import type { FunctionComponent, PropsWithChildren } from "react";
 import type { NextRouter } from "next/router";
 import type { Lesson } from "@customTypes/lesson";
 import type { Response as LessonApiRouteResponse } from "@pages/api/lesson/[lessonId]";
 import type { Response as PartApiRouteResponse } from "@pages/api/lesson/[lessonId]/part/[partNumber]";
-import type { IMessage } from "@customTypes/messages";
+import type { MessageList } from "@customTypes/messages";
 
 
 type Props = PropsWithChildren<{
@@ -25,11 +26,11 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	const [lesson, setLesson] = useState<Lesson | undefined>();
 	const [currentPart] = useState(0);
 	const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
-	const [messages, setMessages] = useState<IMessage[]>([]);
+	const [messages, setMessages] = useState<MessageList>([]);
 	const router = useRouter();
 
 	// Methods
-	const toggleSidebarOpen = () => { setSidebarIsOpen(!sidebarIsOpen); };
+	const toggleSidebarOpen = () => setSidebarIsOpen(!sidebarIsOpen);
 
 	const sendMessageHandler = (message: string) => {
 		if(lesson !== undefined) {
@@ -41,7 +42,25 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		}
 	};
 
-	// Effects
+
+	async function addMessage(msg: string): Promise<void> {
+		// Set according to the average characters per minute typed by a fast adult (see http://typefastnow.com/average-typing-speed)
+		const typingTime = msg.length * 20;
+
+		setMessages([... messages, "typing"]);
+
+		await new Promise(resolve => setTimeout(resolve, typingTime));
+
+		setMessages([...messages.slice(0, -1), {
+			timestamp: new Date(),
+			sender: Sender.SYSTEM,
+			content: msg
+		}]);
+
+		return;
+	}
+
+	// Fetch lesson metadata when router is ready and has parsed lessonId
 	useEffect(() => {
 		if(router.isReady) {
 			try {
@@ -71,16 +90,15 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		}
 	}, [ router.isReady, lessonId ]);
 
-
+	// When the lesson is retrieved, request the first part of the lesson content
 	useEffect(() => {
-		// When the lesson is retrieved, request the first part of the lesson content
 		if(lessonId !== undefined) {
 			getLessonPart(lessonId, currentPart).then(resp => {
-				setMessages([... messages, {
-					timestamp: new Date(),
-					sender: Sender.SYSTEM,
-					content: resp
-				}]);
+				if("error" in resp) {
+					throw resp.error;
+				}
+
+				addMessage(resp.content);
 			}).catch(err => {
 				alert("Error: failed to fetch the lesson part! Please try again later.");
 				console.error(err);
@@ -151,7 +169,7 @@ async function fetchLesson(lessonId: number): Promise<Lesson> {
 /**
  * Helper function to retrieve an individual message as part of a lesson from the API.
  */
-async function getLessonPart(lessonId: number, part: number): Promise<string> {
+async function getLessonPart(lessonId: number, part: number): Promise<PartApiRouteResponse> {
 	const resp = await fetch(`/api/lesson/${lessonId}/part/${part}`).catch(err => { throw err; });
 
 	if(! resp.ok) {
@@ -164,5 +182,5 @@ async function getLessonPart(lessonId: number, part: number): Promise<string> {
 		throw new Error(body.error);
 	}
 	
-	return body.part;
+	return body;
 }

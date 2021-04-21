@@ -4,3 +4,8 @@ export interface Lesson {
 	topic: string,
 	topicLabel: string,
 }
+
+export enum LessonPartResponseType {
+	YesNo = "yesNo",
+	Proceed = "proceed"
+}

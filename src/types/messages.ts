@@ -8,3 +8,5 @@ export interface IMessage {
 	sender: Sender,
 	content: string
 }
+
+export type MessageList = (IMessage | "typing")[]

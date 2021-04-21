@@ -1,11 +1,13 @@
-import { connectToDatabase } from "@util/database";
 import { getSession } from "next-auth/client";
+import { connectToDatabase } from "@util/database";
+import { LessonPartResponseType } from "@customTypes/lesson";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Session } from "next-auth/client";
 import type { User } from "next-auth";
 import type { ServerlessMysql } from "serverless-mysql";
 import type { ApiResponse } from "@customTypes/api";
+
 import type { ILessonPartsTableRow } from "@customTypes/database";
 
 
@@ -14,7 +16,8 @@ import type { ILessonPartsTableRow } from "@customTypes/database";
  * Typescript interface for the JSON serialized response sent by this API route.
  */
 export type Response = ApiResponse<{
-	part: string,
+	content: string,
+	responseType: LessonPartResponseType | null
 }>
 
 
@@ -51,12 +54,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 		const lessonPartContent = lessonPart.content;
 
-		const processedLessonPart = processMessage(lessonPartContent, session?.user ?? null);
+		const processedLessonContent = processMessage(lessonPartContent, session?.user ?? null);
 
 		// send the happy-route response
 		res.status(200).json({
 			timestamp: (new Date()).toISOString(),
-			part: processedLessonPart
+			content: processedLessonContent,
+			responseType: lessonPart.responseType
 		} as Response);
 	}
 	catch(err) {
