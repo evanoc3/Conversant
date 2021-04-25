@@ -1,12 +1,12 @@
-import { FunctionComponent } from "react";
 import Link from "next/link";
 import styles from "./Header.module.scss";
-import { LoginPill } from "@components/index";
+import { UserBadge } from "@components/index";
+
+import type { FunctionComponent, PropsWithChildren } from "react";
 
 
-interface Props {
-	showNav?: boolean
-}
+type Props = PropsWithChildren<{
+}>
 
 
 const Header: FunctionComponent<Props> = (props: Props) => (
@@ -21,7 +21,7 @@ const Header: FunctionComponent<Props> = (props: Props) => (
 
 		<div className={styles["spacer"]} />
 
-		{ (props.showNav) ? <LoginPill /> : "" }		
+		<UserBadge />	
 
 	</header>
 );
