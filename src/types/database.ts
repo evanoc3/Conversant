@@ -45,3 +45,17 @@ export interface ILessonPartsTableRow {
 export enum LessonPartResponseType {
 	doYouUnderstand = "doYouUnderstand"
 }
+
+
+/**
+ * Typescript interface for the Schema of the `sessions` table in the database.
+ */
+export interface ISessionsTableRow {
+	id: number,
+	user_id: number,
+	expires: string,
+	session_token: string,
+	access_token: string,
+	created_at: string,
+	updated_at: string
+}
