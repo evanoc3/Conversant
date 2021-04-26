@@ -12,7 +12,7 @@ import type { NextRouter } from "next/router";
 import type { Lesson } from "@customTypes/lesson";
 import type { Response as LessonApiRouteResponse } from "@pages/api/lesson/[lessonId]";
 import type { Response as PartApiRouteResponse } from "@pages/api/lesson/[lessonId]/part/[partNumber]";
-import type { MessageList } from "@customTypes/messages";
+import type { IMessage } from "@customTypes/messages";
 
 
 type Props = PropsWithChildren<{
@@ -24,40 +24,52 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	// State & Other Hooks
 	const [lessonId, setLessonId] = useState<number | undefined>(undefined);
 	const [lesson, setLesson] = useState<Lesson | undefined>();
-	const [currentPart] = useState(0);
+	const [currentPart, setCurrentPart] = useState(0);
 	const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
-	const [messages, setMessages] = useState<MessageList>([]);
+	const [messages, setMessages] = useState<IMessage[]>([]);
+	const [isTyping, setIsTyping] = useState(false);
 	const router = useRouter();
 
 	// Methods
-	const toggleSidebarOpen = () => setSidebarIsOpen(!sidebarIsOpen);
+	function toggleSidebarOpen() {
+		setSidebarIsOpen(!sidebarIsOpen);
+	}
 
-	const sendMessageHandler = (message: string) => {
+	function sendMessageHandler(msg: string): void {
 		if(lesson !== undefined) {
-			setMessages([... messages, {
+			setMessages([...messages, {
 				timestamp: new Date(),
 				sender: Sender.USER,
-				content: message
+				content: msg
 			}]);
 		}
-	};
+	}
 
+	async function getLessonPart(): Promise<void> {
+		const resp = await fetchLessonPart(lessonId!, currentPart).catch(err => { throw err; });
 
-	async function addMessage(msg: string): Promise<void> {
+		if("error" in resp) {
+			throw resp.error;
+		}
+
 		// Set according to the average characters per minute typed by a fast adult (see http://typefastnow.com/average-typing-speed)
-		const typingTime = msg.length * 20;
+		const typingTime = resp.content.length * 22.5;
 
-		setMessages([... messages, "typing"]);
+		setIsTyping(true);
 
 		await new Promise(resolve => setTimeout(resolve, typingTime));
 
-		setMessages([...messages.slice(0, -1), {
+		setIsTyping(false);
+		
+		setMessages([...messages, {
 			timestamp: new Date(),
 			sender: Sender.SYSTEM,
-			content: msg
+			content: resp.content
 		}]);
 
-		return;
+		if(resp.responseType === null) {
+			setCurrentPart(resp.proceedTo!);
+		}
 	}
 
 	// Fetch lesson metadata when router is ready and has parsed lessonId
@@ -76,6 +88,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 			catch(err) {
 				alert("Error: failed to fetch the lesson! Please try again later.");
 				console.error(err);
+				router.push("/home");
 			}
 
 			if(lessonId !== undefined) {
@@ -85,6 +98,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 				}).catch(err => {
 					alert("Error: failed to fetch the lesson! Please try again later.");
 					console.error(err);
+					router.push("/home");
 				});
 			}
 		}
@@ -93,18 +107,13 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	// When the lesson is retrieved, request the first part of the lesson content
 	useEffect(() => {
 		if(lessonId !== undefined) {
-			getLessonPart(lessonId, currentPart).then(resp => {
-				if("error" in resp) {
-					throw resp.error;
-				}
-
-				addMessage(resp.content);
-			}).catch(err => {
+			getLessonPart().catch(err => {
 				alert("Error: failed to fetch the lesson part! Please try again later.");
 				console.error(err);
+				router.push("/home");
 			});
 		}
-	}, [ lessonId ]);
+	}, [ lessonId, currentPart ]);
 
 
 	// Render
@@ -131,7 +140,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 					</div>
 	
 					<div id={styles["message-area"]}>
-						<ConversationArea messages={messages} />
+						<ConversationArea messages={messages} isTyping={isTyping} />
 					</div>
 	
 					<div id={styles["reply-bar"]}>
@@ -169,7 +178,7 @@ async function fetchLesson(lessonId: number): Promise<Lesson> {
 /**
  * Helper function to retrieve an individual message as part of a lesson from the API.
  */
-async function getLessonPart(lessonId: number, part: number): Promise<PartApiRouteResponse> {
+async function fetchLessonPart(lessonId: number, part: number): Promise<PartApiRouteResponse> {
 	const resp = await fetch(`/api/lesson/${lessonId}/part/${part}`).catch(err => { throw err; });
 
 	if(! resp.ok) {

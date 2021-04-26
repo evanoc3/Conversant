@@ -1,9 +1,8 @@
 import { getSession } from "next-auth/client";
 import { connectToDatabase } from "@util/database";
-import { LessonPartResponseType } from "@customTypes/lesson";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import type { Session } from "next-auth/client";
+import type { Session } from "next-auth";
 import type { User } from "next-auth";
 import type { ServerlessMysql } from "serverless-mysql";
 import type { ApiResponse } from "@customTypes/api";
@@ -15,10 +14,7 @@ import type { ILessonPartsTableRow } from "@customTypes/database";
 /**
  * Typescript interface for the JSON serialized response sent by this API route.
  */
-export type Response = ApiResponse<{
-	content: string,
-	responseType: LessonPartResponseType | null
-}>
+export type Response = ApiResponse<Pick<ILessonPartsTableRow, "content" | "responseType" | "proceedTo">>
 
 
 /**
@@ -56,12 +52,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 		const processedLessonContent = processMessage(lessonPartContent, session?.user ?? null);
 
-		// send the happy-route response
-		res.status(200).json({
+		let resp: Response = {
 			timestamp: (new Date()).toISOString(),
 			content: processedLessonContent,
 			responseType: lessonPart.responseType
-		} as Response);
+		};
+
+		if(lessonPart.responseType === null) {
+			resp["proceedTo"] = lessonPart.proceedTo;
+		}
+
+		// send the happy-route response
+		res.status(200).json(resp);
 	}
 	catch(err) {
 		// Send an error response if any errors are thrown
@@ -88,7 +90,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
  */
 export async function getLessonPart(mysql: ServerlessMysql, lessonId: number, partNumber: number): Promise<ILessonPartsTableRow> {
 	const lessonPartRows = await mysql.query<ILessonPartsTableRow[]>(`
-		SELECT id, lesson, part, content, responseType FROM lesson_parts WHERE lesson = ? AND part = ?
+		SELECT id, lesson, part, content, responseType, proceedTo, onYes, onNo
+		FROM lesson_parts
+		WHERE lesson = ? AND part = ?
 	`, [ lessonId, partNumber ]).catch(err => {
 		console.error(`Error: failed to query database for lesson ${lessonId}. Error message: `, err);
 		throw new Error(err);

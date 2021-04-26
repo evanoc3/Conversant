@@ -51,9 +51,8 @@ export default async function LessonPartsResponseApiRoute(req: NextApiRequest, r
 
 		switch(lessonPart.responseType) {
 			case null:
-				handleNoResponseType(res);
 				break;
-			case LessonPartResponseType.doYouUnderstand:
+			case LessonPartResponseType.yesNo:
 				handleDoYouUnderstandResponse(res, messageResponse);
 				break;
 			default:
@@ -75,9 +74,6 @@ export default async function LessonPartsResponseApiRoute(req: NextApiRequest, r
 };
 
 
-function handleNoResponseType(res: NextApiResponse): void {
-
-}
 
 function handleDoYouUnderstandResponse(res: NextApiResponse, msg: string): void {
 	const classifier = getDoYouUnderstandResponseClassifier();

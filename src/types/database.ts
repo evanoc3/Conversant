@@ -39,11 +39,14 @@ export interface ILessonPartsTableRow {
 	lesson: number,
 	part: number,
 	content: string,
-	responseType: LessonPartResponseType | null
+	responseType: LessonPartResponseType | null,
+	proceedTo?: number,
+	onYes?: number,
+	onNo?: number
 }
 
 export enum LessonPartResponseType {
-	doYouUnderstand = "doYouUnderstand"
+	yesNo = "yesNo"
 }
 
 

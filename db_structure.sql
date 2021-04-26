@@ -7,7 +7,7 @@
 #
 # Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
 # Database: mydb5201
-# Generation Time: 2021-04-05 00:17:19 +0000
+# Generation Time: 2021-04-26 00:11:04 +0000
 # ************************************************************
 
 
@@ -94,9 +94,17 @@ CREATE TABLE `lesson_parts` (
   `lesson` int(11) NOT NULL,
   `part` int(11) NOT NULL,
   `content` text NOT NULL,
+  `responseType` enum('yesNo') DEFAULT NULL,
+  `onYes` int(11) DEFAULT NULL,
+  `onNo` int(11) DEFAULT NULL,
+  `proceedTo` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `lesson` (`lesson`,`part`),
-  CONSTRAINT `lesson_parts_ibfk_1` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`)
+  KEY `onYes` (`onYes`),
+  KEY `proceedTo` (`proceedTo`),
+  CONSTRAINT `lesson_parts_ibfk_1` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`),
+  CONSTRAINT `lesson_parts_ibfk_2` FOREIGN KEY (`onYes`) REFERENCES `lesson_parts` (`id`),
+  CONSTRAINT `lesson_parts_ibfk_3` FOREIGN KEY (`proceedTo`) REFERENCES `lesson_parts` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -110,17 +118,10 @@ CREATE TABLE `lessons` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `topic` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `content` mediumtext NOT NULL,
-  `preceededBy` int(11) DEFAULT NULL,
-  `followedBy` int(11) DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id`),
   KEY `topic` (`topic`),
-  KEY `preceededBy` (`preceededBy`),
-  KEY `followedBy` (`followedBy`),
-  CONSTRAINT `lessons_ibfk_1` FOREIGN KEY (`topic`) REFERENCES `topics` (`id`),
-  CONSTRAINT `lessons_ibfk_2` FOREIGN KEY (`preceededBy`) REFERENCES `lessons` (`id`),
-  CONSTRAINT `lessons_ibfk_3` FOREIGN KEY (`followedBy`) REFERENCES `lessons` (`id`)
+  CONSTRAINT `lessons_ibfk_1` FOREIGN KEY (`topic`) REFERENCES `topics` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

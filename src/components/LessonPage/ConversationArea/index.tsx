@@ -2,38 +2,38 @@ import styles from "./ConversationArea.module.scss";
 import { IsTypingMessageBubble, Message, UserMessage } from "@components/LessonPage/index";
 import { Sender } from "@customTypes/messages";
 
-import type { FunctionComponent, PropsWithChildren } from "react";
-import type { MessageList } from "@customTypes/messages";
+import type { PropsWithChildren } from "react";
+import type { IMessage } from "@customTypes/messages";
 
 
 type Props = PropsWithChildren<{
-	messages: MessageList
+	messages: IMessage[],
+	isTyping: boolean
 }>
 
-const ConversationArea: FunctionComponent<Props> = (props) => {
+
+export default function ConversationArea(props: Props): JSX.Element {
 	return (
 		<div id={styles["conversation-area"]}>
 			{ 
 				props.messages.map((message, i) => {
-					if(typeof message === "object") {
-						if(message.sender === Sender.USER) {
-							return (
-								<UserMessage key={i} message={message.content} />
-							);
-						}
-		
+					if(message.sender === Sender.USER) {
 						return (
-							<Message key={i} message={message.content} />
+							<UserMessage key={i} message={message.content} />
 						);
 					}
-
+	
 					return (
-						<IsTypingMessageBubble key={"typing"} />
-					)
+						<Message key={i} message={message.content} />
+					);
 				})
+			}
+
+			{
+				(props.isTyping) ? (
+					<IsTypingMessageBubble key={"typing"} />
+				) : ""
 			}
 		</div>
 	);
 };
-
-export default ConversationArea;
