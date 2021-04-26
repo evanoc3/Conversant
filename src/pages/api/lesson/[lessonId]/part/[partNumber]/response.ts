@@ -5,10 +5,12 @@ import { getDoYouUnderstandResponseClassifier } from "@util/classifiers";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ServerlessMysql } from "serverless-mysql";
 import type { ApiResponse } from "@customTypes/api";
-import { LessonPartResponseType } from "@customTypes/database";
+import { LessonPartResponseType } from "@customTypes/lesson";
 
 
 export type Response = ApiResponse<{
+	proceedToLessonPart?: number,
+	isLessonEnded?: boolean
 }>
 
 
@@ -49,14 +51,15 @@ export default async function LessonPartsResponseApiRoute(req: NextApiRequest, r
 		// get the specific lesson part from the database
 		const lessonPart = await getLessonPart(mysql, lessonId, partNumber).catch(err => { throw err; });
 
-		switch(lessonPart.responseType) {
+		switch(lessonPart.type) {
 			case null:
+				handleNoResponse(res);
 				break;
-			case LessonPartResponseType.yesNo:
-				handleDoYouUnderstandResponse(res, messageResponse);
+			case LessonPartResponseType.YesNo:
+				handleYesNoResponse(res, messageResponse, lessonPart.onYes!, lessonPart.onNo!);
 				break;
 			default:
-				throw new Error(`Unknown response type encountered: ${lessonPart.responseType}`);
+				throw new Error(`Unknown response type encountered: ${lessonPart.type}`);
 		}
 	}
 	catch(err) {
@@ -74,14 +77,34 @@ export default async function LessonPartsResponseApiRoute(req: NextApiRequest, r
 };
 
 
+/**
+ * This function handles the response when the lesson part being responded to is of type `proceed`.
+ */
+function handleNoResponse(res: NextApiResponse): void {
+	res.status(200).json({
+		timestamp: (new Date()).toISOString(),
+		error: "No response is required to this message"
+	} as Response);
+}
 
-function handleDoYouUnderstandResponse(res: NextApiResponse, msg: string): void {
+
+/**
+ * This function handles the classification and response when the lesson part being responded to is of type `YesNo`.
+ */
+function handleYesNoResponse(res: NextApiResponse, msg: string, onYes: number, onNo: number): void {
 	const classifier = getDoYouUnderstandResponseClassifier();
 
 	const responseClassification = classifier.classify(msg) === "true";
+
+	if(responseClassification === true) {
+		// const nextLessonPart = getLessonPartById()
+	}
 
 	res.status(200).json({
 		timestamp: (new Date()).toISOString(),
 		responseClassification: responseClassification
 	} as Response);
 }
+
+
+

@@ -3,7 +3,7 @@ import { connectToDatabase } from "@util/database";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ServerlessMysql } from "serverless-mysql";
-import type {  ApiResponse } from "@customTypes/api";
+import type { ApiResponse } from "@customTypes/api";
 import type { Lesson } from "@customTypes/lesson";
 import type { IAuthSession } from "@customTypes/auth"; 
 
@@ -71,12 +71,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 /**
  * Helper function to query the database for the content of a particular lesson by ID.
  * 
- * @throws if any database error occurs during the query.
+ * @throws Any database-related error occurs during the query.
  * @throws if 0 or more than 1 row is returned by the database query, as it is searches by primary key.
  */
 async function getLesson(mysql: ServerlessMysql, lessonId: string): Promise<Lesson> {
 	const lessonRows = await mysql.query<Lesson[]>(`
-		SELECT lessons.id, title, topic, topics.label as topicLabel FROM lessons LEFT JOIN topics ON lessons.topic = topics.id WHERE lessons.id = ?
+		SELECT lessons.id, title, topic, topics.label as topicLabel, firstPart
+		FROM lessons
+		LEFT JOIN topics ON lessons.topic = topics.id
+		WHERE lessons.id = ?
 	`, [ lessonId ]).catch(err => {
 		console.error(`Error: failed to query database for lesson ${lessonId}. Error message: `, err);
 		throw new Error(err);
@@ -91,10 +94,15 @@ async function getLesson(mysql: ServerlessMysql, lessonId: string): Promise<Less
 	return lessonRows[0];
 }
 
+/**
+ * Helper function which returns a boolean indicating whether the specified user is recorded as having completed the lesson.
+ * 
+ * @throws Any database-related error occurs during the query.
+ */
 async function checkIfUserHasCompletedLesson(mysql: ServerlessMysql, userId: string, lessonId: string): Promise<boolean> {
 	const rows = await mysql.query<any[]>(`
 		SELECT id, user, lesson FROM lesson_completions WHERE user = ? AND lesson = ?
-	`, [userId, lessonId]);
+	`, [userId, lessonId]).catch(err => { throw err });
 
 	return rows.length === 1;
 }

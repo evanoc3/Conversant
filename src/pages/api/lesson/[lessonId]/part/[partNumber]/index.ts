@@ -1,5 +1,5 @@
 import { getSession } from "next-auth/client";
-import { connectToDatabase } from "@util/database";
+import { connectToDatabase, getLessonPart } from "@util/database";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Session } from "next-auth";
@@ -8,13 +8,14 @@ import type { ServerlessMysql } from "serverless-mysql";
 import type { ApiResponse } from "@customTypes/api";
 
 import type { ILessonPartsTableRow } from "@customTypes/database";
+import { LessonPartResponseType } from "@customTypes/lesson";
 
 
 
 /**
  * Typescript interface for the JSON serialized response sent by this API route.
  */
-export type Response = ApiResponse<Pick<ILessonPartsTableRow, "content" | "responseType" | "proceedTo">>
+export type Response = ApiResponse<Pick<ILessonPartsTableRow, "content" | "type" | "proceedTo">>
 
 
 /**
@@ -44,25 +45,29 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		mysql = await connectToDatabase();
 
 		// query the database for the particular lesson
-		const lessonPart = await getLessonPart(mysql, lessonId, partNumber).catch(err => {
+		const lessonPart = await getLessonPart(mysql, partNumber).catch(err => {
 			throw err;
 		});
 
-		const lessonPartContent = lessonPart.content;
+		if(lessonPart.lesson !== lessonId) {
+			throw new Error("Invalid lesson part requested (part's associated lesson is not the lesson specified)")
+		}
 
-		const processedLessonContent = processMessage(lessonPartContent, session?.user ?? null);
+		// Fills in template fields in the database-stored message with dynamic details.
+		const processedLessonContent = processMessage(lessonPart.content, session?.user ?? null);
 
-		let resp: Response = {
+		let resp: Partial<Response> = {
 			timestamp: (new Date()).toISOString(),
 			content: processedLessonContent,
-			responseType: lessonPart.responseType
+			type: lessonPart.type
 		};
 
-		if(lessonPart.responseType === null) {
+		// If the lessonType is `proceed`, then add the field containing the next part to proceed to
+		if(lessonPart.type === LessonPartResponseType.Proceed) {
 			resp["proceedTo"] = lessonPart.proceedTo;
 		}
 
-		// send the happy-route response
+		// Send the happy-route response
 		res.status(200).json(resp);
 	}
 	catch(err) {
@@ -80,32 +85,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 	}
 };
-
-
-/**
- * Helper function which queries the database for a particular part of a lesson  
- *
- * @throws if a database error occurs.
- * @throws if anything other than 1 row is returned by the database query.
- */
-export async function getLessonPart(mysql: ServerlessMysql, lessonId: number, partNumber: number): Promise<ILessonPartsTableRow> {
-	const lessonPartRows = await mysql.query<ILessonPartsTableRow[]>(`
-		SELECT id, lesson, part, content, responseType, proceedTo, onYes, onNo
-		FROM lesson_parts
-		WHERE lesson = ? AND part = ?
-	`, [ lessonId, partNumber ]).catch(err => {
-		console.error(`Error: failed to query database for lesson ${lessonId}. Error message: `, err);
-		throw new Error(err);
-	});
-
-	// if anything except 1 rows is returned then throw an error
-	if(lessonPartRows.length !== 1) {
-		console.error(`Error: found ${lessonPartRows.length} rows when querying the database for lesson ${lessonId} part ${partNumber}`);
-		throw new Error(`No lesson part was found matching the ID ${partNumber}`);
-	}
-
-	return lessonPartRows[0];
-}
 
 
 function processMessage(messageText: string, user: User | null): string {

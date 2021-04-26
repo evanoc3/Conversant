@@ -1,3 +1,5 @@
+import { LessonPartResponseType } from "@customTypes/lesson";
+
 /**
  * Typescript interface for the Schema of the `enrolments` table of the database.
  */
@@ -39,14 +41,10 @@ export interface ILessonPartsTableRow {
 	lesson: number,
 	part: number,
 	content: string,
-	responseType: LessonPartResponseType | null,
-	proceedTo?: number,
-	onYes?: number,
-	onNo?: number
-}
-
-export enum LessonPartResponseType {
-	yesNo = "yesNo"
+	type: LessonPartResponseType,
+	proceedTo: number | null,
+	onYes: number | null,
+	onNo: number | null
 }
 
 

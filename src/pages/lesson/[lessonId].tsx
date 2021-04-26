@@ -24,7 +24,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	// State & Other Hooks
 	const [lessonId, setLessonId] = useState<number | undefined>(undefined);
 	const [lesson, setLesson] = useState<Lesson | undefined>();
-	const [currentPart, setCurrentPart] = useState(0);
+	const [currentPart, setCurrentPart] = useState(-1);
 	const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [isTyping, setIsTyping] = useState(false);
@@ -45,6 +45,14 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		}
 	}
 
+	/**
+	 * This function is called as a side-effect whenever `lessonId` and `currentPart` change. It fetches the lesson part given by the
+	 * current `lessonId` and `currentPart` state fields, and adds it to the `messages` state list.
+	 * 
+	 * If the `responseType` of the fetched
+	 * lesson part is `null` then it increments the `currentPart` state, which as a result of the side-effect mentioned above, calls it
+	 * again for the next part.
+	 */
 	async function getLessonPart(): Promise<void> {
 		const resp = await fetchLessonPart(lessonId!, currentPart).catch(err => { throw err; });
 
@@ -57,6 +65,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 
 		setIsTyping(true);
 
+		// wait for the timeout
 		await new Promise(resolve => setTimeout(resolve, typingTime));
 
 		setIsTyping(false);
@@ -67,7 +76,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 			content: resp.content
 		}]);
 
-		if(resp.responseType === null) {
+		if(resp.type === LessonPartResponseType.Proceed) {
 			setCurrentPart(resp.proceedTo!);
 		}
 	}
@@ -75,8 +84,8 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	// Fetch lesson metadata when router is ready and has parsed lessonId
 	useEffect(() => {
 		if(router.isReady) {
+			// when the router is ready, parse the lessonId query parameter and save it as state
 			try {
-				// when the router is ready, parse the lessonId query parameter and save it as state
 				const parsedLessonId = parseInt(router.query["lessonId"] as string);
 
 				if(isNaN(parsedLessonId)) {
@@ -91,27 +100,34 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 				router.push("/home");
 			}
 
+			// If the lessonId field is set, then fetch the lesson details from the API
 			if(lessonId !== undefined) {
-				// then fetch the lesson details from the API
-				fetchLesson(lessonId!).then(lesson => {
-					setLesson(lesson);
-				}).catch(err => {
+				try {
+					fetchLesson(lessonId!).catch(err => { throw err; }).then(lesson => {
+						setLesson(lesson);
+						setCurrentPart(lesson.firstPart);
+					});
+				}
+				catch(err) {
 					alert("Error: failed to fetch the lesson! Please try again later.");
 					console.error(err);
 					router.push("/home");
-				});
+				}
 			}
 		}
 	}, [ router.isReady, lessonId ]);
 
 	// When the lesson is retrieved, request the first part of the lesson content
 	useEffect(() => {
-		if(lessonId !== undefined) {
-			getLessonPart().catch(err => {
+		if(lessonId !== undefined && currentPart >= 0) {
+			try {
+				getLessonPart().catch(err => { throw err; });
+			}
+			catch(err) {
 				alert("Error: failed to fetch the lesson part! Please try again later.");
 				console.error(err);
 				router.push("/home");
-			});
+			}
 		}
 	}, [ lessonId, currentPart ]);
 

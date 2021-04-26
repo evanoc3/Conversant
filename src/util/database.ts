@@ -1,6 +1,6 @@
-import { createConnection } from "mysql";
-import type { Connection, ConnectionConfig } from "mysql";
 import serverlessMysql, { ServerlessMysql } from "serverless-mysql";
+import type { ConnectionConfig } from "mysql";
+import { ILessonPartsTableRow } from "@customTypes/database";
 
 
 export function getConnectionConfig(): ConnectionConfig {
@@ -39,23 +39,21 @@ export async function connectToDatabase(): Promise<ServerlessMysql> {
 
 
 /**
- * This is called at the start of each API page which accesses the database to get a database connection object.
+ * This function is called by API routes to retrieve the content of a lesson part by its ID.
  * 
- * @throws {MySQLError} - If there is a problem when attempting to connect to the database. It also logs the error message to `console.error`.
- * 
- * @returns {Connection} A database connection object.
+ * @throws any database related error that occurs during the query.
+ * @throws If more or less than 1 row is returned by the database.
  */
-export function getDatabaseConnection(): Connection {
-	const conn = createConnection(process.env.AUTH_DATABASE!);
+export async function getLessonPart(mysql: ServerlessMysql, id: number): Promise<ILessonPartsTableRow> {
+	const rows = await mysql.query<ILessonPartsTableRow[]>(`
+		SELECT id, lesson, content, type, proceedTo, onYes, onNo
+		FROM lesson_parts
+		WHERE id = ?
+	`, [ id ]).catch(err => { throw err; });
 
-	conn.connect(err => {
-		if(err) {
-			console.error("Error: failed to connect to the database. Error message: ", err);
-			throw err;
-		}
+	if(rows.length !== 1) {
+		throw new Error();
+	}
 
-		console.log("Connected to database successfully");
-	});
-
-	return conn;
+	return rows[0];
 }

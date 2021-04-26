@@ -3,9 +3,11 @@ export interface Lesson {
 	title: string,
 	topic: string,
 	topicLabel: string,
+	firstPart: number
 }
 
 export enum LessonPartResponseType {
+	Proceed = "proceed",
 	YesNo = "yesNo",
-	Proceed = "proceed"
+	EndOfLesson = "endOfLesson"
 }
