@@ -33,7 +33,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		// qet user session and query parameters
 		const session = await getSession({ req }) as IAuthSession;
-		const userId = session.user.id!;
+		const userId = session.user!.id!;
 
 		// connect to the database
 		const mysql = await connectToDatabase();

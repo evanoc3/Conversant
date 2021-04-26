@@ -47,7 +47,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		// See if the current user has an active session
 		const session = await getSession({ req }) as IAuthSession;
-		const userId = session?.user.id ?? "";
+		const userId = session.user?.id ?? "";
 		
 		// parse parameter from request query
 		const topicId = (req.query["topicId"] as string) ?? "";
