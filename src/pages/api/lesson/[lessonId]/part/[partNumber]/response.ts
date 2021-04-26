@@ -1,5 +1,4 @@
-import { connectToDatabase } from "@util/database";
-import { getLessonPart } from "@pages/api/lesson/[lessonId]/part/[partNumber]/index";
+import { connectToDatabase, getLessonPart } from "@util/database";
 import { getDoYouUnderstandResponseClassifier } from "@util/classifiers";
 
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -9,7 +8,7 @@ import { LessonPartResponseType } from "@customTypes/lesson";
 
 
 export type Response = ApiResponse<{
-	proceedToLessonPart?: number,
+	proceedTo?: number,
 	isLessonEnded?: boolean
 }>
 
@@ -45,21 +44,23 @@ export default async function LessonPartsResponseApiRoute(req: NextApiRequest, r
 
 		const messageResponse = req.body["message"] as string;
 
-		// connect to the database
+		// Connect to the database
 		mysql = await connectToDatabase();
 
-		// get the specific lesson part from the database
-		const lessonPart = await getLessonPart(mysql, lessonId, partNumber).catch(err => { throw err; });
+		// Get the specific lesson part from the database
+		const lessonPart = await getLessonPart(mysql, partNumber).catch(err => { throw err; });
 
+		// Determine how to handle the response, depending on the `type` of the lesson part
 		switch(lessonPart.type) {
-			case null:
+			case LessonPartResponseType.Proceed:
 				handleNoResponse(res);
 				break;
 			case LessonPartResponseType.YesNo:
 				handleYesNoResponse(res, messageResponse, lessonPart.onYes!, lessonPart.onNo!);
 				break;
-			default:
-				throw new Error(`Unknown response type encountered: ${lessonPart.type}`);
+			case LessonPartResponseType.EndOfLesson:
+				handleEndOfLessonResponse(res);
+				break;
 		}
 	}
 	catch(err) {
@@ -96,15 +97,20 @@ function handleYesNoResponse(res: NextApiResponse, msg: string, onYes: number, o
 
 	const responseClassification = classifier.classify(msg) === "true";
 
-	if(responseClassification === true) {
-		// const nextLessonPart = getLessonPartById()
-	}
-
 	res.status(200).json({
 		timestamp: (new Date()).toISOString(),
-		responseClassification: responseClassification
+		responseClassification: responseClassification,
+		proceedTo: (responseClassification === true) ?  onYes : onNo
 	} as Response);
 }
 
 
-
+/**
+ * Helper function which handles sending the response, if the r
+ */
+function handleEndOfLessonResponse(res: NextApiResponse): void {
+	res.status(200).json({
+		timestamp: (new Date()).toISOString(),
+		error: "No response neccessary"
+	});
+}

@@ -12,6 +12,7 @@ import type { NextRouter } from "next/router";
 import type { Lesson } from "@customTypes/lesson";
 import type { Response as LessonApiRouteResponse } from "@pages/api/lesson/[lessonId]";
 import type { Response as PartApiRouteResponse } from "@pages/api/lesson/[lessonId]/part/[partNumber]";
+import type { Response as UserResponseApiRouteResponse } from "@pages/api/lesson/[lessonId]/part/[partNumber]/response";
 import type { IMessage } from "@customTypes/messages";
 
 
@@ -35,13 +36,23 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		setSidebarIsOpen(!sidebarIsOpen);
 	}
 
-	function sendMessageHandler(msg: string): void {
-		if(lesson !== undefined) {
-			setMessages([...messages, {
-				timestamp: new Date(),
-				sender: Sender.USER,
-				content: msg
-			}]);
+	async function sendMessageHandler(msg: string): Promise<void> {
+		if(lessonId !== undefined && currentPart >= 0) {
+			await postReponse(lessonId, currentPart, msg).then(resp => {
+				setMessages([...messages, {
+					timestamp: new Date(),
+					sender: Sender.USER,
+					content: msg
+				}]);
+				
+				if("proceedTo" in resp && resp.proceedTo) {
+					setCurrentPart(resp.proceedTo);
+				}
+			}).catch(err => { throw err; });
+
+
+
+
 		}
 	}
 
@@ -207,5 +218,37 @@ async function fetchLessonPart(lessonId: number, part: number): Promise<PartApiR
 		throw new Error(body.error);
 	}
 	
+	return body;
+}
+
+
+/**
+ * Helper function which POSTs a user's response to a lesson part off to the `/api/lesson/[]/part/[]/response` endpoint.
+ */
+async function postReponse(lessonId: number, part: number, msg: string): Promise<UserResponseApiRouteResponse> {
+	console.debug(`/api/lesson/${lessonId}/part/${part}/response`);
+
+	const resp = await fetch(`/api/lesson/${lessonId}/part/${part}/response`, {
+		method: "POST",
+		body: JSON.stringify({
+			message: msg
+		}),
+		headers: {
+			"Content-Type": "application/json"
+		}
+	}).catch(err => { throw err });
+
+	if(!resp.ok) {
+		console.debug(resp);
+		throw new Error("Recieved error response status from API");
+	}
+
+	const body = await resp.json() as UserResponseApiRouteResponse;
+
+	if("error" in body) {
+		console.error(body.error);
+		throw new Error(body.error);
+	}
+
 	return body;
 }
