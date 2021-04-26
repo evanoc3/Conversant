@@ -11,5 +11,8 @@ module.exports = {
   }),
   sassOptions: {
     includePaths: [ `${__dirname}/src/styles/` ],
+  },
+  future: {
+    webpack5: true
   }
 };

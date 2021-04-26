@@ -34,7 +34,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res,
   callbacks: {
     session: async (session: IAuthSession, user: IUser) => {
       if(user?.id) {
-        session.user.id = user.id;
+        session.user!.id = user.id;
       }
       return session;
     }

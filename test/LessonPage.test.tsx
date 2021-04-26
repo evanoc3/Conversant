@@ -1,6 +1,7 @@
-import { describe, it, expect } from "@jest/globals";
-import { mount } from "enzyme";
 import "@mocks/next/router";
+import { describe, it, expect } from "@jest/globals";
+import { withRouter } from "next/router";
+import { mount } from "enzyme";
 import LessonPage from "@pages/lesson/[lessonId]";
 
 
@@ -8,7 +9,8 @@ describe("<LessonPage> Route", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<LessonPage />);
+			const LessonPageComponent = withRouter(LessonPage);
+			const wrapper = mount(<LessonPageComponent />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});

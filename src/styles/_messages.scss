@@ -13,5 +13,10 @@ $message-border-radius: 1rem;
 	display: inline-block;
 	padding: $message-padding;
 	border-radius: $message-border-radius;
+	width: fit-content;
+}
+
+@mixin inner-text {
+	display: inline-block;
 	max-width: min(calc(100vw - 1.5rem), 30rem);
 }

@@ -1,17 +1,11 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { ServerlessMysql } from "serverless-mysql";
 import { getSession } from "next-auth/client";
-import type { ITopicsTableRow, IEnrolmentsTableRow } from "@customTypes/database";
 import { connectToDatabase } from "@util/database";
+
+import type { NextApiRequest, NextApiResponse } from "next";
 import type { IAuthSession } from "@customTypes/auth";
+import type { ISessionsTableRow } from "@customTypes/database";
 import type { ApiResponse } from "@customTypes/api";
-
-
-
-/**
- * Helper Typescript interface for the value produced by the database query this route performs.
- */
-export type IEnrolledTopicsQueryResultRow = Pick<ITopicsTableRow, "id" | "label"> & Pick<IEnrolmentsTableRow, "userId" | "timestamp" | "currentLesson">
 
 
 /**
@@ -19,7 +13,7 @@ export type IEnrolledTopicsQueryResultRow = Pick<ITopicsTableRow, "id" | "label"
  */
 export type Response = ApiResponse<{
 	userId: string,
-	enrolledTopics: IEnrolledTopicsQueryResultRow[]
+	lastSignInTime: string
 }>
 
 
@@ -39,13 +33,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		const mysql = await connectToDatabase();
 
 		// query the database for topics the current user is enrolled in
-		const enrolledTopics = await getEnrolledTopics(mysql, userId).catch(err => { throw err; });
+		const lastSignInTime = await getLastSignInTime(mysql, userId).catch(err => { throw err; });
 
 		// send the happy-route response
 		res.status(200).json({
 			timestamp: (new Date()).toISOString(),
 			userId: userId,
-			enrolledTopics: enrolledTopics
+			lastSignInTime: lastSignInTime.toISOString()
 		} as Response);
 	}
 	catch(err) {
@@ -69,18 +63,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
  * 
  * @throws if the database query fails for any reason.
  */
-async function getEnrolledTopics(mysql: ServerlessMysql, userId: string): Promise<IEnrolledTopicsQueryResultRow[]> {
-	const rows = await mysql.query<IEnrolledTopicsQueryResultRow[]>(`
-		SELECT enrolments.topic as id, enrolments.timestamp, topics.label, enrolments.currentLesson
-		FROM enrolments
-		LEFT JOIN topics ON enrolments.topic = topics.id
-		WHERE enrolments.userId = ?
-		ORDER BY timestamp DESC
-		LIMIT 10
+async function getLastSignInTime(mysql: ServerlessMysql, userId: string): Promise<Date> {
+	const row = await mysql.query<ISessionsTableRow[]>(`
+		SELECT created_at
+		FROM sessions
+		WHERE user_id = ?
+		ORDER BY expires DESC
+		LIMIT 1
 	`, [ userId ]).catch(err => {
 		console.error(`Error: failed to query database for enrolled topics for user \"${userId}\". Error message: `, err);
 		throw err;
 	});
 
-	return rows;
+	if(row.length == 0 || row.length > 1) {
+		throw new Error("Invalid database response");
+	}
+
+	return new Date(row[0].created_at);
 }

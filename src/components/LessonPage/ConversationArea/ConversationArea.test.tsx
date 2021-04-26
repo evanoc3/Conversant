@@ -11,7 +11,7 @@ describe("<ConversationArea> (lesson page) Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<ConversationArea content={[]} currentStep={0} />);
+			const wrapper = mount(<ConversationArea messages={[]} isTyping={false} />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});

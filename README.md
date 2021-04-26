@@ -41,5 +41,5 @@ This project has unit test suites for each react component, ensuring that build 
 
 To generate a cloc report of the overall composition of this project, run:
 ```sh
-cloc --exclude-dir=.next,node_modules --not-match-f=package-lock.json .
+cloc --not-match-f=package-lock.json --vcs=git
 ```

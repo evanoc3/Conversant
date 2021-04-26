@@ -7,7 +7,7 @@
 #
 # Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
 # Database: mydb5201
-# Generation Time: 2021-04-04 18:03:33 +0000
+# Generation Time: 2021-04-26 12:38:02 +0000
 # ************************************************************
 
 
@@ -84,6 +84,32 @@ CREATE TABLE `lesson_completions` (
 
 
 
+# Dump of table lesson_parts
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `lesson_parts`;
+
+CREATE TABLE `lesson_parts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `lesson` int(11) NOT NULL,
+  `content` text NOT NULL,
+  `type` enum('proceed','yesNo','endOfLesson') NOT NULL DEFAULT 'proceed',
+  `proceedTo` int(11) DEFAULT NULL,
+  `onYes` int(11) DEFAULT NULL,
+  `onNo` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `lesson` (`lesson`),
+  KEY `proceedTo` (`proceedTo`),
+  KEY `onYes` (`onYes`),
+  KEY `onNo` (`onNo`),
+  CONSTRAINT `lesson_parts_ibfk_1` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`),
+  CONSTRAINT `lesson_parts_ibfk_2` FOREIGN KEY (`proceedTo`) REFERENCES `lesson_parts` (`id`),
+  CONSTRAINT `lesson_parts_ibfk_3` FOREIGN KEY (`onYes`) REFERENCES `lesson_parts` (`id`),
+  CONSTRAINT `lesson_parts_ibfk_4` FOREIGN KEY (`onNo`) REFERENCES `lesson_parts` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
 # Dump of table lessons
 # ------------------------------------------------------------
 
@@ -93,17 +119,13 @@ CREATE TABLE `lessons` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `topic` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `content` mediumtext NOT NULL,
-  `preceededBy` int(11) DEFAULT NULL,
-  `followedBy` int(11) DEFAULT NULL,
   `description` text,
+  `firstPart` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `topic` (`topic`),
-  KEY `preceededBy` (`preceededBy`),
-  KEY `followedBy` (`followedBy`),
+  KEY `firstPart` (`firstPart`),
   CONSTRAINT `lessons_ibfk_1` FOREIGN KEY (`topic`) REFERENCES `topics` (`id`),
-  CONSTRAINT `lessons_ibfk_2` FOREIGN KEY (`preceededBy`) REFERENCES `lessons` (`id`),
-  CONSTRAINT `lessons_ibfk_3` FOREIGN KEY (`followedBy`) REFERENCES `lessons` (`id`)
+  CONSTRAINT `lessons_ibfk_2` FOREIGN KEY (`firstPart`) REFERENCES `lesson_parts` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

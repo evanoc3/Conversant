@@ -22,7 +22,7 @@ const LandingPage: NextPage = (props) => {
 			</Head>
 
 			<Background>
-				<Header showNav={true} />
+				<Header />
 
 				<div id={styles["hero-container"]}>
 					<div id={styles["hero-box"]} className={styles["box"]}>

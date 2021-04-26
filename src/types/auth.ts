@@ -1,25 +1,11 @@
-import type { User as NextAuthUser } from "next-auth";
-import type { SessionBase as NextAuthSessionBase } from "next-auth/_utils";
+import type { Session, DefaultUser } from "next-auth";
 
 
-export interface IUser extends NextAuthUser {
+export interface IUser extends DefaultUser {
 	id?: string
 }
 
 
-export interface IAuthSession extends NextAuthSessionBase {
-	user: IUser
+export interface IAuthSession extends Session {
+	user?: IUser
 }
-
-
-export interface IUserDocument {
-	name: string | null,
-	email: string | null,
-	image: string | null,
-	createdAt: Date,
-	updatedAt: Date,
-	emailVerified: boolean
-}
-
-
-

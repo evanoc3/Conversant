@@ -1,0 +1,7 @@
+# GET a topic which exists
+GET http://localhost:8080/api/topic/java
+
+### 
+
+# GET a topic which does not exist
+GET http://localhost:8080/api/topic/bloopers

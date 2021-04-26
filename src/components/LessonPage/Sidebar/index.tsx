@@ -1,8 +1,10 @@
-import { FunctionComponent, PropsWithChildren } from "react";
 import Link from "next/link";
-import { useSession, Session } from "next-auth/client";
+import { useSession } from "next-auth/client";
 import { ArrowLeft as ArrowLeftSvg } from "react-feather";
 import styles from "./Sidebar.module.scss";
+
+import type { FunctionComponent, PropsWithChildren } from "react";
+import type { Session } from "next-auth";
 
 
 type Props = PropsWithChildren<{
@@ -37,9 +39,9 @@ const UserBadge = (session: Session | null | undefined, loading: boolean) => {
 	if(session) {
 		return (
 			<div id={styles["user-badge"]}>
-				<img src={session.user.image!} alt="User Profile Image" id={styles["profile-img"]} />
+				<img src={session.user!.image!} alt="User Profile Image" id={styles["profile-img"]} />
 				<span id={styles["user-name"]} className={styles["label"]}>
-					{ session.user.name }
+					{ session.user!.name }
 				</span>
 			</div>
 		);

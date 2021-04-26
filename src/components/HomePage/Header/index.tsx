@@ -1,9 +1,9 @@
-import { ChangeEvent, Component, FormEvent, PropsWithChildren } from "react";
+import { Component } from "react";
 import Link from "next/link";
 import styles from "./Header.module.scss";
-// import { search as SearchIcon } from "@images/icons/index";
-import { Search as SearchIcon } from "react-feather";
-import { LoginPill } from "@components/index";
+import { UserBadge } from "@components/index";
+
+import type { ChangeEvent, FormEvent, PropsWithChildren } from "react";
 
 
 type Props = PropsWithChildren<{
@@ -39,15 +39,7 @@ export default class Header extends Component<Props, State> {
 				</h1>
 
 				<div className={styles["spacer"]} />
-
-				<form id={styles["search-form"]} onSubmit={this.onSearchSubmit}>
-					<input type="text" id={styles["search-input"]} placeholder="Search..." onChange={this.onSearchTermChange} />
-					<button id={styles["search-button"]}>
-						<SearchIcon id={styles["search-icon"]} />
-					</button>
-				</form>
-
-				<LoginPill />
+				<UserBadge />
 			</header>
 		);
 	}

@@ -3,7 +3,7 @@ import { connectToDatabase } from "@util/database";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ServerlessMysql } from "serverless-mysql";
-import type { BaseApiResponse, ErrorApiResponse } from "@customTypes/api";
+import type { ApiResponse } from "@customTypes/api";
 import type { IAuthSession } from "@customTypes/auth";
 
 
@@ -35,7 +35,7 @@ export interface TopicInformation {
 /**
  * Typescript interface for the JSON serialized value returned by this API route.
  */
-export type Response = BaseApiResponse & (ErrorApiResponse | TopicInformation)
+export type Response = ApiResponse<TopicInformation>
 
 
 /**
@@ -47,7 +47,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		// See if the current user has an active session
 		const session = await getSession({ req }) as IAuthSession;
-		const userId = session?.user.id ?? "";
+		const userId = session.user?.id ?? "";
 		
 		// parse parameter from request query
 		const topicId = (req.query["topicId"] as string) ?? "";
@@ -73,7 +73,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		res.status(500).json({
 			timestamp: (new Date()).toISOString(),
 			error: (err as Error).message
-		})
+		} as Response)
 	}
 	finally {
 		// Perform Serverless MySQL cleanup

@@ -39,10 +39,7 @@ const HomePage: NextPage<Props> = (props) => {
 				<div id={styles["main"]}>
 					{
 						(!loading && session) ? (
-							<>
-								<a href="/api/auth/signout" onClick={signOutClickHandler}>Sign Out</a>
-								<LessonList />
-							</>
+							<LessonList />
 						) : (
 							<span>Loading...</span>
 						)

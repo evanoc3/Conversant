@@ -1,153 +1,254 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
-import { withRouter, NextRouter } from "next/router";
+import { useRouter } from "next/router";
 import styles from "./[lessonId].module.scss";
 import { Background } from "@components/index";
 import { ConversationArea, SendMessageForm, Sidebar, TitleBar } from "@components/LessonPage/index";
+import { Sender } from "@customTypes/messages";
+import { LessonPartResponseType } from "@customTypes/lesson";  
 
-import type { PropsWithChildren } from "react";
+import type { FunctionComponent, PropsWithChildren } from "react";
+import type { NextRouter } from "next/router";
 import type { Lesson } from "@customTypes/lesson";
-import type { Response as ApiRouteResponse } from "@pages/api/lesson/[lessonId]";
+import type { Response as LessonApiRouteResponse } from "@pages/api/lesson/[lessonId]";
+import type { Response as PartApiRouteResponse } from "@pages/api/lesson/[lessonId]/part/[partNumber]";
+import type { Response as UserResponseApiRouteResponse } from "@pages/api/lesson/[lessonId]/part/[partNumber]/response";
+import type { IMessage } from "@customTypes/messages";
 
 
 type Props = PropsWithChildren<{
 	router: NextRouter,
 }>
 
-interface State {
-	lesson: Lesson | undefined,
-	currentStep: number,
-	sidebarOpen: boolean
-}
 
+const LessonPage: FunctionComponent<Props> = (props) => {
+	// State & Other Hooks
+	const [lessonId, setLessonId] = useState<number | undefined>(undefined);
+	const [lesson, setLesson] = useState<Lesson | undefined>();
+	const [currentPart, setCurrentPart] = useState(-1);
+	const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+	const [messages, setMessages] = useState<IMessage[]>([]);
+	const [isTyping, setIsTyping] = useState(false);
+	const router = useRouter();
 
-class LessonPage extends Component<Props, State> {
-
-	constructor(props: Props) {
-		super(props);
-
-		this.toggleSidebarOpen = this.toggleSidebarOpen.bind(this);
-
-		this.state = {
-			lesson: undefined,
-			currentStep: 0,
-			sidebarOpen: false
-		};
+	// Methods
+	function toggleSidebarOpen() {
+		setSidebarIsOpen(!sidebarIsOpen);
 	}
 
+	async function sendMessageHandler(msg: string): Promise<void> {
+		if(lessonId !== undefined && currentPart >= 0) {
+			await postReponse(lessonId, currentPart, msg).then(resp => {
+				setMessages([...messages, {
+					timestamp: new Date(),
+					sender: Sender.USER,
+					content: msg
+				}]);
+				
+				if("proceedTo" in resp && resp.proceedTo) {
+					setCurrentPart(resp.proceedTo);
+				}
+			}).catch(err => { throw err; });
 
-	public render(): JSX.Element {
-		return (
-			<>
-				<Head>
-					<title>Lesson | Conversant</title>
-				</Head>
 
-				<Background>
-					{
-						(this.state.lesson) ? this.renderLesson() : this.renderLoading()
-					}
-				</Background>
 
-			</>
-		);
+
+		}
 	}
 
+	/**
+	 * This function is called as a side-effect whenever `lessonId` and `currentPart` change. It fetches the lesson part given by the
+	 * current `lessonId` and `currentPart` state fields, and adds it to the `messages` state list.
+	 * 
+	 * If the `responseType` of the fetched
+	 * lesson part is `null` then it increments the `currentPart` state, which as a result of the side-effect mentioned above, calls it
+	 * again for the next part.
+	 */
+	async function getLessonPart(): Promise<void> {
+		const resp = await fetchLessonPart(lessonId!, currentPart).catch(err => { throw err; });
 
-	public componentDidMount(): void {
-		document.body.style.overflowY = "auto";
+		if("error" in resp) {
+			throw resp.error;
+		}
 
-		let counter: number = 0;
+		// Set according to the average characters per minute typed by a fast adult (see http://typefastnow.com/average-typing-speed)
+		const typingTime = resp.content.length * 22.5;
 
-		const interval = setInterval(() => {
-			if(this.props.router.isReady) {
-				this.getLesson();
-				clearInterval(interval);
+		setIsTyping(true);
+
+		// wait for the timeout
+		await new Promise(resolve => setTimeout(resolve, typingTime));
+
+		setIsTyping(false);
+		
+		setMessages([...messages, {
+			timestamp: new Date(),
+			sender: Sender.SYSTEM,
+			content: resp.content
+		}]);
+
+		if(resp.type === LessonPartResponseType.Proceed) {
+			setCurrentPart(resp.proceedTo!);
+		}
+	}
+
+	// Fetch lesson metadata when router is ready and has parsed lessonId
+	useEffect(() => {
+		if(router.isReady) {
+			// when the router is ready, parse the lessonId query parameter and save it as state
+			try {
+				const parsedLessonId = parseInt(router.query["lessonId"] as string);
+
+				if(isNaN(parsedLessonId)) {
+					throw new Error("Error: the lesson ID in the query is invalid");
+				}
+
+				setLessonId(parsedLessonId);
 			}
-			counter += 1;
-		}, 100);
-	}
+			catch(err) {
+				alert("Error: failed to fetch the lesson! Please try again later.");
+				console.error(err);
+				router.push("/home");
+			}
 
-
-	public componentWillUnmount() {
-		document.body.style.overflowY = "hidden";
-	}
-
-
-	private async getLesson(): Promise<void> {
-		const lessonId = this.props.router.query["lessonId"] as string;
-
-		try {
-			const lesson = await fetchLesson(lessonId).catch(err => { throw err; }) 
-
-			this.setState({
-				lesson: lesson
-			});
+			// If the lessonId field is set, then fetch the lesson details from the API
+			if(lessonId !== undefined) {
+				try {
+					fetchLesson(lessonId!).catch(err => { throw err; }).then(lesson => {
+						setLesson(lesson);
+						setCurrentPart(lesson.firstPart);
+					});
+				}
+				catch(err) {
+					alert("Error: failed to fetch the lesson! Please try again later.");
+					console.error(err);
+					router.push("/home");
+				}
+			}
 		}
-		catch(err) {
-			console.error("Error: failed to retrieve lesson from API. Error message: ", err);
+	}, [ router.isReady, lessonId ]);
+
+	// When the lesson is retrieved, request the first part of the lesson content
+	useEffect(() => {
+		if(lessonId !== undefined && currentPart >= 0) {
+			try {
+				getLessonPart().catch(err => { throw err; });
+			}
+			catch(err) {
+				alert("Error: failed to fetch the lesson part! Please try again later.");
+				console.error(err);
+				router.push("/home");
+			}
 		}
-	}
+	}, [ lessonId, currentPart ]);
 
 
-	private renderLesson(): JSX.Element {
-		const { sidebarOpen, lesson } = this.state;
+	// Render
+	return (
+		<>
+			<Head>
+				<title>Lesson | Conversant</title>
+			</Head>
 
-		return (
-			<div id={styles["page"]}>
-				<Head>
-					<title>
-						{ (lesson) ? `${lesson.title} (${lesson.topicLabel}) | Conversant` : "Lesson | Conversant"}
-					</title>
-				</Head>
-
-				<div id={styles["sidebar"]} className={(sidebarOpen) ? styles["open"] : ""}>
-					<Sidebar />
+			<Background>
+				<div id={styles["page"]}>
+					<Head>
+						<title>
+							{ (lesson !== undefined) ? `${lesson.title} (${lesson.topicLabel})` : "Lesson"} | Conversant
+						</title>
+					</Head>
+	
+					<div id={styles["sidebar"]} className={(sidebarIsOpen) ? styles["open"] : ""}>
+						<Sidebar />
+					</div>
+	
+					<div id={styles["title-bar"]}>
+						<TitleBar toggleSidebarOpen={toggleSidebarOpen} sidebarOpen={sidebarIsOpen} lessonTitle={lesson?.title ?? "Loading..."} lessonTopic={lesson?.topicLabel ?? ""} />
+					</div>
+	
+					<div id={styles["message-area"]}>
+						<ConversationArea messages={messages} isTyping={isTyping} />
+					</div>
+	
+					<div id={styles["reply-bar"]}>
+						<SendMessageForm messageSentHandler={sendMessageHandler} disabled={lesson === undefined} />
+					</div>
 				</div>
+			</Background>
+		</>
+	);
+};
 
-				<div id={styles["title-bar"]}>
-					<TitleBar toggleSidebarOpen={this.toggleSidebarOpen} sidebarOpen={sidebarOpen} lessonTitle={lesson!.title} lessonTopic={lesson!.topicLabel} />
-				</div>
-
-				<div id={styles["message-area"]}>
-					<ConversationArea content={lesson!.content} currentStep={0} />
-				</div>
-
-				<div id={styles["reply-bar"]}>
-					<SendMessageForm />
-				</div>
-			</div>
-		);
-	}
-
-	private renderLoading(): JSX.Element {
-		return (
-			<div>Loading</div>
-		);
-	}
-
-	private toggleSidebarOpen(): void {
-		this.setState({
-			sidebarOpen: !this.state.sidebarOpen
-		});
-	}
-}
-
-export default withRouter(LessonPage);
+export default LessonPage;
 
 
-async function fetchLesson(lessonId: string): Promise<Lesson> {
+/**
+ * Helper function to retrieve the lesson's information from the API.
+ */
+async function fetchLesson(lessonId: number): Promise<Lesson> {
 	const resp = await fetch(`/api/lesson/${lessonId}`);
 
 	if(! resp.ok) {
 		throw new Error(`API request to retrieve lesson information failed with status ${resp.status} (${resp.statusText})`);
 	}
 
-	const body = await resp.json() as ApiRouteResponse;
+	const body = await resp.json() as LessonApiRouteResponse;
 
 	if("error" in body) {
 		throw new Error(body.error);
 	}
 
 	return body.lesson;
+}
+
+
+/**
+ * Helper function to retrieve an individual message as part of a lesson from the API.
+ */
+async function fetchLessonPart(lessonId: number, part: number): Promise<PartApiRouteResponse> {
+	const resp = await fetch(`/api/lesson/${lessonId}/part/${part}`).catch(err => { throw err; });
+
+	if(! resp.ok) {
+		throw new Error("failed to fetch the lesson part");
+	}
+
+	const body = await resp.json() as PartApiRouteResponse;
+
+	if("error" in body) {
+		throw new Error(body.error);
+	}
+	
+	return body;
+}
+
+
+/**
+ * Helper function which POSTs a user's response to a lesson part off to the `/api/lesson/[]/part/[]/response` endpoint.
+ */
+async function postReponse(lessonId: number, part: number, msg: string): Promise<UserResponseApiRouteResponse> {
+	console.debug(`/api/lesson/${lessonId}/part/${part}/response`);
+
+	const resp = await fetch(`/api/lesson/${lessonId}/part/${part}/response`, {
+		method: "POST",
+		body: JSON.stringify({
+			message: msg
+		}),
+		headers: {
+			"Content-Type": "application/json"
+		}
+	}).catch(err => { throw err });
+
+	if(!resp.ok) {
+		console.debug(resp);
+		throw new Error("Recieved error response status from API");
+	}
+
+	const body = await resp.json() as UserResponseApiRouteResponse;
+
+	if("error" in body) {
+		console.error(body.error);
+		throw new Error(body.error);
+	}
+
+	return body;
 }

@@ -5,7 +5,9 @@
 #page {
 	height: 100vh;
 	padding-top: env(safe-area-inset-top);
-	padding-bottom: env(safe-area-inset-bottom);
+	@supports(height: -webkit-fill-available) {
+		height: -webkit-fill-available;
+	}
 	display: flex;
 	flex-flow: column nowrap;
 }
@@ -16,11 +18,7 @@
 }
 
 
-.info-box {
-	flex: 0.25 0.25;
-}
-
-
 .lesson-carousel {
-	flex: 0.75 0.75;
+	flex: 1;
+	min-height: 23rem;
 }
