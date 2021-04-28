@@ -14,7 +14,7 @@
 		color: colours.$primary-font;
 	}
 
-	&.not-signed-in {
+	&.not-signed-in, &.loading {
 		padding: 0.1rem 0.5rem;
 	}
 
