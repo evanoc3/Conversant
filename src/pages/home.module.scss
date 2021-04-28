@@ -34,8 +34,7 @@
 }
 
 
-#info-box {
-	
+.info-box {
 	@media(min-width: breakpoints.$tablet) {
 		grid-row: 1 / span 1;
 		grid-column: 3 / span 1;

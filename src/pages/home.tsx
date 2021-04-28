@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { useSession } from "next-auth/client";
 import { Background } from "@components/index";
-import { Header, LessonList } from "@components/HomePage/index";
+import { Header, LessonList, UserInfoBox } from "@components/HomePage/index";
 import styles from "./home.module.scss";
 
 import type { PropsWithChildren } from "react";
-import type { Response as LastSigninApiRouteResponse } from "@pages/api/my/last-signin";
 
 
 type Props = PropsWithChildren<{
@@ -17,19 +16,12 @@ type Props = PropsWithChildren<{
 export default function HomePage(props: Props): JSX.Element {
 	const router = useRouter();
 	const [session, sessionLoading] = useSession();
-	const [lastSignInTime, setLastSignInTime] = useState<Date | null>(null);
 
 	useEffect(() => {
 		if(router.isReady && !sessionLoading && session === null) {
 			router.replace("/");
 		}
 	}, [ router.isReady, sessionLoading, session ]);
-
-	useEffect(() => {
-		if(session !== null) {
-			getLastSignInTime().then(time => setLastSignInTime(time)).catch(err => { throw err; });
-		}
-	}, [ session ]);
 
 
 	return (
@@ -46,9 +38,7 @@ export default function HomePage(props: Props): JSX.Element {
 						<div id={styles["grid"]}>
 							<LessonList className={styles["lesson-list"]} />
 
-							<div id={styles["info-box"]}>
-								<div id={styles["signin-lbl"]}>Last sign in was: { lastSignInTime?.toDateString() ?? "---" }</div>
-							</div>
+							<UserInfoBox className={styles["info-box"]} />
 						</div>
 					</div>
 				</div>
@@ -58,29 +48,3 @@ export default function HomePage(props: Props): JSX.Element {
 }
 
 
-/**
- * Helper function which queries the API for the datetime user's latest session.
- */
-async function getLastSignInTime(): Promise<Date> {
-	const resp = await fetch("/api/my/last-signin");
-
-	if(!resp.ok) {
-		throw new Error(`Failed to retrieve last signin time. Received status \"${resp.statusText}\" from API`);
-	}
-
-	const body = await resp.json() as LastSigninApiRouteResponse;
-
-	if("error" in body) {
-		throw new Error(body.error);
-	}
-
-	return new Date(body.lastSignInTime);
-}
-
-
-/**
- * Helper function which queries the API for a user account's summary info
- */
-async function getUserSummaryInfo(): Promise<any> {
-	
-}

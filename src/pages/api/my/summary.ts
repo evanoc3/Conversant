@@ -9,14 +9,19 @@ import type { ApiResponse } from "@customTypes/api";
 
 
 /**
- * Typescript interface for the JSON serialized return value of this API route.
+ * Typescript interface containing the 
  */
-export type Response = ApiResponse<{
+export interface HappyResponsePayload {
 	userId: string,
 	lessonsCompleted: number,
 	lastSignInTime: string,
 	accountCreationTime: string,
-}>
+}
+
+/**
+ * Typescript interface for the JSON serialized return value of this API route.
+ */
+export type Response = ApiResponse<HappyResponsePayload>
 
 
 /**
