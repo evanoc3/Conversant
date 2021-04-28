@@ -49,3 +49,17 @@ export interface ISessionsTableRow {
 	created_at: string,
 	updated_at: string
 }
+
+
+/**
+ * Typescript interface for the schema of the `users` table in the database.
+ */
+export interface IUsersTableRow {
+	id: number,
+	name: string,
+	email: string,
+	email_verified: string,
+	image: string,
+	created_at: string,
+	updated_at: string
+}

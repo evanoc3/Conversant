@@ -76,3 +76,11 @@ async function getLastSignInTime(): Promise<Date> {
 
 	return new Date(body.lastSignInTime);
 }
+
+
+/**
+ * Helper function which queries the API for a user account's summary info
+ */
+async function getUserSummaryInfo(): Promise<any> {
+	
+}
