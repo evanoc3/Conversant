@@ -39,11 +39,18 @@ export default function HomePage(props: Props): JSX.Element {
 			</Head>
 
 			<Background>
-				<Header />
+				<div id={styles["page"]}>
+					<Header />
 
-				<div id={styles["main"]}>
-					Last sign in was at: { lastSignInTime?.toISOString() ?? "---" }
-					<LessonList />
+					<div id={styles["main"]}>
+						<div id={styles["grid"]}>
+							<LessonList className={styles["lesson-list"]} />
+
+							<div id={styles["info-box"]}>
+								<div id={styles["signin-lbl"]}>Last sign in was: { lastSignInTime?.toDateString() ?? "---" }</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</Background>
 		</>

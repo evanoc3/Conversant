@@ -1,4 +1,4 @@
-import { FunctionComponent, PropsWithChildren, useState, useEffect } from "react";
+import { PropsWithChildren, useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/client";
 import styles from "./LessonList.module.scss";
@@ -6,36 +6,53 @@ import type { Response as ApiRouteResponse, TopicDetail } from "@pages/api/my/to
 
 
 type Props = PropsWithChildren<{
+	className?: string
 }>
 
 
-const LessonList: FunctionComponent<Props> = () => {
+export default function LessonList(props: Props): JSX.Element {
 	const [ session, sessionIsLoading ] = useSession(); 
+	const [isLoading, setIsLoading] = useState(true);
 	const [ topics, setTopics ] = useState<TopicDetail[]>([]);
 
+	// The first time the component mounts, fetch data from the API
 	useEffect(() => {
 		getTopics().then(res => {
+			setIsLoading(false);
 			setTopics(res);
-		}).catch(err => {
-			alert(err);
-		});
+		}).catch(err => { throw err; });
 	}, []);
 
 
-	if(session) {
+	function renderTopicListItems(): JSX.Element | JSX.Element[] {
+		if(isLoading) {
+			return ( <li id={styles["loading-list-item"]}>Loading...</li> );
+		}
+
+		if(topics.length === 0) {
+			return ( <li id={styles["no-items-list-item"]}>No topics to display</li> );
+		}
+
+		return topics.map(topic => (
+			<li key={topic.id} className={styles["list-item"]}>
+				<Link href={`/topic/${topic.id}`}>
+					<a href={`/topic/${topic.id}`} className={styles["list-item-link"]}>
+						{ topic.label }
+					</a>
+				</Link>
+			</li>
+		));
+	}
+
+
+	if(!sessionIsLoading && session !== null) {
 		return (
-			<div id={styles["container"]}>
+			<div id={styles["container"]} className={props.className}>
 				<h2 id={styles["title"]}>Your Topics</h2>
 				
-				<ol id={styles["lesson-list"]}>
-					{
-						topics.map(topic => (
-							<li key={topic.id} className={styles["list-item"]}>
-								<Link href={`/topic/${topic.id}`}>{ topic.label }</Link>
-							</li>
-						))
-					}
-				</ol>
+				<ul id={styles["lesson-list"]}>
+					{ renderTopicListItems() }
+				</ul>
 			</div>
 		);
 	}
@@ -47,10 +64,10 @@ const LessonList: FunctionComponent<Props> = () => {
 	);
 };
 
-export default LessonList;
 
-
-
+/**
+ * Helper function which queries the API endpoint to get the current user's enrolled topics.
+ */
 async function getTopics(): Promise<TopicDetail[]> {
 	const resp = await fetch("/api/my/topics");
 
