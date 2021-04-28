@@ -1,16 +1,5 @@
 import { LessonPartResponseType } from "@customTypes/lesson";
 
-/**
- * Typescript interface for the Schema of the `enrolments` table of the database.
- */
-export interface IEnrolmentsTableRow {
-	id: number,
-	userId: number,
-	topic: string,
-	timestamp: Date | string,
-	currentLesson: number
-}
-
 
 /**
  * Typescript interface for the Schema of the `lessons` table of the database.
@@ -57,6 +46,20 @@ export interface ISessionsTableRow {
 	expires: string,
 	session_token: string,
 	access_token: string,
+	created_at: string,
+	updated_at: string
+}
+
+
+/**
+ * Typescript interface for the schema of the `users` table in the database.
+ */
+export interface IUsersTableRow {
+	id: number,
+	name: string,
+	email: string,
+	email_verified: string,
+	image: string,
 	created_at: string,
 	updated_at: string
 }

@@ -1,13 +1,50 @@
+@use "breakpoints";
 @use "colours";
 @use "ui";
 
 
+#page {
+	height: 100vh;
+	height: stretch;
+	display: flex;
+	flex-flow: column nowrap;
+}
+
+
 #main {
+	flex: 1;
 	width: calc(100% - 3rem);
-	margin: 0 1.5rem;
-	border-top-left-radius: ui.$med-curve;
-	border-top-right-radius: ui.$med-curve;
-	height: calc(100vh - 5rem);
+	margin: 0 1.5rem 1.5rem;
+	border-radius: ui.$med-curve;
+
 	background-color: colours.$primary-background;
 	padding: 1rem 1.25rem;
+}
+
+
+#grid {
+	display: grid;
+
+	grid-template-columns: 1fr;
+	grid-auto-rows: auto;
+
+	@media(min-width: breakpoints.$laptop) {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+
+.info-box {
+	@media(min-width: breakpoints.$tablet) {
+		grid-row: 1 / span 1;
+		grid-column: 3 / span 1;
+	}
+}
+
+
+.lesson-list {
+	@media(min-width: breakpoints.$laptop) {
+		grid-row: 1 / span 1;
+		grid-column: 1 / span 1;
+	}
 }

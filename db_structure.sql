@@ -6,8 +6,8 @@
 # https://github.com/sequelpro/sequelpro
 #
 # Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
-# Database: mydb5201
-# Generation Time: 2021-04-26 12:38:02 +0000
+# Database: mydb3940
+# Generation Time: 2021-04-28 12:55:40 +0000
 # ************************************************************
 
 
@@ -46,26 +46,6 @@ CREATE TABLE `accounts` (
 
 
 
-# Dump of table enrolments
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `enrolments`;
-
-CREATE TABLE `enrolments` (
-  `topic` varchar(255) NOT NULL,
-  `userId` int(11) NOT NULL,
-  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `currentLesson` int(11) DEFAULT NULL,
-  PRIMARY KEY (`topic`,`userId`),
-  KEY `userId` (`userId`),
-  KEY `currentLesson` (`currentLesson`),
-  CONSTRAINT `enrolments_ibfk_1` FOREIGN KEY (`topic`) REFERENCES `topics` (`id`),
-  CONSTRAINT `enrolments_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
-  CONSTRAINT `enrolments_ibfk_3` FOREIGN KEY (`currentLesson`) REFERENCES `lessons` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
 # Dump of table lesson_completions
 # ------------------------------------------------------------
 
@@ -78,8 +58,8 @@ CREATE TABLE `lesson_completions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user` (`user`,`lesson`),
   KEY `lesson` (`lesson`),
-  CONSTRAINT `lesson_completions_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`),
-  CONSTRAINT `lesson_completions_ibfk_2` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`)
+  CONSTRAINT `lesson_completions_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `lesson_completions_ibfk_2` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -102,10 +82,10 @@ CREATE TABLE `lesson_parts` (
   KEY `proceedTo` (`proceedTo`),
   KEY `onYes` (`onYes`),
   KEY `onNo` (`onNo`),
-  CONSTRAINT `lesson_parts_ibfk_1` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`),
-  CONSTRAINT `lesson_parts_ibfk_2` FOREIGN KEY (`proceedTo`) REFERENCES `lesson_parts` (`id`),
-  CONSTRAINT `lesson_parts_ibfk_3` FOREIGN KEY (`onYes`) REFERENCES `lesson_parts` (`id`),
-  CONSTRAINT `lesson_parts_ibfk_4` FOREIGN KEY (`onNo`) REFERENCES `lesson_parts` (`id`)
+  CONSTRAINT `lesson_parts_ibfk_1` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `lesson_parts_ibfk_2` FOREIGN KEY (`proceedTo`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `lesson_parts_ibfk_3` FOREIGN KEY (`onYes`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `lesson_parts_ibfk_4` FOREIGN KEY (`onNo`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -117,15 +97,15 @@ DROP TABLE IF EXISTS `lessons`;
 
 CREATE TABLE `lessons` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `topic` varchar(255) NOT NULL,
+  `topic` varchar(255) DEFAULT '',
   `title` varchar(255) NOT NULL,
   `description` text,
   `firstPart` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `topic` (`topic`),
   KEY `firstPart` (`firstPart`),
-  CONSTRAINT `lessons_ibfk_1` FOREIGN KEY (`topic`) REFERENCES `topics` (`id`),
-  CONSTRAINT `lessons_ibfk_2` FOREIGN KEY (`firstPart`) REFERENCES `lesson_parts` (`id`)
+  CONSTRAINT `lessons_ibfk_1` FOREIGN KEY (`topic`) REFERENCES `topics` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `lessons_ibfk_2` FOREIGN KEY (`firstPart`) REFERENCES `lessons` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

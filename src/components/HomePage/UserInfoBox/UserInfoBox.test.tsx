@@ -1,13 +1,13 @@
 import { describe, it, expect } from "@jest/globals";
 import { mount } from "enzyme";
-import InfoBox from "./index";
+import UserInfoBox from "./index";
 
 
-describe("<InfoBox> (topic page) Component", () => {
+describe("<UserInfoBox> (home page) Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<InfoBox description="" lessonCount={0} />);
+			const wrapper = mount(<UserInfoBox />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});

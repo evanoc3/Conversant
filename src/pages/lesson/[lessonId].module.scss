@@ -26,6 +26,7 @@
 		width: calc(100vw - 4rem);
 		transform: translateX(-100%);
 		transition: 0.5s transform;
+		z-index: 100;
 	
 		@media(min-width: breakpoints.$tablet) {
 			position: static;

@@ -26,9 +26,8 @@ export interface TopicInformation {
 	id: number,
 	label: string,
 	description: string,
-	enrolledUsers: number,
 	lessonCount: number,
-	lessons: TopicLessonInformation[],
+	lessons: TopicLessonInformation[]
 }
 
 
@@ -58,13 +57,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		// perform the query
 		const topicMetadata = await getTopicMetadata(mysql, topicId).catch(err => { throw err; });
 		const topicLessonData = await getTopicLessonData(mysql, topicId, userId).catch(err => { throw err; });
-		const enrolledUsers = await getTopicEnrolledUsers(mysql, topicId).catch(err => { throw err; });
 
 		// send an OK response
 		res.status(200).json({
 			timestamp: (new Date()).toISOString(),
 			...topicMetadata,
-			enrolledUsers: enrolledUsers,
 			lessons: topicLessonData
 		} as Response);
 	}
@@ -139,14 +136,3 @@ async function getTopicLessonData(mysql: ServerlessMysql, topicId: string, userI
 
 	return topicLessonRows;
 } 
-
-
-async function getTopicEnrolledUsers(mysql: ServerlessMysql, topicId: string): Promise<number> {
-	const enrolledUsersQuery = await mysql.query<{enrolledUsers: number}[]>(`
-		SELECT COUNT(*) as \`enrolledUsers\` FROM \`enrolments\` WHERE topic = ?
-	`, [ topicId ]).catch(err => {
-		throw err;
-	});
-
-	return enrolledUsersQuery[0].enrolledUsers
-}

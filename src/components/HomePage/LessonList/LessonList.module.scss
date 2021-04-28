@@ -1,13 +1,25 @@
-div#container {
+@use "colours";
+@use "ui";
 
-	h2#title {
+
+#lesson-list {
+	list-style: none;
+	max-height: 10rem;
+
+	li#no-items-list-item, li#loading-list-item {
+		color: red;
 	}
 
-	ol#lesson-list {
-		list-style-position: inside;
+	li.list-item {
+		border-radius: ui.$small-curve;
 
-		li.list-item {
+		&:hover {
+			background-color: colours.$highlighted-primary-background;
+		}
 
+		a.list-item-link {
+			display: block;
+			padding: 0.5rem;
 		}
 	}
 }

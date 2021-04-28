@@ -1,31 +1,28 @@
-import type { PropsWithChildren, MouseEventHandler } from "react";
-import type { NextPage } from "next";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { useSession, signOut } from "next-auth/client";
+import { useSession } from "next-auth/client";
 import { Background } from "@components/index";
-import { Header, LessonList } from "@components/HomePage/index";
+import { Header, LessonList, UserInfoBox } from "@components/HomePage/index";
 import styles from "./home.module.scss";
+
+import type { PropsWithChildren } from "react";
 
 
 type Props = PropsWithChildren<{
 }>
 
 
-const HomePage: NextPage<Props> = (props) => {
-	const [session, loading] = useSession();
+export default function HomePage(props: Props): JSX.Element {
+	const router = useRouter();
+	const [session, sessionLoading] = useSession();
 
-	if(!loading && !session) {
-		const router = useRouter();
-		router.replace("/");
-	}
+	useEffect(() => {
+		if(router.isReady && !sessionLoading && session === null) {
+			router.replace("/");
+		}
+	}, [ router.isReady, sessionLoading, session ]);
 
-	const signOutClickHandler: MouseEventHandler<HTMLAnchorElement> = (e) => {
-		e.preventDefault();
-		signOut({
-			callbackUrl: "/"
-		});
-	};
 
 	return (
 		<>
@@ -34,20 +31,20 @@ const HomePage: NextPage<Props> = (props) => {
 			</Head>
 
 			<Background>
-				<Header />
+				<div id={styles["page"]}>
+					<Header />
 
-				<div id={styles["main"]}>
-					{
-						(!loading && session) ? (
-							<LessonList />
-						) : (
-							<span>Loading...</span>
-						)
-					}
+					<div id={styles["main"]}>
+						<div id={styles["grid"]}>
+							<LessonList className={styles["lesson-list"]} />
+
+							<UserInfoBox className={styles["info-box"]} />
+						</div>
+					</div>
 				</div>
 			</Background>
 		</>
 	);
 }
 
-export default HomePage;
+

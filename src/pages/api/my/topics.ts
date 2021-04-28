@@ -1,17 +1,16 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { ServerlessMysql } from "serverless-mysql";
 import { getSession } from "next-auth/client";
-import type { ITopicsTableRow, IEnrolmentsTableRow } from "@customTypes/database";
 import { connectToDatabase } from "@util/database";
+
+import type { ServerlessMysql } from "serverless-mysql";
+import type { NextApiRequest, NextApiResponse } from "next";
 import type { IAuthSession } from "@customTypes/auth";
 import type { ApiResponse } from "@customTypes/api";
 
 
-
-/**
- * Helper Typescript interface for the value produced by the database query this route performs.
- */
-export type IEnrolledTopicsQueryResultRow = Pick<ITopicsTableRow, "id" | "label"> & Pick<IEnrolmentsTableRow, "userId" | "timestamp" | "currentLesson">
+export interface TopicDetail {
+	id: string,
+	label: string
+}
 
 
 /**
@@ -19,7 +18,7 @@ export type IEnrolledTopicsQueryResultRow = Pick<ITopicsTableRow, "id" | "label"
  */
 export type Response = ApiResponse<{
 	userId: string,
-	enrolledTopics: IEnrolledTopicsQueryResultRow[]
+	enrolledTopics: TopicDetail[]
 }>
 
 
@@ -69,18 +68,22 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
  * 
  * @throws if the database query fails for any reason.
  */
-async function getEnrolledTopics(mysql: ServerlessMysql, userId: string): Promise<IEnrolledTopicsQueryResultRow[]> {
-	const rows = await mysql.query<IEnrolledTopicsQueryResultRow[]>(`
-		SELECT enrolments.topic as id, enrolments.timestamp, topics.label, enrolments.currentLesson
-		FROM enrolments
-		LEFT JOIN topics ON enrolments.topic = topics.id
-		WHERE enrolments.userId = ?
-		ORDER BY timestamp DESC
-		LIMIT 10
+async function getEnrolledTopics(mysql: ServerlessMysql, userId: string): Promise<TopicDetail[]> {
+	const rows = await mysql.query<{topic: string, label: string}[]>(`
+		SELECT DISTINCT topic, label
+		FROM lesson_completions
+		LEFT JOIN lessons ON lesson_completions.lesson = lessons.id
+		LEFT JOIN topics on lessons.topic = topics.id
+		WHERE \`user\` = ?
 	`, [ userId ]).catch(err => {
 		console.error(`Error: failed to query database for enrolled topics for user \"${userId}\". Error message: `, err);
 		throw err;
 	});
 
-	return rows;
+	return rows.map(row => {
+		return {
+			id: row.topic,
+			label: row.label
+		}
+	});
 }
