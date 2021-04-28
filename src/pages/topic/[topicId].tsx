@@ -47,7 +47,7 @@ const TopicPage: NextPage = (props) => {
 							<>
 								<Header title={topicInfo.label} className={styles["header"]} />
 
-								<InfoBox className={styles["info-box"]} description={topicInfo.description} enrolledUsers={topicInfo.enrolledUsers} lessonCount={topicInfo.lessonCount} />
+								<InfoBox className={styles["info-box"]} description={topicInfo.description} lessonCount={topicInfo.lessonCount} />
 
 								<LessonCarousel lessons={topicInfo.lessons} className={styles["lesson-carousel"]} />
 							</>

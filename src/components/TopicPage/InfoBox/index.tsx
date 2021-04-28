@@ -6,7 +6,6 @@ import type { FunctionComponent, PropsWithChildren } from "react";
 type Props = PropsWithChildren<{
 	className?: string,
 	description: string,
-	enrolledUsers: number,
 	lessonCount: number
 }>
 
@@ -22,7 +21,6 @@ const InfoBox: FunctionComponent<Props> = (props) => {
 
 				<div id={styles["bottom-row"]}>
 					<span>Lessons: {props.lessonCount}</span>
-					<span>Enrolled Users: {props.enrolledUsers}</span>
 				</div>
 			</div>
 		</div>
