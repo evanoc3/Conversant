@@ -1,0 +1,50 @@
+@use "breakpoints";
+@use "colours";
+@use "messages";
+@use "ui";
+
+
+#container {
+	@include messages.container;
+	padding: 3rem 0
+}
+
+
+#banner {
+	width: calc(100% - 2rem);
+	margin: 0 auto;
+	background-color: colours.$primary-background;
+	border-radius: ui.$med-curve;
+	padding: 1.5rem 2rem;
+
+	@media(min-width: breakpoints.$tablet) {
+		width: 75%;
+	}
+
+	@media(min-width: breakpoints.$widescreen) {
+		width: 60rem;
+	}
+}
+
+
+#banner-title {
+	text-align: center;
+}
+
+
+#choices-row {
+	margin-top: 1.5rem;
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+
+	@media(min-width: breakpoints.$tablet) {
+		flex-flow: row nowrap;
+		justify-content: space-around;
+	}
+
+	.choice {
+		margin-top: 1rem;
+		text-align: center;
+	}
+}

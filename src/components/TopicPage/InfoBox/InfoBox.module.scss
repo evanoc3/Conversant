@@ -27,7 +27,7 @@
 	#bottom-row {
 		display: flex;
 		flex-flow: row nowrap;
-		justify-content: space-around;
+		justify-content: flex-start;
 		line-height: 1;
 		font-size: 1rem;
 		color: colours.$secondary-font;

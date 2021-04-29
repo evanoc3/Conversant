@@ -30,7 +30,7 @@ const SendMessageForm: FunctionComponent<Props> = (props) => {
 	
 	return (
 		<form id={styles["form"]} onSubmit={handleSubmit}>
-			<textarea id={styles["reply-textarea"]} placeholder={"Write your message here..."} onChange={e => setUserInput(e.target.value)} value={userInput} disabled={props.disabled} />
+			<input type="text" id={styles["reply-textarea"]} placeholder="Write your message here..." onChange={e => setUserInput(e.target.value)} value={userInput} disabled={props.disabled} />
 
 			<button id={styles["send-button"]} disabled={userInput === "" || props.disabled === true}>
 				<SendSvg id={styles["send-button-icon"]} />

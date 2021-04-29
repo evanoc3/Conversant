@@ -6,12 +6,12 @@
 
 #page {
 	overflow-y: scroll;
+	min-height: 100vh;
 }
 
 
 #hero-container {
 	height: calc(60vh - 4rem);
-	min-height: 160px;
 	position: relative;
 
 	@media(min-width: breakpoints.$tablet) {

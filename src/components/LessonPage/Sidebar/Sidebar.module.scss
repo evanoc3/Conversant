@@ -1,4 +1,5 @@
 @use "colours";
+@use "ui";
 
 
 #sidebar {
@@ -42,30 +43,42 @@ div.separator {
 }
 
 
-#user-badge {
-	display: flex;
-	flex-flow: row nowrap;
-	align-items: center;
+#nav-content {
+	list-style: none;
 
-	img#profile-img {
-		width: 1.75rem;
-		height: 1.75rem;
-		border-radius: 50%;
-		margin-right: 0.75rem;
-	}
+	.nav-item {
+		border-radius: ui.$small-curve;
 
-	span.label {
-		font-size: 1.1rem;
-		font-weight: 400;
-	}
-
-
-	span#user-name {
-		color: colours.$contrast-primary-font;
+		&:not(.with-link) {
+			padding: 0.5rem;
+		}
+	
+		&:hover {
+			background-color: rgba(0,0,0,0.25);
+		}
 	}
 }
 
 
 
+a#user-profile-link {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	padding: 0.5rem;
+	color: colours.$contrast-primary-font;
+	text-decoration: none;
 
+	> img#profile-img {
+		width: 1.75rem;
+		height: 1.75rem;
+		border-radius: 50%;
+		margin-right: 0.75rem;
+	}
+	
+	> span.label {
+		font-size: 1.1rem;
+		font-weight: 400;
+	}
+}
 

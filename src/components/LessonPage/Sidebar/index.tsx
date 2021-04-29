@@ -3,7 +3,7 @@ import { useSession } from "next-auth/client";
 import { ArrowLeft as ArrowLeftSvg } from "react-feather";
 import styles from "./Sidebar.module.scss";
 
-import type { FunctionComponent, PropsWithChildren } from "react";
+import { FunctionComponent, PropsWithChildren, useLayoutEffect } from "react";
 import type { Session } from "next-auth";
 
 
@@ -11,8 +11,8 @@ type Props = PropsWithChildren<{
 }>
 
 
-const Sidebar: FunctionComponent<Props> = () => {
-	const [session, loading] = useSession();
+export default function Sidebar(props: Props): JSX.Element {
+	const [session, sessionIsLoading] = useSession();
 
 	return (
 		<div id={styles["sidebar"]}>
@@ -20,49 +20,55 @@ const Sidebar: FunctionComponent<Props> = () => {
 			<Link href="/home">
 				<a id={styles["home-link"]}>
 					<ArrowLeftSvg id={styles["home-icon"]} />
-					<span id={styles["home-label"]}>Return Home</span>
 				</a>
 			</Link>
 
 			<div className={styles["separator"]} />
 
-			{ UserBadge(session, loading) }
+			<ul id={styles["nav-content"]}>
+
+				{ renderUserBadge(session, sessionIsLoading) }
+			</ul>
 
 		</div>
 	);
 };
 
-export default Sidebar;
 
-
-const UserBadge = (session: Session | null | undefined, loading: boolean) => {
-	if(session) {
+/**
+ * Helper function which renders the user's name and profile image if there is a valid session, or a "loading", or "not signed in" label if no session exists.
+ */
+function renderUserBadge(session: Session | null, sessionIsLoading: boolean): JSX.Element {
+	if(sessionIsLoading) {
 		return (
-			<div id={styles["user-badge"]}>
-				<img src={session.user!.image!} alt="User Profile Image" id={styles["profile-img"]} />
-				<span id={styles["user-name"]} className={styles["label"]}>
-					{ session.user!.name }
+			<li className={styles["nav-item"]}>
+				<span id={styles["loading"]} className={styles["label"]}>
+					Loading...
 				</span>
-			</div>
+			</li>
 		);
 	}
 
-	if(!session && !loading) {
+	if(session === null) {
 		return (
-			<div id={styles["user-badge"]}>
+			<li className={styles["nav-item"]}>
 				<span id={styles["not-logged-in"]} className={styles["label"]}>
 					Not Logged In
 				</span>
-			</div>
-		)
+			</li>
+		);
 	}
 
-
 	return (
-		<div id={styles["user-badge"]}>
-			<span id={styles["loading"]} className={styles["label"]}>
-				Loading...
-			</span>
-		</div>
+		<li className={styles["nav-item"] + " " + styles["with-link"]}>
+			<Link href={"/home"}>
+				<a href={"/home"} id={styles["user-profile-link"]}>
+					<img src={session.user!.image!} alt="User Profile Image" id={styles["profile-img"]} />
+					<span id={styles["user-name"]} className={styles["label"]}>
+						{ session.user!.name }
+					</span>
+				</a>
+			</Link>
+		</li>
 	);
 };

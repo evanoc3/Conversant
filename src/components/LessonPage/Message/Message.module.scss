@@ -1,5 +1,6 @@
 @use "colours";
 @use "messages";
+@use "ui";
 
 
 .container {
@@ -9,7 +10,7 @@
 }
 
 
-.plain-message {
+.message {
 	@include messages.base;
 	
 	background: colours.$highlighted-primary-background;
@@ -32,4 +33,56 @@
 
 .inner-text {
 	@include messages.inner-text;
+}
+
+
+// Style the markdown inside messages
+
+.pre {
+	display: inline-block;
+	// height: auto !important;
+	border-radius: ui.$small-curve;
+	max-width: messages.$inner-max-width;
+	overflow-x: scroll;
+	margin-bottom: 0;
+}
+
+
+.blockquote {
+	color: colours.$quote-font;
+	background-color: colours.$quote-background;
+	border-left: 0.5rem solid colours.$quote-left-border;
+	padding-left: 0.5rem;
+	font-size: 1.2rem;
+}
+
+
+.img {
+	max-width: messages.$inner-max-width;
+	border-radius: ui.$small-curve;
+}
+
+
+.ul:not(.checklist) {
+	list-style-position: inside;
+}
+
+
+.ol:not(.checklist) {
+	list-style-position: inside;
+}
+
+
+.ul.checklist, .ol.checklist {
+	list-style: none;
+}
+
+.table {
+	border-collapse: collapse;
+	max-width: messages.$inner-max-width;
+}
+
+.td, .th {
+	border: 1px solid colours.$separating-border;
+	padding: 0.1rem 0.5rem;
 }

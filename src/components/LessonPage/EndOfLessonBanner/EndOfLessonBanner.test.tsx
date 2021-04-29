@@ -4,14 +4,14 @@ fetchMock.enableMocks();
 // imports
 import { describe, it, expect } from "@jest/globals";
 import { mount } from "enzyme";
-import ConversationArea from "./index";
+import EndOfLessonBanner from "./index";
 
 
-describe("<ConversationArea> (lesson page) Component", () => {
+describe("<EndOfLessonBanner> (lesson page) Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<ConversationArea messages={[]} isTyping={false} hasReachedEnd={false} />);
+			const wrapper = mount(<EndOfLessonBanner topic="" topicShortLabel="" nextLesson={0} />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});

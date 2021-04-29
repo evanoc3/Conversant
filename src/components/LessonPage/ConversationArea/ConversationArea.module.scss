@@ -1,4 +1,10 @@
+@use "breakpoints";
+
 #conversation-area {
 	width: 100%;
 	height: 100%;
+
+	@media(min-width: breakpoints.$widescreen) {
+		padding: 0.5rem;
+	}
 }

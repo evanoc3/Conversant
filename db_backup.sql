@@ -7,7 +7,7 @@
 #
 # Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
 # Database: mydb3940
-# Generation Time: 2021-04-29 21:55:58 +0000
+# Generation Time: 2021-04-29 23:44:52 +0000
 # ************************************************************
 
 
@@ -22,8 +22,6 @@
 
 # Dump of table accounts
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `accounts`;
 
 CREATE TABLE `accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -62,6 +60,15 @@ CREATE TABLE `lesson_completions` (
   CONSTRAINT `lesson_completions_ibfk_2` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+LOCK TABLES `lesson_completions` WRITE;
+/*!40000 ALTER TABLE `lesson_completions` DISABLE KEYS */;
+
+INSERT INTO `lesson_completions` (`id`, `user`, `lesson`)
+VALUES
+	(4,1,0);
+
+/*!40000 ALTER TABLE `lesson_completions` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table lesson_parts
@@ -88,6 +95,29 @@ CREATE TABLE `lesson_parts` (
   CONSTRAINT `lesson_parts_ibfk_4` FOREIGN KEY (`onNo`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+LOCK TABLES `lesson_parts` WRITE;
+/*!40000 ALTER TABLE `lesson_parts` DISABLE KEYS */;
+
+INSERT INTO `lesson_parts` (`id`, `lesson`, `content`, `type`, `proceedTo`, `onYes`, `onNo`)
+VALUES
+	(1,0,'This is an example lesson. It is used to demonstrate the features available for lessons in Conversant.','proceed',2,NULL,NULL),
+	(2,0,'In Conversant, lesson parts are stored in the database as markdown text. They are then rendered on-the-fly by the client. Conversant supports all features of common mark, and Github flavoured markdown.','proceed',3,NULL,NULL),
+	(3,0,'Example: _Italic text_.','proceed',4,NULL,NULL),
+	(4,0,'Example: **Bold text**.','proceed',5,NULL,NULL),
+	(5,0,'Example: [Link to example.com](http://example.com).','proceed',6,NULL,NULL),
+	(6,0,'Example: ~strikethrough text~','proceed',7,NULL,NULL),
+	(7,0,'Example: blockquote.\n\n> Hello, World!','proceed',8,NULL,NULL),
+	(8,0,'Example: ordered list:\n1. ordered item 1,\n2. ordered item 2,\n3. ordered item 3,\n\nExample: unordered list:\n* list item 1\n* list item 2\n* list item 3','proceed',9,NULL,NULL),
+	(9,0,'Example: `inline code`.\n\nExample: code block\n\n```typescript\nconst i = \"am a code block\";\nvar a = 1 + 3;\n```\n','proceed',10,NULL,NULL),
+	(10,0,'Example: Headers 1-6\n\n# Header 1\n\n## Header 2\n\n### Header 3\n\n#### Header 4\n\n##### Header 5\n\n###### Header 6\n\n','proceed',11,NULL,NULL),
+	(11,0,'Example: inline math, $x^y = z_q$.\n\nExample: math block\n$$$\ne^{i \\pi} - 1 = 0\n$$$','proceed',12,NULL,NULL),
+	(12,0,'Example: Image\n\n![Image](https://getconversant.io/icons/logo-128.png)','proceed',13,NULL,NULL),
+	(13,0,'Example: Check list\n- [x] checked\n- [ ] unchecked\n- [x] checked again\n','proceed',14,NULL,NULL),
+	(14,0,'Example: Table\n\n| a | b  |  c |  d  |\n| - | :- | -: | :-: |\n| 1 | 2 | 3 | 4 |','proceed',15,NULL,NULL),
+	(15,0,'And that\'s about it!','endOfLesson',NULL,NULL,NULL);
+
+/*!40000 ALTER TABLE `lesson_parts` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table lessons
@@ -111,12 +141,19 @@ CREATE TABLE `lessons` (
   CONSTRAINT `lessons_ibfk_3` FOREIGN KEY (`nextLesson`) REFERENCES `lessons` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+LOCK TABLES `lessons` WRITE;
+/*!40000 ALTER TABLE `lessons` DISABLE KEYS */;
+
+INSERT INTO `lessons` (`id`, `topic`, `title`, `description`, `firstPart`, `nextLesson`)
+VALUES
+	(0,'example','Example Lesson','See all the wonderful features that lessons in Conversant can offer.',1,NULL);
+
+/*!40000 ALTER TABLE `lessons` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table sessions
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `sessions`;
 
 CREATE TABLE `sessions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -148,12 +185,19 @@ CREATE TABLE `topics` (
   CONSTRAINT `topics_ibfk_1` FOREIGN KEY (`firstLesson`) REFERENCES `lessons` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+LOCK TABLES `topics` WRITE;
+/*!40000 ALTER TABLE `topics` DISABLE KEYS */;
+
+INSERT INTO `topics` (`id`, `label`, `description`, `firstLesson`)
+VALUES
+	('example','Example Topic','This is an example topic created to store a sample lesson for the purposes of demonstrating the Conversant platform.',0);
+
+/*!40000 ALTER TABLE `topics` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table users
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -171,8 +215,6 @@ CREATE TABLE `users` (
 
 # Dump of table verification_requests
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `verification_requests`;
 
 CREATE TABLE `verification_requests` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

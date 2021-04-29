@@ -3,7 +3,8 @@ export interface Lesson {
 	title: string,
 	topic: string,
 	topicLabel: string,
-	firstPart: number
+	firstPart: number,
+	nextLesson:  number
 }
 
 export enum LessonPartResponseType {

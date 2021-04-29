@@ -29,6 +29,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [isTyping, setIsTyping] = useState(false);
+	const [isLessonOver, setIsLessonOver] = useState(false);
 	const router = useRouter();
 
 	// Methods
@@ -72,7 +73,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		}
 
 		// Set according to the average characters per minute typed by a fast adult (see http://typefastnow.com/average-typing-speed)
-		const typingTime = resp.content.length * 22.5;
+		const typingTime = resp.content.length * 17.5;
 
 		setIsTyping(true);
 
@@ -89,6 +90,11 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 
 		if(resp.type === LessonPartResponseType.Proceed) {
 			setCurrentPart(resp.proceedTo!);
+		}
+
+		if(resp.type === LessonPartResponseType.EndOfLesson) {
+			postLessonCompletion(lessonId!);
+			setIsLessonOver(true);
 		}
 	}
 
@@ -128,7 +134,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		}
 	}, [ router.isReady, lessonId ]);
 
-	// When the lesson is retrieved, request the first part of the lesson content
+	// When the current lesson part state is updated, request that part of the lesson content
 	useEffect(() => {
 		if(lessonId !== undefined && currentPart >= 0) {
 			try {
@@ -141,6 +147,38 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 			}
 		}
 	}, [ lessonId, currentPart ]);
+
+	// Once the lesson is started, set event handlers to confirm page navigation
+  useEffect(() => {
+    const warningText = "This page is asking you to confirm that you want to leave — information you’ve entered may not be saved.";
+
+		// handles browser events for external navigation
+    const handleWindowClose = (e: BeforeUnloadEvent) => {
+      if (currentPart < 0) {
+				return;
+			}
+      e.preventDefault();
+      return (e.returnValue = warningText);
+    };
+
+		// handles nextjs router events for internal navigation
+    const handleBrowseAway = () => {
+      if (currentPart < 0 || window.confirm(warningText)) {
+				return;
+			}
+      router.events.emit("routeChangeError");
+      throw new Error("routeChange aborted");
+    };
+
+    window.addEventListener("beforeunload", handleWindowClose);
+    router.events.on("routeChangeStart", handleBrowseAway);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleWindowClose);
+      router.events.off("routeChangeStart", handleBrowseAway);
+    };
+
+  }, [ currentPart >= 0 ]);
 
 
 	// Render
@@ -167,11 +205,11 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 					</div>
 	
 					<div id={styles["message-area"]}>
-						<ConversationArea messages={messages} isTyping={isTyping} />
+						<ConversationArea messages={messages} isTyping={isTyping} hasReachedEnd={isLessonOver} endInfo={(lesson !== undefined) ? { nextLesson: lesson.nextLesson, topicId: lesson.topic, topicShortLabel: lesson.topicLabel.split(" ")[0]} : undefined} />
 					</div>
 	
 					<div id={styles["reply-bar"]}>
-						<SendMessageForm messageSentHandler={sendMessageHandler} disabled={lesson === undefined} />
+						<SendMessageForm messageSentHandler={sendMessageHandler} disabled={(lesson === undefined) || isTyping || isLessonOver} />
 					</div>
 				</div>
 			</Background>
@@ -251,4 +289,32 @@ async function postReponse(lessonId: number, part: number, msg: string): Promise
 	}
 
 	return body;
+}
+
+
+/**
+ * Helper function which sends a POST request to the API endpoint for marking the specific user has completed the specific lesson. The API checks if the user
+ * is authenticated on the request itself, and parses the userId from that so it doesn't need to be provided here.
+ * 
+ * @throws If the request fails as a result of a network error.
+ * @throws If the request receives an "error" field in the response from the server (due to the API itself rejecting the request, rather than the network).
+ */
+ async function postLessonCompletion(lessonId: number): Promise<void> {
+	if(process.env.NODE_ENV === "development") {
+		console.debug(`Marking lesson ${lessonId} as having been completed!`);
+	} 
+
+	const resp = await fetch(`/api/lesson/${lessonId}/complete`, { method: "POST" });
+
+	if(!resp.ok) {
+		throw new Error(`POST request to lesson completion endpoint failed with status: (${resp.status}) ${resp.statusText}`);
+	}
+
+	const body = await resp.json();
+
+	if("error" in body) {
+		throw new Error(body.error);
+	}
+
+	return;
 }

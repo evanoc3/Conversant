@@ -76,11 +76,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
  * @throws if the amount of rows returned by the query is not equal to 1.
  */
 async function getLastSignInTime(mysql: ServerlessMysql, userId: string): Promise<Date> {
-	const row = await mysql.query<Pick<ISessionsTableRow, "created_at">[]>(`
-		SELECT created_at
+	const row = await mysql.query<Pick<ISessionsTableRow, "updated_at">[]>(`
+		SELECT updated_at
 		FROM sessions
 		WHERE user_id = ?
-		ORDER BY expires DESC
+		ORDER BY updated_at DESC
 		LIMIT 1
 	`, [ userId ]).catch(err => {
 		console.error(`Error: failed to query database for enrolled topics for user \"${userId}\". Error message: `, err);
@@ -91,7 +91,7 @@ async function getLastSignInTime(mysql: ServerlessMysql, userId: string): Promis
 		throw new Error("Invalid row count for query result of last sign in time query");
 	}
 
-	return new Date(row[0].created_at);
+	return new Date(row[0].updated_at);
 }
 
 
