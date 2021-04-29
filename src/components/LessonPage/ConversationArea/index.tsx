@@ -16,17 +16,9 @@ export default function ConversationArea(props: Props): JSX.Element {
 	return (
 		<div id={styles["conversation-area"]}>
 			{ 
-				props.messages.map((message, i) => {
-					if(message.sender === Sender.USER) {
-						return (
-							<UserMessage key={i} message={message.content} />
-						);
-					}
-	
-					return (
-						<Message key={i} message={message.content} />
-					);
-				})
+				props.messages.map(({sender, content}, i) => 
+					(sender === Sender.USER) ? <UserMessage key={i} message={content} /> : <Message key={i} message={content} />
+				)
 			}
 
 			{

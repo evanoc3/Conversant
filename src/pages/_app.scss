@@ -12,9 +12,6 @@
 html, body, div#__next {
 	width: 100%;
 	min-height: 100vh;
-	// @supports(height: -webkit-fill-available) {
-	// 	min-height: -webkit-fill-available;
-	// }
 }
 
 
@@ -22,6 +19,6 @@ body {
 	font-family: fonts.$native-stack;
 	color: colours.$primary-font;
 	line-height: 1.35;
-	overflow: hidden;
 	background-color: colours.$page-background;
+	overflow: hidden scroll;
 }

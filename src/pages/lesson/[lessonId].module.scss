@@ -1,7 +1,6 @@
 @use "buttons";
-@use "colours";
-
 @use "breakpoints";
+@use "colours";
 @use "fonts";
 
 
@@ -12,10 +11,13 @@
 	position: relative;
 	width: 100%;
 	height: 100vh;
-	height: -webkit-fill-available;
 	display: grid;
 	grid-template-rows: calc(#{$title-bar-height} + env(safe-area-inset-top)) 1fr calc(#{$reply-bar-height} + env(safe-area-inset-bottom));
 	grid-template-columns: 25% 75%;
+
+	@media(min-width: breakpoints.$widescreen) {
+		grid-template-columns: 20rem 1fr;
+	}
 
 
 	#sidebar {
@@ -56,6 +58,7 @@
 	#message-area {
 		grid-row: 2 / span 1;
 		grid-column: 1 / -1; 
+		overflow-y: scroll;
 
 		@media(min-width: breakpoints.$tablet) {
 			grid-column: 2  / span 1;

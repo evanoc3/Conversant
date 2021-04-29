@@ -3,11 +3,9 @@
 
 
 #page {
-	height: 100vh;
+	min-height: 100vh;
 	padding-top: env(safe-area-inset-top);
-	@supports(height: -webkit-fill-available) {
-		height: -webkit-fill-available;
-	}
+	padding-bottom: env(safe-area-inset-bottom);
 	display: flex;
 	flex-flow: column nowrap;
 }

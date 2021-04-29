@@ -9,7 +9,7 @@
 }
 
 
-.plain-message {
+.message {
 	@include messages.base;
 	
 	background: colours.$highlighted-primary-background;
@@ -33,3 +33,82 @@
 .inner-text {
 	@include messages.inner-text;
 }
+
+
+// Style the markdown inside messages
+/*
+.h1 {
+}
+
+.h2 {
+}
+
+.h3 {
+}
+
+.h4 {
+}
+
+.h5 {
+}
+
+.h6 {
+}
+
+.strong {
+}
+
+.em {
+}
+
+.a {
+}
+
+.img {
+}
+
+.blockquote {
+}
+
+.code {
+}
+*/
+.ul {
+	list-style-position: inside;
+
+	&.checklist {
+		list-style: none;
+	} 
+}
+
+.ol {
+	list-style-position: inside;
+
+	&.checklist {
+		list-style: none;
+	} 
+}
+
+/*
+.li {
+}
+
+.del {
+}
+
+.input {
+}
+
+.table {
+	border-collapse: collapse;
+}
+
+.tr {
+}
+
+.th {
+}
+
+.td {
+}
+*/

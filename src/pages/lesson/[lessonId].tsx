@@ -72,7 +72,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		}
 
 		// Set according to the average characters per minute typed by a fast adult (see http://typefastnow.com/average-typing-speed)
-		const typingTime = resp.content.length * 22.5;
+		const typingTime = resp.content.length * 1;
 
 		setIsTyping(true);
 
@@ -128,7 +128,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		}
 	}, [ router.isReady, lessonId ]);
 
-	// When the lesson is retrieved, request the first part of the lesson content
+	// When the current lesson part state is updated, request that part of the lesson content
 	useEffect(() => {
 		if(lessonId !== undefined && currentPart >= 0) {
 			try {
@@ -141,6 +141,38 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 			}
 		}
 	}, [ lessonId, currentPart ]);
+
+	// Once the lesson is started, set event handlers to confirm page navigation
+  useEffect(() => {
+    const warningText = "This page is asking you to confirm that you want to leave — information you’ve entered may not be saved.";
+
+		// handles browser events for external navigation
+    const handleWindowClose = (e: BeforeUnloadEvent) => {
+      if (currentPart < 0) {
+				return;
+			}
+      e.preventDefault();
+      return (e.returnValue = warningText);
+    };
+
+		// handles nextjs router events for internal navigation
+    const handleBrowseAway = () => {
+      if (currentPart < 0 || window.confirm(warningText)) {
+				return;
+			}
+      router.events.emit("routeChangeError");
+      throw new Error("routeChange aborted");
+    };
+
+    window.addEventListener("beforeunload", handleWindowClose);
+    router.events.on("routeChangeStart", handleBrowseAway);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleWindowClose);
+      router.events.off("routeChangeStart", handleBrowseAway);
+    };
+
+  }, [ currentPart >= 0 ]);
 
 
 	// Render
@@ -171,7 +203,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 					</div>
 	
 					<div id={styles["reply-bar"]}>
-						<SendMessageForm messageSentHandler={sendMessageHandler} disabled={lesson === undefined} />
+						<SendMessageForm messageSentHandler={sendMessageHandler} disabled={(lesson === undefined) || isTyping} />
 					</div>
 				</div>
 			</Background>

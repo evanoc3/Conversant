@@ -46,6 +46,7 @@
 		color: colours.$contrast-primary-font;
 		font-weight: 500;
 		margin: 0 1rem 0 0;
+		white-space: nowrap;
 		
 		@media(min-width: breakpoints.$tablet) {
 			margin-left: 1rem;

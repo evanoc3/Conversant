@@ -1,20 +1,16 @@
-import React, { useEffect } from "react";
-import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "./index.module.scss";
 import { Background } from "@components/index";
 import { Header, SearchInput, Footer } from "@components/LandingPage/index";
 
+import type { PropsWithChildren } from "react";
 
-const LandingPage: NextPage = (props) => {
-	useEffect(() => {
-		document.body.style.overflowY = "auto";
 
-		return () => {
-			document.body.style.overflowY = "hidden";
-		}
-	});
+type Props = PropsWithChildren<{
+}>
 
+
+export default function LandingPage(props: Props): JSX.Element {
 	return (
 		<div id={styles["page"]}>
 			<Head>
@@ -40,7 +36,4 @@ const LandingPage: NextPage = (props) => {
 			</Background>
 		</div>
 	);
-};
-
-
-export default LandingPage;
+}

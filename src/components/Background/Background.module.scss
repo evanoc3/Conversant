@@ -29,6 +29,5 @@
 	position: relative;
 	z-index: 1;
 	overflow: hidden scroll;
-	height: 100vh;
-	height: stretch;
+	min-height: 100vh;
 }
