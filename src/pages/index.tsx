@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "./index.module.scss";
-import { Background, Footer } from "@components/index";
-import { Header, SearchInput } from "@components/LandingPage/index";
+import { Background } from "@components/index";
+import { Header, SearchInput, Footer } from "@components/LandingPage/index";
 
 
 const LandingPage: NextPage = (props) => {
@@ -27,7 +27,7 @@ const LandingPage: NextPage = (props) => {
 				<div id={styles["hero-container"]}>
 					<div id={styles["hero-box"]} className={styles["box"]}>
 						<h1 id={styles["hero-title"]}>What would you like to learn?</h1>
-						<SearchInput placeholder="Enter the topic e.g. Next.js, or Java programming..." />
+						<SearchInput placeholder="Enter the topic e.g. Java programming..." />
 					</div>
 				</div>
 

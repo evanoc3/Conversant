@@ -8,7 +8,6 @@ $carriage-size: min(30rem, calc(100vw - 3rem));
 #container {
 	height: 100%;
 	height: stretch;
-	width: 100vw;
 	overflow: scroll hidden;
 	display: flex;
 	flex-flow: row nowrap;

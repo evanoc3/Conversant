@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Head from "next/head";
 import styles from "./[topicId].module.scss";
 import { Background } from "@components/index";
@@ -54,6 +55,8 @@ const TopicPage: NextPage = (props) => {
 						) : (
 							<div>
 								Loading...
+								<br />
+								<Link href="/"><a href="/">Go back to home</a></Link>
 							</div>
 						)
 					}
@@ -75,7 +78,7 @@ export default TopicPage;
  * @throws if the server's response has an `error` field.
  */
 async function getTopic(topicId: string): Promise<TopicInformation> {
-	const resp = await fetch(`/api/topic/${encodeURIComponent(topicId)}`).catch(err => {
+	const resp = await fetch(`/api/topic/${topicId}`).catch(err => {
 		console.error(`Error: request to \"/api/topic/${encodeURIComponent(topicId)}\" failed. Error: `, err);
 		throw err;
 	});

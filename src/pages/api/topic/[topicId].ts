@@ -44,12 +44,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	let mysql: ServerlessMysql | undefined;
 
 	try {
+
 		// See if the current user has an active session
 		const session = await getSession({ req }) as IAuthSession;
 		const userId = session.user?.id ?? "";
 		
 		// parse parameter from request query
 		const topicId = (req.query["topicId"] as string) ?? "";
+
+		if(process.env.NODE_ENV === "development") {
+			console.debug("Topic requested: ", topicId);
+		}
 
 		// connect to the database
 		const mysql = await connectToDatabase();

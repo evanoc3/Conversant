@@ -12,9 +12,9 @@
 html, body, div#__next {
 	width: 100%;
 	min-height: 100vh;
-	@supports(height: -webkit-fill-available) {
-		min-height: -webkit-fill-available;
-	}
+	// @supports(height: -webkit-fill-available) {
+	// 	min-height: -webkit-fill-available;
+	// }
 }
 
 
