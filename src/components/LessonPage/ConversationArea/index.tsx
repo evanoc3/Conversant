@@ -1,5 +1,5 @@
 import styles from "./ConversationArea.module.scss";
-import { IsTypingMessageBubble, Message, UserMessage } from "@components/LessonPage/index";
+import { IsTypingMessageBubble, Message, UserMessage, EndOfLessonBanner } from "@components/LessonPage/index";
 import { Sender } from "@customTypes/messages";
 
 import type { PropsWithChildren } from "react";
@@ -8,7 +8,13 @@ import type { IMessage } from "@customTypes/messages";
 
 type Props = PropsWithChildren<{
 	messages: IMessage[],
-	isTyping: boolean
+	isTyping: boolean,
+	hasReachedEnd: boolean,
+	endInfo?: {
+		topicId: string,
+		topicShortLabel: string,
+		nextLesson: number | null
+	}
 }>
 
 
@@ -24,6 +30,12 @@ export default function ConversationArea(props: Props): JSX.Element {
 			{
 				(props.isTyping) ? (
 					<IsTypingMessageBubble key={"typing"} />
+				) : ""
+			}
+
+			{
+				(props.hasReachedEnd) ? (
+					<EndOfLessonBanner nextLesson={props.endInfo!.nextLesson} topic={props.endInfo!.topicId} topicShortLabel={props.endInfo!.topicShortLabel} />
 				) : ""
 			}
 		</div>

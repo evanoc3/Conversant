@@ -1,6 +1,9 @@
-import serverlessMysql, { ServerlessMysql } from "serverless-mysql";
+import serverlessMysql from "serverless-mysql";
+
+import type { ServerlessMysql } from "serverless-mysql";
 import type { ConnectionConfig } from "mysql";
-import { ILessonPartsTableRow } from "@customTypes/database";
+import type { Lesson } from "@customTypes/lesson";
+import type { ILessonPartsTableRow } from "@customTypes/database";
 
 
 export function getConnectionConfig(): ConnectionConfig {
@@ -56,4 +59,45 @@ export async function getLessonPart(mysql: ServerlessMysql, id: number): Promise
 	}
 
 	return rows[0];
+}
+
+
+/**
+ * Helper function which returns a boolean indicating whether the specified user is recorded as having completed the lesson.
+ * 
+ * @throws Any database-related error occurs during the query.
+ */
+ export async function checkIfUserHasCompletedLesson(mysql: ServerlessMysql, userId: string, lessonId: string): Promise<boolean> {
+	const rows = await mysql.query<any[]>(`
+		SELECT id, user, lesson FROM lesson_completions WHERE user = ? AND lesson = ?
+	`, [userId, lessonId]).catch(err => { throw err });
+	
+	return rows.length >= 1;
+}
+
+
+/**
+ * Helper function to query the database for the content of a particular lesson by ID.
+ * 
+ * @throws Any database-related error occurs during the query.
+ * @throws if 0 or more than 1 row is returned by the database query, as it searches by primary key there should only be 1 result.
+ */
+export async function getLesson(mysql: ServerlessMysql, lessonId: string): Promise<Lesson> {
+	const lessonRows = await mysql.query<Lesson[]>(`
+		SELECT lessons.id, title, topic, topics.label as topicLabel, firstPart, nextLesson
+		FROM lessons
+		LEFT JOIN topics ON lessons.topic = topics.id
+		WHERE lessons.id = ?
+	`, [ lessonId ]).catch(err => {
+		console.error(`Error: failed to query database for lesson ${lessonId}. Error message: `, err);
+		throw new Error(err);
+	});
+
+	// if anything except 1 rows is returned then throw an error
+	if(lessonRows.length !== 1) {
+		console.error(`Error: found ${lessonRows.length} rows when querying the database for lessonId \"${lessonId}\"`);
+		throw new Error("No lesson was found");
+	}
+
+	return lessonRows[0];
 }

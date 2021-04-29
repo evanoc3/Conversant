@@ -7,7 +7,7 @@
 #
 # Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
 # Database: mydb3940
-# Generation Time: 2021-04-28 12:55:40 +0000
+# Generation Time: 2021-04-29 21:55:58 +0000
 # ************************************************************
 
 
@@ -101,11 +101,14 @@ CREATE TABLE `lessons` (
   `title` varchar(255) NOT NULL,
   `description` text,
   `firstPart` int(11) DEFAULT NULL,
+  `nextLesson` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `topic` (`topic`),
   KEY `firstPart` (`firstPart`),
+  KEY `nextLesson` (`nextLesson`),
   CONSTRAINT `lessons_ibfk_1` FOREIGN KEY (`topic`) REFERENCES `topics` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `lessons_ibfk_2` FOREIGN KEY (`firstPart`) REFERENCES `lessons` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `lessons_ibfk_2` FOREIGN KEY (`firstPart`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `lessons_ibfk_3` FOREIGN KEY (`nextLesson`) REFERENCES `lessons` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -139,7 +142,10 @@ CREATE TABLE `topics` (
   `id` varchar(255) NOT NULL,
   `label` varchar(255) NOT NULL,
   `description` mediumtext,
-  PRIMARY KEY (`id`)
+  `firstLesson` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `firstLesson` (`firstLesson`),
+  CONSTRAINT `topics_ibfk_1` FOREIGN KEY (`firstLesson`) REFERENCES `lessons` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

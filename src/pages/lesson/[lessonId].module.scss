@@ -69,6 +69,7 @@
 	#reply-bar {
 		grid-row: 3 / span 1;
 		grid-column: 1 / -1; 
+		background-color: colours.$contrast-background;
 
 		@media(min-width: breakpoints.$tablet) {
 			grid-column: 2  / span 1;

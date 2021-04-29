@@ -2,7 +2,7 @@ interface BaseApiResponse {
 	timestamp: string
 }
 
-type ErrorApiResponse = BaseApiResponse & {
+export type ErrorApiResponse = BaseApiResponse & {
 	error: string,
 	stack?: string
 }
