@@ -9,6 +9,8 @@ $contrast-background: #1b1a1c;
 $page-background: #08060b;
 $highlighted-primary-background: #e2e2e2;
 $input-background: #e6e6e6;
+$quote-background: #e2e2e2;
+$code-background: #1E1E1E;
 
 // Font Colours
 $primary-font: #333;
@@ -16,11 +18,14 @@ $secondary-font: #555;
 $placeholder-font: #828282;
 $contrast-primary-font: #dcdcdc;
 $contrast-secondary-font: #808080;
+$quote-font: #555;
 
-// Input Border Colours
+// Input & Quote Border Colours
 $input-inactive-border: #ccc;
 $input-active-border: #e9a16bd0;
 $input-active-shadow:#eb6804c2;
+
+$quote-left-border: #838383;
 
 // Link Colours
 $link-colour: #3192ed;

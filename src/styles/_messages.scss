@@ -2,6 +2,7 @@
 
 $message-padding: 0.35rem 0.7rem;
 $message-border-radius: 1rem;
+$inner-max-width: min(calc(100vw - 1.5rem), 35rem);
 
 
 @mixin container {
@@ -18,5 +19,5 @@ $message-border-radius: 1rem;
 
 @mixin inner-text {
 	display: inline-block;
-	max-width: min(calc(100vw - 1.5rem), 35rem);
+	max-width: $inner-max-width;
 }
