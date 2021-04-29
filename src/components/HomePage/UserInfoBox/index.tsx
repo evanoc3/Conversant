@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/client";
 import styles from "./UserInfoBox.module.scss";
+import { timeSince } from "@util/time";
 
 import type { PropsWithChildren } from "react";
 import type { Response as UserSummaryApiRouteResponse, HappyResponsePayload } from "@pages/api/my/summary";
@@ -29,13 +30,13 @@ export default function UserInfoBox(props: Props): JSX.Element {
 			<tr className={styles["row"]}>
 				<td className={styles["label-cell"]}>Account created:</td>
 
-				<td>{ userInfo?.accountCreationTime.toLocaleString() ?? "---" }</td>
+				<td>{ (userInfo) ? timeSince(userInfo!.accountCreationTime) : "" } ago</td>
 			</tr>
 
 			<tr className={styles["row"]}>
-				<td className={styles["label-cell"]}>Last sign in was:</td>
+				<td className={styles["label-cell"]}>Last sign in:</td>
 
-				<td>{ userInfo?.lastSignInTime.toLocaleString() ?? "---" }</td>
+				<td>{ (userInfo) ? timeSince(userInfo!.lastSignInTime) : "" } ago</td>
 			</tr>
 
 			<tr className={styles["row"]}>
