@@ -27,23 +27,25 @@ export default function UserInfoBox(props: Props): JSX.Element {
 	
 	return (
 		<table id={styles["info-box"]} className={props.className}>
-			<tr className={styles["row"]}>
-				<td className={styles["label-cell"]}>Account created:</td>
+			<tbody>
+				<tr className={styles["row"]}>
+					<td className={styles["label-cell"]}>Account created:</td>
 
-				<td>{ (userInfo) ? timeSince(userInfo!.accountCreationTime) : "" } ago</td>
-			</tr>
+					<td>{ (userInfo) ? timeSince(userInfo!.accountCreationTime) : "" } ago</td>
+				</tr>
 
-			<tr className={styles["row"]}>
-				<td className={styles["label-cell"]}>Last sign in:</td>
+				<tr className={styles["row"]}>
+					<td className={styles["label-cell"]}>Last sign in:</td>
 
-				<td>{ (userInfo) ? timeSince(userInfo!.lastSignInTime) : "" } ago</td>
-			</tr>
+					<td>{ (userInfo) ? timeSince(userInfo!.lastSignInTime) : "" } ago</td>
+				</tr>
 
-			<tr className={styles["row"]}>
-				<td className={styles["label-cell"]}>Lessons completed:</td>
+				<tr className={styles["row"]}>
+					<td className={styles["label-cell"]}>Lessons completed:</td>
 
-				<td>{ userInfo?.lessonsCompleted ?? "---" }</td>
-			</tr>
+					<td>{ userInfo?.lessonsCompleted ?? "---" }</td>
+				</tr>
+			</tbody>
 		</table>
 	);
 }
