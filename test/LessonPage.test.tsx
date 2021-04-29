@@ -1,4 +1,7 @@
+// mocks
 import "@mocks/next/router";
+import "jest-fetch-mock";
+// imports
 import { describe, it, expect } from "@jest/globals";
 import { withRouter } from "next/router";
 import { mount } from "enzyme";

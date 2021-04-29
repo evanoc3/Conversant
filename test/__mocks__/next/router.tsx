@@ -1,5 +1,6 @@
 import { jest } from "@jest/globals";
 import { NextRouter } from "next/router";
+import { off } from "node:process";
 import type { ComponentType } from "react";
 
 
@@ -14,7 +15,11 @@ jest.doMock("next/router", () => {
 		pathname: "",
 		query: {},
 		asPath: "",
-		basePath: ""
+		basePath: "",
+		events: {
+			on(ev: string, handler: () => any) {},
+			off(ev: string, handler: () => any) {}
+		}
 	};
 
 	return {

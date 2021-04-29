@@ -11,7 +11,7 @@ describe("<EndOfLessonBanner> (lesson page) Component", () => {
 
 	it("Mounts & Unmounts without crashing", () => {
 		expect(() => {
-			const wrapper = mount(<EndOfLessonBanner />);
+			const wrapper = mount(<EndOfLessonBanner topic="" topicShortLabel="" nextLesson={0} />);
 			wrapper.unmount();
 		}).not.toThrow();
 	});
