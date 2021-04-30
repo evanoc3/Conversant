@@ -128,8 +128,22 @@ function handleYesNoResponse(res: NextApiResponse, msg: string, onYes: number, o
  * Helper function which uses handles this API route's response to a multiple choice quesiton.
  */
 function handleMultipleChoiceResponse(res: NextApiResponse, msg: string, onA: number, onB: number, onC: number, onD: number, onUndecided: number): void {
-	const classifier = getMultipleChoiceClassifier();
-	const classification = classifier.classify(msg) as MultipleChoiceClasses;
+	const multipleChoiceRegex = /(?:^|\s)[abcd](?:\s|\.|$)/mi;
+	const matches = msg.match(multipleChoiceRegex);
+
+	let classification: MultipleChoiceClasses;
+
+	// If the response is particularly short and easy to parse, use a regex
+	if(matches !== null && matches.length > 1) {
+		classification = matches[1] as MultipleChoiceClasses;
+	}
+
+	// Otherwise, take a best guess with the multiple choice classifier
+	else {
+		const classifier = getMultipleChoiceClassifier();
+		classification = classifier.classify(msg) as MultipleChoiceClasses;
+	}
+
 
 	let resp: Partial<Response> = {
 		timestamp: (new Date()).toISOString(),
@@ -152,9 +166,6 @@ function handleMultipleChoiceResponse(res: NextApiResponse, msg: string, onA: nu
 		default:
 			resp["proceedTo"] = onUndecided;
 	}
-
-	console.debug("Sending response", resp);
-
 
 	res.status(200).json(resp);
 }

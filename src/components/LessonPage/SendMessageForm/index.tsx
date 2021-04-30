@@ -1,6 +1,8 @@
-import { FunctionComponent, PropsWithChildren, useState, FormEvent } from "react";
+import { useState, useEffect, createRef } from "react";
 import { Send as SendSvg } from "react-feather";
 import styles from "./SendMessageForm.module.scss";
+
+import type { PropsWithChildren, FormEvent } from "react";
 
 
 type Props = PropsWithChildren<{
@@ -9,9 +11,9 @@ type Props = PropsWithChildren<{
 }>
 
 
-const SendMessageForm: FunctionComponent<Props> = (props) => {
+export default function SendMessageForm(props: Props): JSX.Element {
 	const [userInput, setUserInput] = useState("");
-
+	const inputElement = createRef<HTMLInputElement>();
 
 	async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
 		e.preventDefault();
@@ -27,16 +29,19 @@ const SendMessageForm: FunctionComponent<Props> = (props) => {
 		}
 	}
 
-	
+	useEffect(() => {
+		if(!props.disabled && inputElement.current !== null) {
+			inputElement.current.focus();
+		}
+	}, [ props.disabled ]);
+
 	return (
 		<form id={styles["form"]} onSubmit={handleSubmit}>
-			<input type="text" id={styles["reply-textarea"]} placeholder="Write your message here..." onChange={e => setUserInput(e.target.value)} value={userInput} disabled={props.disabled} />
+			<input type="text" id={styles["reply-textarea"]} placeholder="Write your message here..." onChange={e => setUserInput(e.target.value)} value={userInput} disabled={props.disabled} ref={inputElement} />
 
-			<button id={styles["send-button"]} disabled={userInput === "" || props.disabled === true}>
+			<button id={styles["send-button"]} disabled={props.disabled || userInput === ""}>
 				<SendSvg id={styles["send-button-icon"]} />
 			</button>
 		</form>
 	);
 };
-
-export default SendMessageForm;
