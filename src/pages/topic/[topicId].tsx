@@ -14,26 +14,24 @@ import type { Response as ApiRouteResponse, TopicInformation } from "@pages/api/
 const TopicPage: NextPage = (props) => {
 	const router = useRouter();
 
+	const [topic, setTopic] = useState<string | undefined>();
 	const [pageTitle, setPageTitle] = useState("Topic");
 	const [topicInfo, setTopicInfo] = useState<TopicInformation | undefined>(undefined);
 
 
 	useEffect(() => {
-		const topicId = router.query["topicId"] as string;
-		if(topicId !== undefined) {
-			try {
-				getTopic(topicId).then(topic => {
-					setPageTitle(topic.label);
-					setTopicInfo(topic);
-				}).catch(err => {
-					console.error("Error: ", err);
-					throw err;
-				});
-			} catch(err) {
-				alert(err);
-			}
+		if(router.isReady) {
+			setTopic(router.query["topicId"] as string);
+
+			getTopic(router.query["topicId"] as string).then(topic => {
+				setPageTitle(topic.label);
+				setTopicInfo(topic);
+			}).catch(err => {
+				console.error("Error: ", err);
+				router.back();
+			});
 		}
-	}, [ router.query["topicId"] ]);
+	}, [ router.isReady ]);
 
 	return (
 		<>
