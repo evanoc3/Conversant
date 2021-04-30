@@ -20,13 +20,15 @@ type Props = PropsWithChildren<{
 
 
 export default function ConversationArea(props: Props): JSX.Element {
-	const areaBottom = createRef<HTMLDivElement>();
+	const bottomMarker = createRef<HTMLDivElement>();
 
+	// When a new message is added, scroll the element at the bottom into view, essentially scrolling to the bottom
 	useEffect(() => {
-		if(areaBottom.current !== null) {
-			areaBottom.current.scrollIntoView({ behavior: "smooth" })
+		if(bottomMarker.current !== null) {
+			bottomMarker.current.scrollIntoView({ behavior: "smooth" })
 		}
 	}, [ props.messages.length ]);
+
 
 	return (
 		<div id={styles["conversation-area"]}>
@@ -42,7 +44,7 @@ export default function ConversationArea(props: Props): JSX.Element {
 				) : ""
 			}
 
-			<div ref={areaBottom} />
+			<div ref={bottomMarker} />
 
 			{
 				(props.hasReachedEnd) ? (

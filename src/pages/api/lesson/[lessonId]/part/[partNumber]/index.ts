@@ -89,12 +89,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 function processMessage(messageText: string, user: User | null): string {
 	// Replace "[[NAME]]" with the user's first name
-	const nameRegex = /\s\[\[NAME\]\]/gmi;
-
+	const nameRegex = /\s?\[\[NAME\]\]/gm;
 	if(nameRegex.test(messageText)) {
-		const name = (user && user.name) ? ` ${user.name.split(" ")[0]}` : "";
-		messageText = messageText.replace(nameRegex, name);
+		messageText = messageText.replace(nameRegex, (match: string) => {
+			const hasSpacePrefix = match.startsWith(" ");
+			const name = user?.name?.split(" ")[0];
+
+			if(name) {
+				return (hasSpacePrefix) ? ` ${name}` : name;
+			}
+
+			return "";
+		});
 	}
+
 
 	return messageText;
 }
