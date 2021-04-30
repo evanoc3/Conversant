@@ -1,3 +1,4 @@
+import { createRef, useEffect, useRef } from "react";
 import styles from "./ConversationArea.module.scss";
 import { IsTypingMessageBubble, Message, UserMessage, EndOfLessonBanner } from "@components/LessonPage/index";
 import { Sender } from "@customTypes/messages";
@@ -19,6 +20,14 @@ type Props = PropsWithChildren<{
 
 
 export default function ConversationArea(props: Props): JSX.Element {
+	const areaBottom = createRef<HTMLDivElement>();
+
+	useEffect(() => {
+		if(areaBottom.current !== null) {
+			areaBottom.current.scrollIntoView({ behavior: "smooth" })
+		}
+	}, [ props.messages.length ]);
+
 	return (
 		<div id={styles["conversation-area"]}>
 			{ 
@@ -32,6 +41,8 @@ export default function ConversationArea(props: Props): JSX.Element {
 					<IsTypingMessageBubble key={"typing"} />
 				) : ""
 			}
+
+			<div ref={areaBottom} />
 
 			{
 				(props.hasReachedEnd) ? (
