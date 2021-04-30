@@ -1,8 +1,7 @@
-import natural from "natural";
-
+const natural = require("natural");
 const classifier = new natural.BayesClassifier();
 
-// positive cases
+// Positive cases
 classifier.addDocument("yes", "true");
 classifier.addDocument("ye", "true");
 classifier.addDocument("yea", "true");
@@ -22,12 +21,12 @@ classifier.addDocument("i understand", "true");
 classifier.addDocument("i understand it clearly", "true");
 classifier.addDocument("i understand it completely", "true");
 classifier.addDocument("yes i understand", "true");
-classifier.addDocument("yes i, understand", "true");
+classifier.addDocument("yes i understand", "true");
 classifier.addDocument("i do understand", "true");
 classifier.addDocument("i do understand it", "true");
 classifier.addDocument("i think i understand", "true");
 classifier.addDocument("i think i do understand it", "true");
-classifier.addDocument("i think i do understand it, yes", "true");
+classifier.addDocument("i think i do understand it yes", "true");
 classifier.addDocument("its clear", "true");
 classifier.addDocument("it's clear", "true");
 classifier.addDocument("it is clear", "true");
@@ -47,7 +46,7 @@ classifier.addDocument("i completely get it", "true");
 classifier.addDocument("i sure do", "true");
 classifier.addDocument("i understand", "true");
 
-// negative cases
+// Negative cases
 classifier.addDocument("no", "false");
 classifier.addDocument("nope", "false");
 classifier.addDocument("not really", "false");
@@ -91,7 +90,4 @@ classifier.addDocument("lol no", "false");
 classifier.addDocument("lol no sorry", "false");
 
 classifier.train();
-
-console.log( JSON.stringify(classifier) );
-
-export default classifier;
+console.log(JSON.stringify(classifier));

@@ -10,5 +10,6 @@ export interface Lesson {
 export enum LessonPartResponseType {
 	Proceed = "proceed",
 	YesNo = "yesNo",
-	EndOfLesson = "endOfLesson"
+	EndOfLesson = "endOfLesson",
+	MultipleChoice = "multipleChoice"
 }
