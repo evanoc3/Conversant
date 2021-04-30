@@ -14,7 +14,7 @@ export interface TopicLessonInformation {
 	id: number,
 	title: string,
 	description: string,
-	is_completed: boolean
+	is_completed?: boolean
 	href: string
 }
 
@@ -46,8 +46,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 
 		// See if the current user has an active session
-		const session = await getSession({ req }) as IAuthSession;
-		const userId = session.user?.id ?? "";
+		const session = await getSession({ req }) as IAuthSession | null;
+		const userId = session?.user?.id ?? null;
 		
 		// parse parameter from request query
 		const topicId = (req.query["topicId"] as string) ?? "";
@@ -114,15 +114,31 @@ interface ITopicLessonData<P> {
 	description: string,
 	is_completed: P
 }
+
 type RawLessonData = ITopicLessonData<number>
 
-async function getTopicLessonData(mysql: ServerlessMysql, topicId: string, userId: string): Promise<TopicLessonInformation[]> {
-	const topicLessonRows = await mysql.query<RawLessonData[]>(`
+async function getTopicLessonData(mysql: ServerlessMysql, topicId: string, userId: string | null): Promise<TopicLessonInformation[]> {
+	let query: Promise<RawLessonData[]>;
+
+	// Run the query and check for completion if a userId is provided
+	if(userId !== null) {
+		query = mysql.query<RawLessonData[]>(`
 			SELECT id, title, description, (SELECT COUNT(*) FROM lesson_completions lc WHERE lc.\`user\` = ? AND lc.lesson = l.id) as is_completed
 			FROM lessons l
 			WHERE l.topic = ?	
-	`, [ userId, topicId ])
-	.then<TopicLessonInformation[]>(rows => {
+		`, [ userId, topicId ]);
+	}
+	// Run the query without checking for completion if a userId is not provided
+	else {
+		query = mysql.query<RawLessonData[]>(`
+		SELECT id, title, description, false as is_completed
+		FROM lessons 
+		WHERE topic = ?	
+	`, [ topicId ]);
+	}
+
+
+	return await query.then<TopicLessonInformation[]>(rows => {
 		// mutate the data returned to include additional, calculated fields
 		const newRows = rows.map<ITopicLessonData<number | boolean>>(row => {
 			return {
@@ -138,6 +154,4 @@ async function getTopicLessonData(mysql: ServerlessMysql, topicId: string, userI
 		console.error("Error: failed to query database for topic information. Error: ", err);
 		throw new Error(err);
 	});
-
-	return topicLessonRows;
 } 
