@@ -39,14 +39,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		// parse the relevant query parameters
 		const lessonId = req.query["lessonId"] as string ?? "";
 
-		console.debug(`Got a request to mark user ${session.user!.id!} as having completed lesson ${lessonId}`);
-
 		// connect to the database
 		mysql = await connectToDatabase();
 
 		// Ensure that the database does not already contain a record of this user completing this database
 		if(await checkIfUserHasCompletedLesson(mysql, session.user!.id!, lessonId) ) {
-			console.debug(`User ${session.user!.id!} has already completed lesson ${lessonId}`);
 			throw new AlreadyCompletedError(`User ${session.user?.id} is already marked as having completed lesson ${lessonId}`);
 		}
 
@@ -90,7 +87,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
  * @throws Any database-related error occurs during the query.
  */
 async function addLessonCompletion(mysql: ServerlessMysql, userId: string, lessonId: string): Promise<void> {
-	console.debug(`Adding lesson_completion record for user ${userId} and lesson ${lessonId}`);
 	await mysql.query(`
 		INSERT INTO lesson_completions(user, lesson) VALUES (?, ?);
 	`, [ userId, lessonId ]).catch(err => {

@@ -1,9 +1,9 @@
 # POST a response to a Yes/No message
-POST http://localhost:8080/api/lesson/0/part/16/response
+POST http://localhost:8080/api/lesson/0/part/20/response
 content-type: application/json
 
 {
-	"message": "i do"
+	"message": "C"
 }
 
 ###
