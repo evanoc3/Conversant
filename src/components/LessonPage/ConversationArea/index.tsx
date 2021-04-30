@@ -27,7 +27,7 @@ export default function ConversationArea(props: Props): JSX.Element {
 		if(bottomMarker.current !== null) {
 			bottomMarker.current.scrollIntoView({ behavior: "smooth" })
 		}
-	}, [ props.messages.length ]);
+	}, [ props.messages.length, props.isTyping, props.hasReachedEnd ]);
 
 
 	return (
