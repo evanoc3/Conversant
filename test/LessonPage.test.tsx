@@ -1,6 +1,8 @@
 // mocks
 import "@mocks/next/router";
-import "jest-fetch-mock";
+import fetchMock from "jest-fetch-mock";
+fetchMock.enableMocks();
+import "@mocks/scrollIntoView";
 // imports
 import { describe, it, expect } from "@jest/globals";
 import { withRouter } from "next/router";
