@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Search as SearchIcon } from "react-feather";
 import styles from "./SearchInput.module.scss";
@@ -27,10 +27,10 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 			e.preventDefault();
 		}
 
-		const term = selectedSearchTerm ?? searchTerm;
+		const term = (selectedSearchTerm !== undefined) ? selectedSearchTerm : searchTerm;
 
 		if(term !== "") {
-			router.push(`/topic/${selectedSearchTerm}`);
+			router.push(`/topic/${term}`);
 		}
 	}
 
@@ -43,7 +43,9 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 
 	function blurHandler(e: FocusEvent<HTMLInputElement>): void {
 		setIsFocused(false);
-		setShouldShowResults(false);
+		setTimeout(() => {
+			setShouldShowResults(false);
+		}, 100);
 	}
 
 	async function changeHandler(e: ChangeEvent<HTMLInputElement>): Promise<void> {

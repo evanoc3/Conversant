@@ -3,7 +3,7 @@ import { useSession } from "next-auth/client";
 import { ArrowLeft as ArrowLeftSvg } from "react-feather";
 import styles from "./Sidebar.module.scss";
 
-import { FunctionComponent, PropsWithChildren, useLayoutEffect } from "react";
+import type {PropsWithChildren } from "react";
 import type { Session } from "next-auth";
 
 
@@ -14,11 +14,13 @@ type Props = PropsWithChildren<{
 export default function Sidebar(props: Props): JSX.Element {
 	const [session, sessionIsLoading] = useSession();
 
+	const backUrl = (!sessionIsLoading && session !== null) ? "/home" : "/";
+
 	return (
 		<div id={styles["sidebar"]}>
 
-			<Link href="/home">
-				<a id={styles["home-link"]}>
+			<Link href={backUrl}>
+				<a id={styles["home-link"]} href={backUrl}>
 					<ArrowLeftSvg id={styles["home-icon"]} />
 				</a>
 			</Link>
@@ -26,7 +28,6 @@ export default function Sidebar(props: Props): JSX.Element {
 			<div className={styles["separator"]} />
 
 			<ul id={styles["nav-content"]}>
-
 				{ renderUserBadge(session, sessionIsLoading) }
 			</ul>
 
