@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/client"; 
 import styles from "./[lessonId].module.scss";
 import { Background } from "@components/index";
 import { ConversationArea, SendMessageForm, Sidebar, TitleBar } from "@components/LessonPage/index";
@@ -30,6 +31,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [isTyping, setIsTyping] = useState(false);
 	const [isLessonOver, setIsLessonOver] = useState(false);
+	const [session, sessionIsLoading] = useSession();
 	const router = useRouter();
 
 	// Methods
@@ -39,7 +41,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 
 	async function sendMessageHandler(msg: string): Promise<void> {
 		if(lessonId !== undefined && currentPart >= 0) {
-			await postReponse(lessonId, currentPart, msg).then(resp => {
+			await postResponse(lessonId, currentPart, msg).then(resp => {
 				setMessages([...messages, {
 					timestamp: new Date(),
 					sender: Sender.USER,
@@ -93,7 +95,10 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		}
 
 		if(resp.type === LessonPartResponseType.EndOfLesson) {
-			postLessonCompletion(lessonId!);
+			if(!sessionIsLoading && session !== null) {
+				postLessonCompletion(lessonId!);
+			}
+			
 			setIsLessonOver(true);
 		}
 	}
@@ -170,6 +175,12 @@ const LessonPage: FunctionComponent<Props> = (props) => {
       throw new Error("routeChange aborted");
     };
 
+		if(isLessonOver) {
+			window.removeEventListener("beforeunload", handleWindowClose);
+      router.events.off("routeChangeStart", handleBrowseAway);
+			return;
+		}
+
     window.addEventListener("beforeunload", handleWindowClose);
     router.events.on("routeChangeStart", handleBrowseAway);
 
@@ -178,7 +189,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
       router.events.off("routeChangeStart", handleBrowseAway);
     };
 
-  }, [ currentPart >= 0 ]);
+  }, [ currentPart >= 0, isLessonOver ]);
 
 
 	// Render
@@ -263,7 +274,7 @@ async function fetchLessonPart(lessonId: number, part: number): Promise<PartApiR
 /**
  * Helper function which POSTs a user's response to a lesson part off to the `/api/lesson/[]/part/[]/response` endpoint.
  */
-async function postReponse(lessonId: number, part: number, msg: string): Promise<UserResponseApiRouteResponse> {
+async function postResponse(lessonId: number, part: number, msg: string): Promise<UserResponseApiRouteResponse> {
 	console.debug(`/api/lesson/${lessonId}/part/${part}/response`);
 
 	const resp = await fetch(`/api/lesson/${lessonId}/part/${part}/response`, {
