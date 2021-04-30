@@ -31,7 +31,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [isTyping, setIsTyping] = useState(false);
 	const [isLessonOver, setIsLessonOver] = useState(false);
-	const [session, sessionIsLoading] = useSession();
+	const [session] = useSession();
 	const router = useRouter();
 
 	// Methods
@@ -48,14 +48,10 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 					content: msg
 				}]);
 				
-				if("proceedTo" in resp && resp.proceedTo) {
+				if("proceedTo" in resp && typeof resp.proceedTo === "number") {
 					setCurrentPart(resp.proceedTo);
 				}
 			}).catch(err => { throw err; });
-
-
-
-
 		}
 	}
 
@@ -95,7 +91,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		}
 
 		if(resp.type === LessonPartResponseType.EndOfLesson) {
-			if(!sessionIsLoading && session !== null) {
+			if(session !== null) {
 				postLessonCompletion(lessonId!);
 			}
 			

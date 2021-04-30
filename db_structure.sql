@@ -7,7 +7,7 @@
 #
 # Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
 # Database: mydb3940
-# Generation Time: 2021-04-29 21:55:58 +0000
+# Generation Time: 2021-04-30 19:37:18 +0000
 # ************************************************************
 
 
@@ -73,19 +73,34 @@ CREATE TABLE `lesson_parts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `lesson` int(11) NOT NULL,
   `content` text NOT NULL,
-  `type` enum('proceed','yesNo','endOfLesson') NOT NULL DEFAULT 'proceed',
+  `type` enum('proceed','yesNo','endOfLesson','multipleChoice') NOT NULL DEFAULT 'proceed',
   `proceedTo` int(11) DEFAULT NULL,
   `onYes` int(11) DEFAULT NULL,
   `onNo` int(11) DEFAULT NULL,
+  `onA` int(11) DEFAULT NULL,
+  `onB` int(11) DEFAULT NULL,
+  `onC` int(11) DEFAULT NULL,
+  `onD` int(11) DEFAULT NULL,
+  `onUndecided` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `lesson` (`lesson`),
   KEY `proceedTo` (`proceedTo`),
   KEY `onYes` (`onYes`),
   KEY `onNo` (`onNo`),
+  KEY `onA` (`onA`),
+  KEY `onB` (`onB`),
+  KEY `onC` (`onC`),
+  KEY `onD` (`onD`),
+  KEY `onDidntUnderstand` (`onUndecided`),
   CONSTRAINT `lesson_parts_ibfk_1` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `lesson_parts_ibfk_2` FOREIGN KEY (`proceedTo`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `lesson_parts_ibfk_3` FOREIGN KEY (`onYes`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `lesson_parts_ibfk_4` FOREIGN KEY (`onNo`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `lesson_parts_ibfk_4` FOREIGN KEY (`onNo`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `lesson_parts_ibfk_5` FOREIGN KEY (`onA`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `lesson_parts_ibfk_6` FOREIGN KEY (`onB`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `lesson_parts_ibfk_7` FOREIGN KEY (`onC`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `lesson_parts_ibfk_8` FOREIGN KEY (`onD`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `lesson_parts_ibfk_9` FOREIGN KEY (`onUndecided`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

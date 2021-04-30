@@ -1,3 +1,4 @@
+import { createRef, useEffect, useRef } from "react";
 import styles from "./ConversationArea.module.scss";
 import { IsTypingMessageBubble, Message, UserMessage, EndOfLessonBanner } from "@components/LessonPage/index";
 import { Sender } from "@customTypes/messages";
@@ -19,6 +20,16 @@ type Props = PropsWithChildren<{
 
 
 export default function ConversationArea(props: Props): JSX.Element {
+	const bottomMarker = createRef<HTMLDivElement>();
+
+	// When a new message is added, scroll the element at the bottom into view, essentially scrolling to the bottom
+	useEffect(() => {
+		if(bottomMarker.current !== null) {
+			bottomMarker.current.scrollIntoView({ behavior: "smooth" })
+		}
+	}, [ props.messages.length, props.isTyping, props.hasReachedEnd ]);
+
+
 	return (
 		<div id={styles["conversation-area"]}>
 			{ 
@@ -32,6 +43,8 @@ export default function ConversationArea(props: Props): JSX.Element {
 					<IsTypingMessageBubble key={"typing"} />
 				) : ""
 			}
+
+			<div ref={bottomMarker} />
 
 			{
 				(props.hasReachedEnd) ? (

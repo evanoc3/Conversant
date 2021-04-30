@@ -1,5 +1,6 @@
 import { connectToDatabase, getLessonPart } from "@util/database";
-import { getDoYouUnderstandResponseClassifier } from "@util/classifiers";
+import { getClassifier as getYesNoClassifier, Classes as YesNoClasses } from "@util/classifiers/yesNo";
+import { getClassifier as getMultipleChoiceClassifier, Classes as MultipleChoiceClasses } from "@util/classifiers/multipleChoice";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ServerlessMysql } from "serverless-mysql";
@@ -8,8 +9,10 @@ import { LessonPartResponseType } from "@customTypes/lesson";
 
 
 export type Response = ApiResponse<{
-	proceedTo?: number,
-	isLessonEnded?: boolean
+	responseClassification: string | undefined,
+	confidence: number,
+	proceedTo: number,
+	classes?: any
 }>
 
 
@@ -42,7 +45,7 @@ export default async function LessonPartsResponseApiRoute(req: NextApiRequest, r
 			throw new Error(`Invalid type of message, expected \"string\" but got \"${typeof req.body["message"]}\".`);
 		}
 
-		const messageResponse = req.body["message"] as string;
+		const messageResponse = (req.body["message"] as string).toLowerCase();
 
 		// Connect to the database
 		mysql = await connectToDatabase();
@@ -51,15 +54,23 @@ export default async function LessonPartsResponseApiRoute(req: NextApiRequest, r
 		const lessonPart = await getLessonPart(mysql, partNumber).catch(err => { throw err; });
 
 		// Determine how to handle the response, depending on the `type` of the lesson part
+		const { onYes, onNo, onUndecided, onA, onB, onC, onD } = lessonPart;
+
+		console.debug(lessonPart);
+
 		switch(lessonPart.type) {
+			// Handle response to a message which does not require a response
 			case LessonPartResponseType.Proceed:
-				handleNoResponse(res);
-				break;
-			case LessonPartResponseType.YesNo:
-				handleYesNoResponse(res, messageResponse, lessonPart.onYes!, lessonPart.onNo!);
-				break;
 			case LessonPartResponseType.EndOfLesson:
-				handleEndOfLessonResponse(res);
+				handleUnexpectedResponse(res);
+				break;
+			// Handle a response to a Yes/No question
+			case LessonPartResponseType.YesNo:
+				handleYesNoResponse(res, messageResponse, onYes!, onNo!, onUndecided!);
+				break;
+			// Handle a response to a A/B/C/D question
+			case LessonPartResponseType.MultipleChoice:
+				handleMultipleChoiceResponse(res, messageResponse, onA!, onB!, onC!, onD!, onUndecided!);
 				break;
 		}
 	}
@@ -81,7 +92,7 @@ export default async function LessonPartsResponseApiRoute(req: NextApiRequest, r
 /**
  * This function handles the response when the lesson part being responded to is of type `proceed`.
  */
-function handleNoResponse(res: NextApiResponse): void {
+function handleUnexpectedResponse(res: NextApiResponse): void {
 	res.status(200).json({
 		timestamp: (new Date()).toISOString(),
 		error: "No response is required to this message"
@@ -92,25 +103,58 @@ function handleNoResponse(res: NextApiResponse): void {
 /**
  * This function handles the classification and response when the lesson part being responded to is of type `YesNo`.
  */
-function handleYesNoResponse(res: NextApiResponse, msg: string, onYes: number, onNo: number): void {
-	const classifier = getDoYouUnderstandResponseClassifier();
+function handleYesNoResponse(res: NextApiResponse, msg: string, onYes: number, onNo: number, onUndecided: number): void {
+	const classifier = getYesNoClassifier();
+	const classes = classifier.getClassifications(msg).reduce<{[key: string]: number}>((map, obj) => (map[obj.label] = obj.value, map), {});
+	const confidence = classes[YesNoClasses.True] - classes[YesNoClasses.False];
 
-	const responseClassification = classifier.classify(msg) === "true";
-
-	res.status(200).json({
+	let resp: Partial<Response> = {
 		timestamp: (new Date()).toISOString(),
-		responseClassification: responseClassification,
-		proceedTo: (responseClassification === true) ?  onYes : onNo
-	} as Response);
+		responseClassification: (classes[YesNoClasses.True] >= classes[YesNoClasses.False]) ? YesNoClasses.True : YesNoClasses.False,
+		confidence: confidence,
+		proceedTo: (classes[YesNoClasses.True] >= classes[YesNoClasses.False]) ? onYes : onNo
+	};
+
+	if(Math.abs(confidence) < 0.001) {
+		resp.responseClassification = "undefined";
+		resp.proceedTo = onUndecided;
+	}
+
+	res.status(200).json(resp);
 }
 
 
 /**
- * Helper function which handles sending the response, if the r
+ * Helper function which uses handles this API route's response to a multiple choice quesiton.
  */
-function handleEndOfLessonResponse(res: NextApiResponse): void {
-	res.status(200).json({
+function handleMultipleChoiceResponse(res: NextApiResponse, msg: string, onA: number, onB: number, onC: number, onD: number, onUndecided: number): void {
+	const classifier = getMultipleChoiceClassifier();
+	const classification = classifier.classify(msg) as MultipleChoiceClasses;
+
+	let resp: Partial<Response> = {
 		timestamp: (new Date()).toISOString(),
-		error: "No response neccessary"
-	});
+		responseClassification: classification,
+	};
+
+	switch(classification) {
+		case MultipleChoiceClasses.A:
+			resp["proceedTo"] = onA;
+			break;
+		case MultipleChoiceClasses.B:
+			resp["proceedTo"] = onB;
+			break;
+		case MultipleChoiceClasses.C:
+			resp["proceedTo"] = onC;
+			break;
+		case MultipleChoiceClasses.D:
+			resp["proceedTo"] = onD;
+			break;
+		default:
+			resp["proceedTo"] = onUndecided;
+	}
+
+	console.debug("Sending response", resp);
+
+
+	res.status(200).json(resp);
 }

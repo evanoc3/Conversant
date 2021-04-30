@@ -40,11 +40,13 @@
 
 .pre {
 	display: inline-block;
-	// height: auto !important;
 	border-radius: ui.$small-curve;
 	max-width: messages.$inner-max-width;
 	overflow-x: scroll;
-	margin-bottom: 0;
+
+	&:last-child {
+		margin-bottom: 0 !important;
+	}
 }
 
 

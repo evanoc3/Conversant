@@ -1,6 +1,7 @@
 // mocks
 import fetchMock from "jest-fetch-mock";
 fetchMock.enableMocks();
+import "@mocks/scrollIntoView";
 // imports
 import { describe, it, expect } from "@jest/globals";
 import { mount } from "enzyme";

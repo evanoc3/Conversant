@@ -33,7 +33,12 @@ export interface ILessonPartsTableRow {
 	type: LessonPartResponseType,
 	proceedTo: number | null,
 	onYes: number | null,
-	onNo: number | null
+	onNo: number | null,
+	onA: number | null,
+	onB: number | null,
+	onC: number | null,
+	onD: number | null,
+	onUndecided: number | null
 }
 
 

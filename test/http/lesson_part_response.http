@@ -1,15 +1,25 @@
-# POST a response to the message response endpoint
-POST http://localhost:8080/api/lesson/0/part/1/response
+# POST a response to a Yes/No message
+POST http://localhost:8080/api/lesson/0/part/16/response
 content-type: application/json
 
 {
-	"message": "i do understand"
+	"message": "i do"
+}
+
+###
+
+# POST a response to a MultipleChoice message
+POST http://localhost:8080/api/lesson/0/part/20/response
+content-type: application/json
+
+{
+	"message": "It is dee"
 }
 
 ###
 
 # POST a response to a message which does not require a response
-POST http://localhost:8080/api/lesson/0/part/0/response
+POST http://localhost:8080/api/lesson/0/part/1/response
 content-type: application/json
 
 {
