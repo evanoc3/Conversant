@@ -19,12 +19,13 @@ $placeholder-font: #828282;
 $contrast-primary-font: #dcdcdc;
 $contrast-secondary-font: #808080;
 $quote-font: #555;
+$input-disabled-placeholder-font: #434344;
 
 // Input & Quote Border Colours
 $input-inactive-border: #ccc;
 $input-active-border: #e9a16bd0;
 $input-active-shadow:#eb6804c2;
-
+$input-disabled-background: #6B6B6D; 
 $quote-left-border: #838383;
 
 // Link Colours
@@ -32,10 +33,13 @@ $link-colour: #3192ed;
 
 // Button colours
 $btn-orange-background: #ff8400;
+$btn-orange-disabled-background: #ae5a00;
 $btn-orange-active-background: #d17128;
 $btn-orange-border: #ca6c24;
+$btn-orange-disabled-border: #a75600;
 $btn-orange-active-border: #bd621c;
 $btn-orange-font: #fff;
+$btn-orange-disabled-font: #d6d6d6;
 $btn-orange-active-font: #ebebeb;
 $btn-green-background: #18aa31;
 $btn-green-active-background: #128826;

@@ -31,6 +31,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [isTyping, setIsTyping] = useState(false);
 	const [isLessonOver, setIsLessonOver] = useState(false);
+	const [isUserInputEnabled, setUserInputEnabled] = useState(false);
 	const [session] = useSession();
 	const router = useRouter();
 
@@ -70,6 +71,15 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 			throw resp.error;
 		}
 
+		switch(resp.type) {
+			case LessonPartResponseType.Proceed:
+			case LessonPartResponseType.EndOfLesson:
+				setUserInputEnabled(false);
+				break;
+		}
+
+		// setUserInputEnabled(resp.type === LessonPartResponseType.YesNo || resp.type === LessonPartResponseType.MultipleChoice);
+
 		// Set according to the average characters per minute typed by a fast adult (see http://typefastnow.com/average-typing-speed)
 		const typingTime = resp.content.length * 17.5;
 
@@ -86,16 +96,27 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 			content: resp.content
 		}]);
 
-		if(resp.type === LessonPartResponseType.Proceed) {
-			setCurrentPart(resp.proceedTo!);
-		}
 
-		if(resp.type === LessonPartResponseType.EndOfLesson) {
-			if(session !== null) {
-				postLessonCompletion(lessonId!);
-			}
+		// React based on the `type` of the new lesson part
+		switch(resp.type) {
+			// If the lesson is `proceed` type, then immediately move on to the next part
+			case LessonPartResponseType.Proceed:
+				setCurrentPart(resp.proceedTo!);
+				break;
+
+			// If the lesson is `end` type, then set the `isLessonOver` flag
+			case LessonPartResponseType.EndOfLesson:
+				if(session !== null) {
+					postLessonCompletion(lessonId!);
+				}
+				setIsLessonOver(true);
+				break;
 			
-			setIsLessonOver(true);
+			// If the lesson is any interactive type (e.g. YesNo, or MultipleChoice) then enable the user input
+			case LessonPartResponseType.YesNo:
+			case LessonPartResponseType.MultipleChoice:
+				setUserInputEnabled(true);
+				break;
 		}
 	}
 
@@ -216,7 +237,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 					</div>
 	
 					<div id={styles["reply-bar"]}>
-						<SendMessageForm messageSentHandler={sendMessageHandler} disabled={(lesson === undefined) || isTyping || isLessonOver} />
+						<SendMessageForm messageSentHandler={sendMessageHandler} disabled={!isUserInputEnabled} />
 					</div>
 				</div>
 			</Background>

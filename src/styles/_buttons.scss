@@ -54,4 +54,11 @@
 		border-color: colours.$btn-orange-active-border;
 		color: colours.$btn-orange-active-font;
 	}
+
+	&:disabled {
+		background-color: colours.$btn-orange-disabled-background;
+		border-color: colours.$btn-orange-disabled-border;
+		color: colours.$btn-orange-disabled-font;
+		cursor: default;
+	}
 }
