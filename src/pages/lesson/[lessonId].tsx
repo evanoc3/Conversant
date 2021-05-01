@@ -292,8 +292,6 @@ async function fetchLessonPart(lessonId: number, part: number): Promise<PartApiR
  * Helper function which POSTs a user's response to a lesson part off to the `/api/lesson/[]/part/[]/response` endpoint.
  */
 async function postResponse(lessonId: number, part: number, msg: string): Promise<UserResponseApiRouteResponse> {
-	console.debug(`/api/lesson/${lessonId}/part/${part}/response`);
-
 	const resp = await fetch(`/api/lesson/${lessonId}/part/${part}/response`, {
 		method: "POST",
 		body: JSON.stringify({
@@ -305,7 +303,6 @@ async function postResponse(lessonId: number, part: number, msg: string): Promis
 	}).catch(err => { throw err });
 
 	if(!resp.ok) {
-		console.debug(resp);
 		throw new Error("Recieved error response status from API");
 	}
 
@@ -328,10 +325,6 @@ async function postResponse(lessonId: number, part: number, msg: string): Promis
  * @throws If the request receives an "error" field in the response from the server (due to the API itself rejecting the request, rather than the network).
  */
  async function postLessonCompletion(lessonId: number): Promise<void> {
-	if(process.env.NODE_ENV === "development") {
-		console.debug(`Marking lesson ${lessonId} as having been completed!`);
-	} 
-
 	const resp = await fetch(`/api/lesson/${lessonId}/complete`, { method: "POST" });
 
 	if(!resp.ok) {

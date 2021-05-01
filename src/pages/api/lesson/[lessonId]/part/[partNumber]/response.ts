@@ -16,6 +16,11 @@ export type Response = ApiResponse<{
 }>
 
 
+/**
+ * Main function for handling requests to this API route.
+ * 
+ * 
+ */
 export default async function LessonPartsResponseApiRoute(req: NextApiRequest, res: NextApiResponse) {
 	let mysql: ServerlessMysql | undefined;
 
@@ -55,8 +60,6 @@ export default async function LessonPartsResponseApiRoute(req: NextApiRequest, r
 
 		// Determine how to handle the response, depending on the `type` of the lesson part
 		const { onYes, onNo, onUndecided, onA, onB, onC, onD } = lessonPart;
-
-		console.debug(lessonPart);
 
 		switch(lessonPart.type) {
 			// Handle response to a message which does not require a response
@@ -128,16 +131,15 @@ function handleYesNoResponse(res: NextApiResponse, msg: string, onYes: number, o
  * Helper function which uses handles this API route's response to a multiple choice quesiton.
  */
 function handleMultipleChoiceResponse(res: NextApiResponse, msg: string, onA: number, onB: number, onC: number, onD: number, onUndecided: number): void {
-	const multipleChoiceRegex = /(?:^|\s)[abcd](?:\s|\.|$)/mi;
+	const multipleChoiceRegex = /(?:^|\s)([abcd])(?:\s|\.|$)/mi;
 	const matches = msg.match(multipleChoiceRegex);
 
 	let classification: MultipleChoiceClasses;
 
 	// If the response is particularly short and easy to parse, use a regex
-	if(matches !== null && matches.length > 1) {
-		classification = matches[1] as MultipleChoiceClasses;
+	if(matches !== null) {
+		classification = matches[1].toUpperCase() as MultipleChoiceClasses;
 	}
-
 	// Otherwise, take a best guess with the multiple choice classifier
 	else {
 		const classifier = getMultipleChoiceClassifier();
