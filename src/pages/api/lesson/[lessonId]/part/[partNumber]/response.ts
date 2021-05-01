@@ -16,6 +16,11 @@ export type Response = ApiResponse<{
 }>
 
 
+/**
+ * Main function for handling requests to this API route.
+ * 
+ * 
+ */
 export default async function LessonPartsResponseApiRoute(req: NextApiRequest, res: NextApiResponse) {
 	let mysql: ServerlessMysql | undefined;
 
@@ -132,10 +137,9 @@ function handleMultipleChoiceResponse(res: NextApiResponse, msg: string, onA: nu
 	let classification: MultipleChoiceClasses;
 
 	// If the response is particularly short and easy to parse, use a regex
-	if(matches !== null && matches.length > 1) {
+	if(matches !== null) {
 		classification = matches[1].toUpperCase() as MultipleChoiceClasses;
 	}
-
 	// Otherwise, take a best guess with the multiple choice classifier
 	else {
 		const classifier = getMultipleChoiceClassifier();

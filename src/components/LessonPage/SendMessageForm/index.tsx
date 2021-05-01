@@ -30,8 +30,13 @@ export default function SendMessageForm(props: Props): JSX.Element {
 	}
 
 	useEffect(() => {
-		if(!props.disabled && inputElement.current !== null) {
-			inputElement.current.focus();
+		if(inputElement.current !== null) {
+			if(!props.disabled) {
+				inputElement.current.focus();
+			}
+			else {
+				inputElement.current.blur();
+			}
 		}
 	}, [ props.disabled ]);
 
