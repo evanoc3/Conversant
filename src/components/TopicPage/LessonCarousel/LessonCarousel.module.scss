@@ -51,6 +51,10 @@ $carriage-size: min(30rem, calc(100vw - 3rem));
 	flex-flow: column nowrap;
 }
 
+.lesson-title {
+	margin-bottom: 0.5rem;
+}
+
 .lesson-description-container {
 	flex: 1;
 }

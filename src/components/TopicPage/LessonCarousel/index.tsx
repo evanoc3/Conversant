@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import Link from "next/link";
 import { ArrowRight as ArrowRightSvg, ExternalLink as ExternalLinkSvg, CheckCircle as CheckCircleSvg } from "react-feather";
 import styles from "./LessonCarousel.module.scss";
+import { MarkdownRenderer } from "@components/index";
 
 import { FunctionComponent, PropsWithChildren } from "react";
 import type { TopicLessonInformation } from "@pages/api/topic/[topicId]";
@@ -26,11 +27,13 @@ const LessonCarousel: FunctionComponent<Props> = (props) => {
 								<ArrowRightSvg className={styles["arrow"]} />
 
 								<div className={styles["lesson-container"]}>
-									<h2>{index + 1}. { lesson.title }</h2>
+									<h2 className={styles["lesson-title"]}>{index + 1}. { lesson.title }</h2>
 									<div className={styles["lesson-description-container"]}>
 										{
 											(lesson.description !== null) ? (
-												<p>{ lesson.description }</p>
+												<MarkdownRenderer>
+													{ lesson.description }
+												</MarkdownRenderer>
 											) : ""
 										}
 									</div>
