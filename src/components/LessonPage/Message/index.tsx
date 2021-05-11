@@ -32,6 +32,7 @@ const componentMapping: Partial<NormalComponents & SpecialComponents> = {
 	h4: ({node, ...props}) => <h4 className={styles["h4"]} {...props} />,
 	h5: ({node, ...props}) => <h5 className={styles["h5"]} {...props} />,
 	h6: ({node, ...props}) => <h6 className={styles["h6"]} {...props} />,
+	p: ({node, ...props}) => <p className={styles["p"]} {...props} />,
 	strong: ({node, ...props}) => <strong className={styles["strong"]} {...props} />,
 	em: ({node, ...props}) => <em className={styles["em"]} {...props} />,
 	a: ({node, ...props}) => <a className={styles["a"]} {...props} />,

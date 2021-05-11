@@ -28,8 +28,8 @@ export interface ITopicsTableRow {
 export interface ILessonPartsTableRow {
 	id: number,
 	lesson: number,
-	part: number,
 	content: string,
+	pause: number,
 	type: LessonPartResponseType,
 	proceedTo: number | null,
 	onYes: number | null,

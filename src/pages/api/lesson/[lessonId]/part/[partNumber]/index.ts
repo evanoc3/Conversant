@@ -15,7 +15,9 @@ import { LessonPartResponseType } from "@customTypes/lesson";
 /**
  * Typescript interface for the JSON serialized response sent by this API route.
  */
-export type Response = ApiResponse<Pick<ILessonPartsTableRow, "content" | "type" | "proceedTo">>
+export type Response = ApiResponse<
+	Pick<ILessonPartsTableRow, "id" | "content" | "type" | "proceedTo" | "pause">
+>
 
 
 /**
@@ -58,8 +60,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 		let resp: Partial<Response> = {
 			timestamp: (new Date()).toISOString(),
+			id: lessonPart.id,
 			content: processedLessonContent,
-			type: lessonPart.type
+			pause: lessonPart.pause,
+			type: lessonPart.type,
 		};
 
 		// If the lessonType is `proceed`, then add the field containing the next part to proceed to
@@ -87,6 +91,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 
+/**
+ * Helper function which templates in the user's name to the message wherever it finds "[[NAME]]"
+ */
 function processMessage(messageText: string, user: User | null): string {
 	// Replace "[[NAME]]" with the user's first name
 	const nameRegex = /\s?\[\[NAME\]\]/gm;

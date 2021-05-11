@@ -7,7 +7,7 @@
 #
 # Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
 # Database: mydb3940
-# Generation Time: 2021-04-30 19:37:18 +0000
+# Generation Time: 2021-05-11 11:58:01 +0000
 # ************************************************************
 
 
@@ -73,6 +73,7 @@ CREATE TABLE `lesson_parts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `lesson` int(11) NOT NULL,
   `content` text NOT NULL,
+  `pause` int(11) NOT NULL DEFAULT '0',
   `type` enum('proceed','yesNo','endOfLesson','multipleChoice') NOT NULL DEFAULT 'proceed',
   `proceedTo` int(11) DEFAULT NULL,
   `onYes` int(11) DEFAULT NULL,

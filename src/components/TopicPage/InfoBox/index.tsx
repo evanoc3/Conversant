@@ -1,4 +1,5 @@
 import styles from "./InfoBox.module.scss";
+import { MarkdownRenderer } from "@components/index";
 
 import type { FunctionComponent, PropsWithChildren } from "react";
 
@@ -10,14 +11,16 @@ type Props = PropsWithChildren<{
 }>
 
 
-const InfoBox: FunctionComponent<Props> = (props) => {
-
+export default function InfoBox(props: Props): JSX.Element {
 	return (
 		<div id={styles["container"]} className={props.className}>
 			<div id={styles["info-box"]}>
-				<p id={styles["description"]}>
-					{ props.description }
-				</p>
+
+				<div id={styles["description"]}>
+					<MarkdownRenderer>
+						{ props.description }
+					</MarkdownRenderer>
+				</div>
 
 				<div id={styles["bottom-row"]}>
 					<span>Lessons: {props.lessonCount}</span>
@@ -26,5 +29,3 @@ const InfoBox: FunctionComponent<Props> = (props) => {
 		</div>
 	);
 }
-
-export default InfoBox;
