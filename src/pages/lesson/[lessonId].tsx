@@ -81,7 +81,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		// setUserInputEnabled(resp.type === LessonPartResponseType.YesNo || resp.type === LessonPartResponseType.MultipleChoice);
 
 		// Set according to the average characters per minute typed by a fast adult (see http://typefastnow.com/average-typing-speed)
-		const typingTime = resp.content.length * 17.5;
+		const typingTime = resp.content.length * 22.5;
 
 		setIsTyping(true);
 

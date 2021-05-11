@@ -38,6 +38,13 @@
 
 // Style the markdown inside messages
 
+.p {
+	margin-bottom: 1rem;
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
 .pre {
 	display: inline-block;
 	border-radius: ui.$small-curve;
