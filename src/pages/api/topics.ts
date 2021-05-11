@@ -21,9 +21,7 @@ export default async function TopicsApiRoute(req: NextApiRequest, res: NextApiRe
 
 	try {
 		// parse parameter from request query
-		const query = (req.body["query"] as string) ?? "";
-
-		console.debug(query);
+		const query = (req.query["query"] as string) ?? "";
 
 		// connect to the database
 		const mysql = await connectToDatabase();
@@ -67,7 +65,6 @@ async function getSearchResultsForTopic(mysql: ServerlessMysql, topic: string): 
 		throw err;
 	});
 
-	// console.debug(rows);
 
 	return rows;
 } 
