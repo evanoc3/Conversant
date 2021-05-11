@@ -23,7 +23,7 @@ classifier.addDocument("2", "B");
 classifier.addDocument("2nd", "B");
 classifier.addDocument("be", "B");
 classifier.addDocument("bee", "B");
-classifier.addDocument("second", "A");
+classifier.addDocument("second", "B");
 classifier.addDocument("it is b", "B");
 classifier.addDocument("it is 2", "B");
 classifier.addDocument("the second one", "B");
