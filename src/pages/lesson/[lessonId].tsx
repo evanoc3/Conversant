@@ -78,7 +78,12 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 				break;
 		}
 
-		// setUserInputEnabled(resp.type === LessonPartResponseType.YesNo || resp.type === LessonPartResponseType.MultipleChoice);
+		if("pause" in resp) {
+			if(process.env.NODE_ENV === "development") {
+				console.debug(`Pausing ${resp.pause}ms for lesson part ${resp.id}`);
+			}
+			await new Promise(resolve => setTimeout(resolve, resp.pause));
+		}
 
 		// Set according to the average characters per minute typed by a fast adult (see http://typefastnow.com/average-typing-speed)
 		const typingTime = resp.content.length * 22.5;

@@ -49,7 +49,7 @@ export async function connectToDatabase(): Promise<ServerlessMysql> {
  */
 export async function getLessonPart(mysql: ServerlessMysql, id: number): Promise<ILessonPartsTableRow> {
 	const rows = await mysql.query<ILessonPartsTableRow[]>(`
-		SELECT id, lesson, content, type, proceedTo, onYes, onNo, onA, onB, onC, onD, onUndecided
+		SELECT id, lesson, content, pause, type, proceedTo, onYes, onNo, onA, onB, onC, onD, onUndecided
 		FROM lesson_parts
 		WHERE id = ?
 	`, [ id ]).catch(err => { throw err; });
