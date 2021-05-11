@@ -1,0 +1,62 @@
+@use "colours";
+@use "ui";
+
+
+// Style the markdown inside messages
+
+.p {
+	margin-bottom: 0.5rem;
+	
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.pre {
+	border-radius: ui.$small-curve;
+
+	&:last-child {
+		margin-bottom: 0 !important;
+	}
+}
+
+span.inline {
+	display: inline;
+	border-radius: ui.$small-curve * 0.75;
+	padding: 0.15rem 0.25rem !important;
+}
+
+
+.blockquote {
+	color: colours.$quote-font;
+	background-color: colours.$quote-background;
+	border-left: 0.5rem solid colours.$quote-left-border;
+	padding-left: 0.5rem;
+	font-size: 1.2rem;
+}
+
+
+.img {
+	border-radius: ui.$small-curve;
+}
+
+
+.ul, .ol {
+	&:not(.checklist) {
+		list-style-position: inside;
+	}
+
+	&.checklist {
+		list-style: none;
+	}
+}
+
+
+.table {
+	border-collapse: collapse;
+}
+
+.td, .th {
+	border: 1px solid colours.$separating-border;
+	padding: 0.1rem 0.5rem;
+}

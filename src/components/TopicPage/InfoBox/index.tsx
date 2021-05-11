@@ -1,8 +1,5 @@
-import ReactMarkdown from "react-markdown";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import remarkGfm from "remark-gfm";
 import styles from "./InfoBox.module.scss";
+import { MarkdownRenderer } from "@components/index";
 
 import type { FunctionComponent, PropsWithChildren } from "react";
 
@@ -14,16 +11,15 @@ type Props = PropsWithChildren<{
 }>
 
 
-const InfoBox: FunctionComponent<Props> = (props) => {
-
+export default function InfoBox(props: Props): JSX.Element {
 	return (
 		<div id={styles["container"]} className={props.className}>
 			<div id={styles["info-box"]}>
 
 				<div id={styles["description"]}>
-					<ReactMarkdown remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeKatex]}>
+					<MarkdownRenderer>
 						{ props.description }
-					</ReactMarkdown>
+					</MarkdownRenderer>
 				</div>
 
 				<div id={styles["bottom-row"]}>
@@ -33,5 +29,3 @@ const InfoBox: FunctionComponent<Props> = (props) => {
 		</div>
 	);
 }
-
-export default InfoBox;
