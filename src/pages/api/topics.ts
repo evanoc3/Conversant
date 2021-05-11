@@ -16,18 +16,18 @@ export type Response = ApiResponse<{
 /**
  * Main function for this API route.
  */
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function TopicsApiRoute(req: NextApiRequest, res: NextApiResponse) {
 	let mysql: ServerlessMysql | undefined;
 
 	try {
 		// parse parameter from request query
-		const query = req.query["query"] as string ?? "";
+		const query = (req.query["query"] as string) ?? "";
 
 		// connect to the database
 		const mysql = await connectToDatabase();
 
 		// perform the query
-		const topics = await getTopics(mysql);
+		const topics = await getSearchResultsForTopic(mysql, query);
 
 		// send an OK response
 		res.status(200).json({
@@ -56,11 +56,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
  * 
  * @throws {Error} if the database query fails for any reason
  */
-async function getTopics(mysql: ServerlessMysql): Promise<ITopicsTableRow[]> {
-	const rows = await mysql.query<ITopicsTableRow[]>("SELECT * FROM topics LIMIT 20").catch(err => {
+async function getSearchResultsForTopic(mysql: ServerlessMysql, topic: string): Promise<ITopicsTableRow[]> {
+	const rows = await mysql.query<ITopicsTableRow[]>(
+		"SELECT id, label, description, firstLesson FROM topics WHERE label LIKE ? LIMIT 20",
+		[ `%${topic}%` ]
+	).catch(err => {
 		console.error("Error: failed to query database for topics. Error message: ", err);
 		throw err;
 	});
+
 
 	return rows;
 } 

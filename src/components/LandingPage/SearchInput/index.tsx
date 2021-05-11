@@ -54,7 +54,7 @@ const SearchInput: FunctionComponent<Props> = (props) => {
 		setShouldShowResults(newSearchTerm !== "" && isFocused);
 
 		if(newSearchTerm !== "") {
-			const results = await getSearchResults().catch(err => {
+			const results = await getSearchResults(newSearchTerm).catch(err => {
 				alert(`Failed to load search results for the search term \"${newSearchTerm}\". Please try again later.`);
 				console.error(`Failed to load search results for the search term \"${newSearchTerm}\". Error: `, err);
 			});
@@ -108,8 +108,8 @@ export default SearchInput;
 /**
  * Helper function which queries the API route `/api/topics` and parses the response
  */
-async function getSearchResults(): Promise<ITopicsTableRow[]> {
-	const resp = await fetch("/api/topics");
+async function getSearchResults(searchTerm: string): Promise<ITopicsTableRow[]> {
+	const resp = await fetch(`/api/topics?query=${encodeURIComponent(searchTerm)}`);
 
 	if(! resp.ok) {
 		console.error(`Error: GET request failed to API route "/api/get-topics" failed. Status: ${resp.status} (${resp.statusText}) `);
