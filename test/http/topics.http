@@ -1,2 +1,7 @@
 # GET the list of topics
 GET http://localhost:8080/api/topics
+content-type: application/json
+
+{
+	"query": "example"
+}

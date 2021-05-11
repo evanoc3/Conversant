@@ -1,6 +1,6 @@
 # POST a request to the lesson complete endpoint
 POST http://localhost:8080/api/lesson/0/complete
-Cookie: next-auth.session-token=61e489cc42af3cc23066c7afe9ab587be4f1e2869b30f04fe004d44ade1b0b64;
+Cookie: next-auth.session-token=;
 
 ###
 
