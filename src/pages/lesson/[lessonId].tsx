@@ -41,6 +41,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	}
 
 	async function sendMessageHandler(msg: string): Promise<void> {
+		const lessonId = parseInt(router.query["lessonId"] as string);
 		if(lessonId !== undefined && currentPart >= 0) {
 			await postResponse(lessonId, currentPart, msg).then(resp => {
 				setMessages([...messages, {
@@ -78,10 +79,8 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 				break;
 		}
 
+		// Wait the amount of time specified before proceeding to the next part
 		if("pause" in resp) {
-			if(process.env.NODE_ENV === "development") {
-				console.debug(`Pausing ${resp.pause}ms for lesson part ${resp.id}`);
-			}
 			await new Promise(resolve => setTimeout(resolve, resp.pause));
 		}
 
@@ -125,55 +124,72 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 		}
 	}
 
-	// Fetch lesson metadata when router is ready and has parsed lessonId
+	// When the url parameter "lessonId" is set or changed, then set the lessonId state accordingly.
 	useEffect(() => {
-		if(router.isReady) {
-			// when the router is ready, parse the lessonId query parameter and save it as state
-			try {
-				const parsedLessonId = parseInt(router.query["lessonId"] as string);
-
-				if(isNaN(parsedLessonId)) {
-					throw new Error("Error: the lesson ID in the query is invalid");
+		if(typeof router.query["lessonId"] === "string") {
+			// Clear any existing state if the previous page was a lesson page too
+			if(lessonId !== undefined) {
+				if(messages.length) {
+					setMessages([]);
 				}
+				if(isTyping) {
+					setIsTyping(false);
+				}
+				if(isLessonOver) {
+					setIsLessonOver(false);
+				}
+				if(isUserInputEnabled) {
+					setUserInputEnabled(false);
+				}
+				if(currentPart >= 0) {
+					setCurrentPart(-1);
+				}
+			}
 
-				setLessonId(parsedLessonId);
+			// when the router is ready, parse the lessonId query parameter and save it as state
+			const parsedLessonId = parseInt(router.query["lessonId"]);
+
+			if(isNaN(parsedLessonId)) {
+				alert("This lesson doesn't appear to exist.");
+				console.error(`Error: the specified lesson ID: \"${router.query["lessonId"]}\" is invalid. Must be a number`);
+				router.back();
+			}
+
+			setLessonId(parsedLessonId);
+		}
+	}, [ router.query["lessonId"] ]);
+
+
+	// If the lessonId state is changed, then fetch the lesson details from the API
+	useEffect(() => {
+		if(typeof lessonId === "number") {
+			try {
+				fetchLesson(lessonId!).catch(err => { throw err; }).then(lesson => {
+					setLesson(lesson);
+					setCurrentPart(lesson.firstPart);
+				});
 			}
 			catch(err) {
 				alert("Error: failed to fetch the lesson! Please try again later.");
 				console.error(err);
 				router.push("/home");
 			}
-
-			// If the lessonId field is set, then fetch the lesson details from the API
-			if(lessonId !== undefined) {
-				try {
-					fetchLesson(lessonId!).catch(err => { throw err; }).then(lesson => {
-						setLesson(lesson);
-						setCurrentPart(lesson.firstPart);
-					});
-				}
-				catch(err) {
-					alert("Error: failed to fetch the lesson! Please try again later.");
-					console.error(err);
-					router.push("/home");
-				}
-			}
 		}
-	}, [ router.isReady, lessonId ]);
+	}, [ lessonId ]);
 
 	// When the current lesson part state is updated, request that part of the lesson content
 	useEffect(() => {
-		if(lessonId !== undefined && currentPart >= 0) {
+		if(currentPart >= 0) {
 			try {
 				getLessonPart().catch(err => { throw err; });
 			}
 			catch(err) {
 				alert("Error: failed to fetch the lesson part! Please try again later.");
 				console.error(err);
-				router.push("/home");
+				router.reload();
 			}
 		}
-	}, [ lessonId, currentPart ]);
+	}, [ currentPart ]);
 
 	// Once the lesson is started, set event handlers to confirm page navigation
   useEffect(() => {
