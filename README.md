@@ -1,6 +1,6 @@
 # Conversant
 
-This repository contains the frontend, and backend serverless functions for [getconversant.io](https://getconversant.io), my 4BCT final year project.
+This repository contains the frontend, and backend serverless functions for [conversant.vercel.app](https://conversant.vercel.app), my 4BCT final year project.
 
 ## Technology Stack
 
