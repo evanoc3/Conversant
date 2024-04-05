@@ -7,7 +7,7 @@ import type { ILessonPartsTableRow } from "@customTypes/database";
 
 
 export function getConnectionConfig(): ConnectionConfig {
-	const matches = /^mysql:\/\/(\w+):(\w+)@([\.\w]+)(?::(\d+))?\/(\w+)$/gi.exec(process.env.AUTH_DATABASE!);
+	const matches = /^mysql:\/\/(\w+):(\w+)@([\.\w-]+)(?::(\d+))?\/(\w+)$/gi.exec(process.env.AUTH_DATABASE!);
 
 	if(matches === null || matches.length < 5) {
 		throw new Error("failed to parse the database connection string");
