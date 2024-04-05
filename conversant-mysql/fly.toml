@@ -1,0 +1,26 @@
+# fly.toml app configuration file generated for conversant-mysql on 2024-04-05T21:00:13+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'conversant-mysql'
+primary_region = 'cdg'
+
+[build]
+  image = 'mysql:8'
+
+[env]
+  MYSQL_DATABASE = 'conversant'
+  MYSQL_USER = 'conversant'
+
+[processes]
+  app = '--datadir /data/mysql --default-authentication-plugin mysql_native_password'
+
+[[mounts]]
+  source = 'conversant_mysql_data'
+  destination = '/data'
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

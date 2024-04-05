@@ -7,18 +7,26 @@ import type { ILessonPartsTableRow } from "@customTypes/database";
 
 
 export function getConnectionConfig(): ConnectionConfig {
-	const matches = /mysql:\/\/(\w+):(\w+)@([\.\w+]+)\/(\w+)/gi.exec(process.env.AUTH_DATABASE!);
+	const matches = /^mysql:\/\/(\w+):(\w+)@([\.\w]+)(?::(\d+))?\/(\w+)$/gi.exec(process.env.AUTH_DATABASE!);
 
 	if(matches === null || matches.length < 5) {
 		throw new Error("failed to parse the database connection string");
 	}
 
-	return {
+	let config: ConnectionConfig = {
 		user: matches[1],
 		password: matches[2],
-		host: matches[3],
-		database: matches[4]
+		host: matches[3]
 	};
+
+	if (matches.length === 6) {
+		config.port = Number(matches[4]);
+		config.database = matches[5];
+	} else {
+		config.database = matches[4];
+	}
+
+	return config;
 }
 
 
