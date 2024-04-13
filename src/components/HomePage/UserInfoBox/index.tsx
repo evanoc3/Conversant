@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import styles from "./UserInfoBox.module.scss";
 import { timeSince } from "@util/time";
 
 import type { PropsWithChildren } from "react";
 import type { Response as UserSummaryApiRouteResponse, HappyResponsePayload } from "@pages/api/my/summary";
+import { stat } from "fs";
 
 
 type Props = PropsWithChildren<{
@@ -13,16 +14,16 @@ type Props = PropsWithChildren<{
 
 
 export default function UserInfoBox(props: Props): JSX.Element {
-	const [session, sessionIsLoading] = useSession();
+	const { data: session, status } = useSession();
 	const [userInfo, setUserInfo] = useState<ParsedUserSummary | null>(null);
 
 	useEffect(() => {
-		if(!sessionIsLoading && session !== null) {
+		if(status !== "loading" && session !== null) {
 			getUserSummaryInfo().then(summary => {
 				setUserInfo(summary);
 			}).catch(err => { throw err; });
 		}
-	}, [ sessionIsLoading, session ]);
+	}, [ status, session ]);
 
 	
 	return (

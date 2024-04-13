@@ -1,38 +1,43 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth";
-import Providers from "next-auth/providers";
+import { TypeORMAdapter } from "@auth/typeorm-adapter";
+import EmailProvider from "next-auth/providers/email";
+import AppleProvider from "next-auth/providers/apple";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import type { IAuthSession, IUser } from "@customTypes/auth";
 
 
-export default (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res, {
+interface SessionParams {
+  session: IAuthSession
+  user: IUser
+}
+
+
+export default NextAuth({
   providers: [
-    Providers.Email({
+    EmailProvider({
       server: process.env.AUTH_SMTP_SERVER!,
       from: process.env.AUTH_SMTP_FROM_ADDR!
     }),
-    Providers.Apple({
+    AppleProvider({
       clientId: process.env.OAUTH_APPLE_CLIENT_ID!,
-      clientSecret: {
-        appleId: process.env.OAUTH_APPLE_CLIENT_ID!,
-        teamId: process.env.OAUTH_APPLE_TEAM_ID!,
-        keyId: process.env.OAUTH_APPLE_KEY_ID!,
-        privateKey: process.env.OAUTH_APPLE_PRIVATE_KEY!
-      }
+      clientSecret: process.env.OAUTH_APPLE_PRIVATE_KEY!
     }),
-		Providers.Google({
+		GoogleProvider({
 			clientId: process.env.OAUTH_GOOGLE_CLIENT_ID!,
       clientSecret: process.env.OAUTH_GOOGLE_SECRET!
 		}),
-    Providers.GitHub({
+    GitHubProvider({
       clientId: process.env.OAUTH_GITHUB_CLIENT_ID!,
       clientSecret: process.env.OAUTH_GITHUB_SECRET!
     })
   ],
   secret: process.env.AUTH_SECRET,
-  database: process.env.AUTH_DATABASE,
+  // @ts-ignore
+  adapter: TypeORMAdapter(process.env.AUTH_DATABASE!),
   debug: process.env.NODE_ENV === "development",
   callbacks: {
-    session: async (session: IAuthSession, user: IUser) => {
+    session: async ({ session, user }: SessionParams) => {
       if(user?.id) {
         session.user!.id = user.id;
       }

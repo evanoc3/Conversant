@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/client"; 
+import { useSession } from "next-auth/react"; 
 import styles from "./[lessonId].module.scss";
 import { Background } from "@components/index";
 import { ConversationArea, SendMessageForm, Sidebar, TitleBar } from "@components/LessonPage/index";
 import { Sender } from "@customTypes/messages";
 import { LessonPartResponseType } from "@customTypes/lesson";  
-
 import type { FunctionComponent, PropsWithChildren } from "react";
 import type { NextRouter } from "next/router";
 import type { Lesson } from "@customTypes/lesson";
@@ -32,7 +31,7 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	const [isTyping, setIsTyping] = useState(false);
 	const [isLessonOver, setIsLessonOver] = useState(false);
 	const [isUserInputEnabled, setUserInputEnabled] = useState(false);
-	const [session] = useSession();
+	const { data: session } = useSession();
 	const router = useRouter();
 
 	// Methods

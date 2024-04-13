@@ -1,15 +1,15 @@
 import type { FunctionComponent } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { Provider } from "next-auth/client";
+import { SessionProvider } from "next-auth/react";
 import "./_app.scss";
 
 
 const ConversantApp: FunctionComponent<AppProps> = ({ Component, pageProps }: AppProps) => (
-  <Provider session={pageProps.session}>
+  <SessionProvider session={pageProps.session}>
     <Head>
       <meta charSet="utf-8" />
-			<meta name="author" content="Evan O'Connor <e.oconnor47@nuigalway.ie>" />
+			<meta name="author" content="Evan O'Connor <evan@evanoconnor.ie>" />
 
       {/* PWA meta tags */}
       <link rel="manifest" href="/manifest.json" />
@@ -33,7 +33,7 @@ const ConversantApp: FunctionComponent<AppProps> = ({ Component, pageProps }: Ap
     </Head>
 
     <Component {...pageProps} />
-  </Provider>
+  </SessionProvider>
 );
 
 export default ConversantApp;

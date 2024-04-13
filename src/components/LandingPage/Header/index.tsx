@@ -12,11 +12,7 @@ type Props = PropsWithChildren<{
 const Header: FunctionComponent<Props> = (props: Props) => (
 	<header id={styles["header"]}>
 		<h1 id={styles["title"]}>
-			<Link href="/">
-				<a id={styles["home-link"]}>
-					Conversant
-				</a>
-			</Link>
+			<Link href="/" id={styles["home-link"]}>Conversant</Link>
 		</h1>
 
 		<div className={styles["spacer"]} />

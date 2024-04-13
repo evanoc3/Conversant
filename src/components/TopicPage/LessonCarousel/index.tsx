@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ArrowRight as ArrowRightSvg, ExternalLink as ExternalLinkSvg, CheckCircle as CheckCircleSvg } from "react-feather";
 import styles from "./LessonCarousel.module.scss";
 import { MarkdownRenderer } from "@components/index";
-
 import { FunctionComponent, PropsWithChildren } from "react";
 import type { TopicLessonInformation } from "@pages/api/topic/[topicId]";
 
@@ -40,10 +39,8 @@ const LessonCarousel: FunctionComponent<Props> = (props) => {
 									
 									<div className={styles["lesson-bottom-row"]}>
 										<Link href={lesson.href}>
-											<a href={lesson.href}>
-												Go to lesson
-												<ExternalLinkSvg className={styles["lesson-link-icon"]} />
-											</a>
+											Go to lesson
+											<ExternalLinkSvg className={styles["lesson-link-icon"]} />
 										</Link>
 
 										<div className={styles["lesson-h-spacer"]} />

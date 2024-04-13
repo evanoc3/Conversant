@@ -1,4 +1,4 @@
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import { connectToDatabase, checkIfUserHasCompletedLesson, getLesson } from "@util/database";
 
 import type { NextApiRequest, NextApiResponse } from "next";

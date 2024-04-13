@@ -1,5 +1,5 @@
 import { ServerlessMysql } from "serverless-mysql";
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import { connectToDatabase } from "@util/database";
 
 import type { NextApiRequest, NextApiResponse } from "next";

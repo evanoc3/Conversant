@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useSession, signOut, signIn } from "next-auth/client";
+import { useSession, signOut, signIn } from "next-auth/react";
 import { ChevronUp as ChevronUpSvg, ChevronDown as ChevronDownSvg } from "react-feather";
 import styles from "./UserBadge.module.scss";
 
@@ -15,10 +15,10 @@ type Props = PropsWithChildren<{
  * If they are not logged in, it displays a link to the sign in page.
  */
 export default function UserBadge(props: Props): JSX.Element {
-	const [session, sessionIsLoading] = useSession();
+	const { data: session, status } = useSession();
 
 	// Render "Loading"
-	if(sessionIsLoading) {
+	if(status === "loading") {
 		return (
 			<div id={styles["pill"]} className={styles["loading"]}>
 				Loading...
@@ -27,7 +27,7 @@ export default function UserBadge(props: Props): JSX.Element {
 	}
 
 	// Render "Sign In"
-	if(session === null) {
+	if(status === "unauthenticated") {
 		return (
 			<div id={styles["pill"]} className={styles["not-signed-in"]}>
 				<a id={styles["sign-in-link"]} href="#signin" onClick={signInHandler}>Sign In</a>
@@ -38,15 +38,15 @@ export default function UserBadge(props: Props): JSX.Element {
 	// Render "User Badge"
 	return (
 		<div id={styles["pill"]} className={styles["signed-in"]}>
-			<img src={session.user!.image ?? "/default-user.png"} id={styles["profile-img"]} />
+			<img src={session!.user!.image ?? "/default-user.png"} id={styles["profile-img"]} />
 
-			<span>{ session.user!.name!.split(" ")[0] }</span>
+			<span>{ session!.user!.name!.split(" ")[0] }</span>
 			
 			<ChevronDownSvg className={styles["dropdown-icon"]} id={styles["open-dropdown"]} />
 			<ChevronUpSvg className={styles["dropdown-icon"]} id={styles["close-dropdown"]} />
 
 			<ul id={styles["dropdown"]}>
-				<li className={styles["dropdown-item"]}><Link href={"/home"}>Home</Link></li>
+				<li className={styles["dropdown-item"]}><Link href="/home">Home</Link></li>
 				<li className={styles["dropdown-item"]}><a href="#signout" onClick={signOutHandler}>Sign out</a></li>
 			</ul>
 		</div>

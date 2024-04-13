@@ -1,4 +1,4 @@
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import { connectToDatabase, getLessonPart } from "@util/database";
 
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -94,7 +94,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 /**
  * Helper function which templates in the user's name to the message wherever it finds "[[NAME]]"
  */
-function processMessage(messageText: string, user: User | null): string {
+function processMessage(messageText: string, user: Omit<User, "id"> | null): string {
 	// Replace "[[NAME]]" with the user's first name
 	const nameRegex = /\s?\[\[NAME\]\]/gm;
 	if(nameRegex.test(messageText)) {

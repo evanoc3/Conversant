@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import { ArrowLeft as ArrowLeftSvg } from "react-feather";
 import styles from "./Sidebar.module.scss";
 
@@ -12,17 +12,16 @@ type Props = PropsWithChildren<{
 
 
 export default function Sidebar(props: Props): JSX.Element {
-	const [session, sessionIsLoading] = useSession();
+	const {data: session, status} = useSession();
+	const sessionIsLoading = status === "loading";
 
 	const backUrl = (!sessionIsLoading && session !== null) ? "/home" : "/";
 
 	return (
 		<div id={styles["sidebar"]}>
 
-			<Link href={backUrl}>
-				<a id={styles["home-link"]} href={backUrl}>
-					<ArrowLeftSvg id={styles["home-icon"]} />
-				</a>
+			<Link href={backUrl} id={styles["home-link"]}>
+				<ArrowLeftSvg id={styles["home-icon"]} />
 			</Link>
 
 			<div className={styles["separator"]} />
@@ -62,13 +61,11 @@ function renderUserBadge(session: Session | null, sessionIsLoading: boolean): JS
 
 	return (
 		<li className={styles["nav-item"] + " " + styles["with-link"]}>
-			<Link href={"/home"}>
-				<a href={"/home"} id={styles["user-profile-link"]}>
-					<img src={session.user!.image!} alt="User Profile Image" id={styles["profile-img"]} />
-					<span id={styles["user-name"]} className={styles["label"]}>
-						{ session.user!.name }
-					</span>
-				</a>
+			<Link href="/home" id={styles["user-profile-link"]}>
+				<img src={session.user!.image!} alt="User Profile Image" id={styles["profile-img"]} />
+				<span id={styles["user-name"]} className={styles["label"]}>
+					{ session.user!.name }
+				</span>
 			</Link>
 		</li>
 	);
