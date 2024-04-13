@@ -16,6 +16,18 @@ primary_region = 'cdg'
 [processes]
   app = '--datadir /data/mysql --default-authentication-plugin mysql_native_password'
 
+[[services]]
+  processes = ["app"]
+  internal_port = 3306
+  protocol = "tcp"
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[services.ports]]
+  internal_port = 3306
+  port = 3306
+
 [[mounts]]
   source = 'conversant_mysql_data'
   destination = '/data'
