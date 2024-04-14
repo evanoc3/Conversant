@@ -16,13 +16,13 @@ type Props = PropsWithChildren<{
 }>
 
 
-function CustomPreTag(props: PropsWithChildren<{style: any}>): JSX.Element {
-	return (
-		<pre className={styles["pre"]} style={props.style}>
-			{ props.children }
-		</pre>
-	);
-}
+// function CustomPreTag(props: PropsWithChildren<{style: any}>): JSX.Element {
+// 	return (
+// 		<pre className={styles["pre"]} style={props.style}>
+// 			{ props.children }
+// 		</pre>
+// 	);
+// }
 
 
 const componentMapping: Partial<Components> = {
@@ -47,22 +47,23 @@ const componentMapping: Partial<Components> = {
 	td: ({node, ...props}) => <td className={styles["td"]} {...props} />,
 	th: ({node, ...props}) => <th className={styles["th"]} {...props} />,
 	tr: ({node, ...props}) => <tr className={styles["tr"]} {...props} />,
-	pre: ({node, ...props}) => <pre {...props} className={styles["pre"]} />,
-	code: ({node, ...props}) => {
-		// TODO: figure out how to detect if inline
-		if(false) {
-			return <code {...props} className={`${styles["code"]} ${styles["inline"]}`} />;
-		}
+	pre: ({node, ...props}) => {
+		const code = node!.children[0];
+		// @ts-ignore
+		const text = code.children[0];
 
-		const match = /language-(\w+)/.exec(props.className as string ?? "");
+		// @ts-ignore
+		const match = /language-(\w+)/.exec(code.properties.className as string ?? "");
 		const lang = (match) ? match[1] : "plaintext";
 
 		return (
-			<SyntaxHighlighter style={vscDarkPlus} language={lang} PreTag={CustomPreTag}>
-				{ props.children!.toString().trim() }
+			// @ts-ignore
+			<SyntaxHighlighter style={vscDarkPlus} language={lang} className={styles["pre"]} {...props}>
+				{ text.value.trim() }
 			</SyntaxHighlighter>
 		);
-	}
+	},
+	code: ({node, ...props}) => <code {...props} className={styles["code"]} />
 };
 
 

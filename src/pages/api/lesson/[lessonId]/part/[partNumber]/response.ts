@@ -3,7 +3,7 @@ import { getClassifier as getYesNoClassifier, Classes as YesNoClasses } from "@u
 import { getClassifier as getMultipleChoiceClassifier, Classes as MultipleChoiceClasses } from "@util/classifiers/multipleChoice";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import type { ServerlessMysql } from "serverless-mysql";
+import type ServerlessClient from "serverless-postgres";
 import type { ApiResponse } from "@customTypes/api";
 import { LessonPartResponseType } from "@customTypes/lesson";
 
@@ -22,7 +22,7 @@ export type Response = ApiResponse<{
  * 
  */
 export default async function LessonPartsResponseApiRoute(req: NextApiRequest, res: NextApiResponse) {
-	let mysql: ServerlessMysql | undefined;
+	let dbClient: ServerlessClient | undefined;
 
 	try { 
 		// Ensure only POST requests are accepted
@@ -53,10 +53,10 @@ export default async function LessonPartsResponseApiRoute(req: NextApiRequest, r
 		const messageResponse = (req.body["message"] as string).toLowerCase();
 
 		// Connect to the database
-		mysql = await connectToDatabase();
+		dbClient = await connectToDatabase();
 
 		// Get the specific lesson part from the database
-		const lessonPart = await getLessonPart(mysql, partNumber).catch(err => { throw err; });
+		const lessonPart = await getLessonPart(dbClient, partNumber).catch(err => { throw err; });
 
 		// Determine how to handle the response, depending on the `type` of the lesson part
 		const { onYes, onNo, onUndecided, onA, onB, onC, onD } = lessonPart;
@@ -85,8 +85,8 @@ export default async function LessonPartsResponseApiRoute(req: NextApiRequest, r
 		} as Response);
 	}
 	finally {
-		if(mysql !== undefined) {
-			mysql.end();
+		if(dbClient) {
+			dbClient.end();
 		}
 	}
 };

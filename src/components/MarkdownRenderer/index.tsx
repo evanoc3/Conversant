@@ -9,7 +9,7 @@ import "katex/dist/katex.min.css";
 import styles from "./MarkdownRenderer.module.scss";
 
 import type { PropsWithChildren } from "react";
-import type { NormalComponents, SpecialComponents } from "react-markdown/src/ast-to-react";
+import type { Components } from "react-markdown";
 
 
 type Props = PropsWithChildren<{
@@ -42,7 +42,7 @@ type Props = PropsWithChildren<{
 
 
 export default function MarkdownRenderer(props: Props): JSX.Element {
-	const [componentMap, setComponentMap] = useState<Partial<NormalComponents & SpecialComponents>>();
+	const [componentMap, setComponentMap] = useState<Partial<Components>>();
 
 	useEffect(() => {
 		setComponentMap({
@@ -58,29 +58,30 @@ export default function MarkdownRenderer(props: Props): JSX.Element {
 			a: ({node, ...subProps}) => <a {...subProps} className={`${styles["a"]} ${props.classes?.a}`} />,
 			img: ({node, ...subProps}) => <img {...subProps} className={`${styles["img"]} ${props.classes?.img}`} />,
 			blockquote: ({node, ...subProps}) => <blockquote {...subProps} className={`${styles["blockquote"]} ${props.classes?.blockquote}`} />,
-			ul: ({node, ordered, ...subProps}) => {
+			ul: ({node, ...subProps}) => {
 				const isTaskList = subProps.className === "contains-task-list";
 				return <ul {...subProps} className={`${isTaskList ? styles["checklist"]:""} ${styles["ul"]} ${props.classes?.ul}`} />
 			},
-			ol: ({node, ordered, ...subProps}) => {
+			ol: ({node, ...subProps}) => {
 				const isTaskList = subProps.className === "contains-task-list";
 				return <ol {...subProps} className={`${isTaskList ? styles["checklist"] : ""} ${styles["ol"]} ${props.classes?.ol}`} />;
 		},
-			li: ({node, ordered, ...subProps}) => <li {...subProps} className={`${styles["li"]} ${props.classes?.li}`} />,
+			li: ({node, ...subProps}) => <li {...subProps} className={`${styles["li"]} ${props.classes?.li}`} />,
 			del: ({node, ...subProps}) => <del {...subProps} className={`${styles["del"]} ${props.classes?.del}`} />,
 			input: ({node, checked, ...subProps}) => (
 				<input {...subProps} type="checkbox" className={`${styles["input"]} ${props.classes?.input}`} readOnly={true} checked={checked as boolean} disabled={false} />
 			),
 			table: ({node, ...subProps}) => <table {...subProps} className={`${styles["table"]} ${props.classes?.table}`} />,
-			td: ({node, isHeader, ...subProps}) => <td {...subProps} className={`${styles["td"]} ${props.classes?.td}`} />,
-			th: ({node, isHeader, ...subProps}) => <th {...subProps} className={`${styles["th"]} ${props.classes?.th}`} />,
-			tr: ({node, isHeader, ...subProps}) => <tr {...subProps} className={`${styles["tr"]} ${props.classes?.tr}`} />,
+			td: ({node, ...subProps}) => <td {...subProps} className={`${styles["td"]} ${props.classes?.td}`} />,
+			th: ({node, ...subProps}) => <th {...subProps} className={`${styles["th"]} ${props.classes?.th}`} />,
+			tr: ({node, ...subProps}) => <tr {...subProps} className={`${styles["tr"]} ${props.classes?.tr}`} />,
 			pre: ({node, ...subProps}) => <pre {...subProps} className={`${styles["pre"]} ${props.classes?.pre}`} />,
-			code: ({node, inline, ...subProps}) => {
+			code: ({node, ...subProps}) => {
 				const match = /language-(\w+)/.exec(subProps.className as string ?? "");
 				const lang = (match) ? match[1] : "plaintext";
 
 				const CustomPre = (subSubProps: PropsWithChildren<{style: any}>) => {
+					const inline = false;
 					return (inline) ? (
 						<span className={`${styles["pre"]} ${styles["inline"]} ${props.classes?.pre}`} style={subSubProps.style}>{subSubProps.children}</span>
 					) : (
@@ -89,8 +90,8 @@ export default function MarkdownRenderer(props: Props): JSX.Element {
 				};
 
 				return (
-					<SyntaxHighlighter style={vscDarkPlus} language={lang} PreTag={CustomPre} useInlineStyles={inline}>
-						{ subProps.children.toString().trim() }
+					<SyntaxHighlighter style={vscDarkPlus} language={lang} PreTag={CustomPre}>
+						{ subProps.children!.toString().trim() }
 					</SyntaxHighlighter>
 				);
 			}

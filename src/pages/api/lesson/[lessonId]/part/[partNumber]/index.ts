@@ -23,7 +23,7 @@ export type Response = ApiResponse<
  * Main function for this API route.
  */
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	let mysql: ServerlessClient | undefined;
+	let dbClient: ServerlessClient | undefined;
 	let session: Session | null;
 
 	try {
@@ -43,10 +43,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 
 		// connect to the database
-		mysql = await connectToDatabase();
+		dbClient = await connectToDatabase();
 
 		// query the database for the particular lesson
-		const lessonPart = await getLessonPart(mysql, partNumber).catch(err => {
+		const lessonPart = await getLessonPart(dbClient, partNumber).catch(err => {
 			throw err;
 		});
 
@@ -83,8 +83,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 	finally {
 		// Close the database connection
-		if(mysql !== undefined) {
-			mysql.end();
+		if(dbClient) {
+			dbClient.end();
 		}
 	}
 };

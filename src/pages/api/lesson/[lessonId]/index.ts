@@ -24,7 +24,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	let hasUserCompletedLesson = false;
 
 	try {
-		// See if the user sending the request has a session
+		// @ts-ignore – See if the user sending the request has a session
 		const session: IAuthSession | null = await getSession({ req });
 
 		// parse the relevant query parameters

@@ -132,6 +132,7 @@ async function getTopicLessonData(dbClient: ServerlessClient, topicId: string, u
 		return (res.rows as any).map((row: any) => {
 			return {
 				...row,
+				description: removeSlashes(row.description),
 				is_completed: row.is_completed >= 1,
 				href: `/lesson/${encodeURIComponent(row.id)}`
 			};

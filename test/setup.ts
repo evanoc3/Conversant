@@ -1,6 +1,7 @@
 // Add Enzyme React Adapter
 // See https://enzymejs.github.io/enzyme/docs/installation/react-16.html#working-with-react-16
 import Enzyme from "enzyme";
+// @ts-ignore
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
 
 Enzyme.configure({

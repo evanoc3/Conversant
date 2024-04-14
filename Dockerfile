@@ -1,9 +1,7 @@
-FROM node:16-alpine
-
+FROM node:20-alpine as builder
 WORKDIR /app
 COPY . .
 RUN npm ci
 RUN npm run build
-CMD npx next start
+CMD ["npm", "start"]
 EXPOSE 3000
-

@@ -233,17 +233,13 @@ const LessonPage: FunctionComponent<Props> = (props) => {
 	return (
 		<>
 			<Head>
-				<title>Lesson | Conversant</title>
+				<title>
+					{ (lesson !== undefined) ? `${lesson.title} (${lesson.topicLabel})` : "Lesson"} | Conversant
+				</title>
 			</Head>
 
 			<Background>
 				<div id={styles["page"]}>
-					<Head>
-						<title>
-							{ (lesson !== undefined) ? `${lesson.title} (${lesson.topicLabel})` : "Lesson"} | Conversant
-						</title>
-					</Head>
-	
 					<div id={styles["sidebar"]} className={(sidebarIsOpen) ? styles["open"] : ""}>
 						<Sidebar />
 					</div>
