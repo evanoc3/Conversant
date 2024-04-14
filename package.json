@@ -15,6 +15,7 @@
     "@types/mysql": "^2.15.26",
     "@types/natural": "^5.1.5",
     "@types/node": "^20.12.7",
+    "@types/pg": "^8.11.5",
     "@types/react": "^18.2.78",
     "@types/react-dom": "^18.2.25",
     "@types/react-syntax-highlighter": "^15.5.11",
@@ -28,13 +29,13 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@auth/typeorm-adapter": "^1.7.0",
-    "mysql": "^2.18.1",
+    "@auth/pg-adapter": "^0.8.0",
     "natural": "^6.12.0",
     "next": "^14.2.1",
     "next-auth": "^4.24.7",
     "next-pwa": "^5.6.0",
     "nodemailer": "^6.9.13",
+    "pg": "^8.11.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-feather": "^2.0.10",
@@ -44,10 +45,6 @@
     "remark-gfm": "^4.0.0",
     "remark-math": "^6.0.0",
     "sass": "^1.75.0",
-    "serverless-mysql": "^1.5.5",
-    "typeorm": "^0.3.20"
-  },
-  "engines": {
-    "node": "^20.12.2"
+    "serverless-postgres": "^2.1.0"
   }
 }

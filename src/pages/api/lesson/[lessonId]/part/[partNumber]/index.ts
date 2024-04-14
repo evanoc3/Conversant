@@ -1,14 +1,12 @@
 import { getSession } from "next-auth/react";
 import { connectToDatabase, getLessonPart } from "@util/database";
-
+import { LessonPartResponseType } from "@customTypes/lesson";
+import type ServerlessClient from "serverless-postgres";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Session } from "next-auth";
 import type { User } from "next-auth";
-import type { ServerlessMysql } from "serverless-mysql";
 import type { ApiResponse } from "@customTypes/api";
-
 import type { ILessonPartsTableRow } from "@customTypes/database";
-import { LessonPartResponseType } from "@customTypes/lesson";
 
 
 
@@ -24,7 +22,7 @@ export type Response = ApiResponse<
  * Main function for this API route.
  */
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	let mysql: ServerlessMysql | undefined;
+	let mysql: ServerlessClient | undefined;
 	let session: Session | null;
 
 	try {

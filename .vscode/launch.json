@@ -9,7 +9,7 @@
 			"request": "attach",
 			"name": "Conversant (Debug)",
 			"skipFiles": ["<node_internals>/**"],
-			"port": 9229
+			"port": 9230
 		}
 	]
 }

@@ -294,7 +294,7 @@ async function fetchLesson(lessonId: number): Promise<Lesson> {
 async function fetchLessonPart(lessonId: number, part: number): Promise<PartApiRouteResponse> {
 	const resp = await fetch(`/api/lesson/${lessonId}/part/${part}`).catch(err => { throw err; });
 
-	if(! resp.ok) {
+	if(!resp.ok) {
 		throw new Error("failed to fetch the lesson part");
 	}
 
