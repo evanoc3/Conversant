@@ -1,4 +1,5 @@
 import { getSession } from "next-auth/react";
+import { removeSlashes } from "slashes";
 import { connectToDatabase } from "@util/database";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type ServerlessClient from "serverless-postgres";
@@ -62,6 +63,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		res.status(200).json({
 			timestamp: (new Date()).toISOString(),
 			...topicMetadata,
+			description: removeSlashes(topicMetadata.description),
 			lessons: topicLessonData
 		} as Response);
 	}
@@ -103,15 +105,6 @@ async function getTopicMetadata(dbClient: ServerlessClient, topicId: string): Pr
 	return res.rows[0];
 }
 
-
-interface ITopicLessonData<P> {
-	id: number,
-	title: string,
-	description: string,
-	is_completed: P
-}
-
-type RawLessonData = ITopicLessonData<number>
 
 async function getTopicLessonData(dbClient: ServerlessClient, topicId: string, userId: string | null): Promise<TopicLessonInformation[]> {
 	let res: Promise<any>;

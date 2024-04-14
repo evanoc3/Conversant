@@ -8,7 +8,7 @@ import styles from "./Message.module.scss";
 import "katex/dist/katex.min.css";
 
 import type { PropsWithChildren } from "react";
-import type { NormalComponents, SpecialComponents } from "react-markdown/src/ast-to-react";
+import type { Components } from "react-markdown";
 
 
 type Props = PropsWithChildren<{
@@ -25,7 +25,7 @@ function CustomPreTag(props: PropsWithChildren<{style: any}>): JSX.Element {
 }
 
 
-const componentMapping: Partial<NormalComponents & SpecialComponents> = {
+const componentMapping: Partial<Components> = {
 	h1: ({node, ...props}) => <h1 className={styles["h1"]} {...props} />,
 	h2: ({node, ...props}) => <h2 className={styles["h2"]} {...props} />,
 	h3: ({node, ...props}) => <h3 className={styles["h3"]} {...props} />,
@@ -38,18 +38,19 @@ const componentMapping: Partial<NormalComponents & SpecialComponents> = {
 	a: ({node, ...props}) => <a className={styles["a"]} {...props} />,
 	img: ({node, ...props}) => <img className={styles["img"]} {...props} />,
 	blockquote: ({node, ...props}) => <blockquote className={styles["blockquote"]} {...props} />,
-	ul: ({node, ordered, ...props}) => <ul {...props} className={(props.className === "contains-task-list" ? styles["checklist"] : "") + " " + styles["ul"]} />,
-	ol: ({node, ordered, ...props}) => <ol {...props} className={(props.className === "contains-task-list" ? styles["checklist"] : "") + " " + styles["ul"]} />,
-	li: ({node, ordered, ...props}) => <li className={styles["li"]} {...props} />,
+	ul: ({node, ...props}) => <ul {...props} className={(props.className === "contains-task-list" ? styles["checklist"] : "") + " " + styles["ul"]} />,
+	ol: ({node, ...props}) => <ol {...props} className={(props.className === "contains-task-list" ? styles["checklist"] : "") + " " + styles["ul"]} />,
+	li: ({node, ...props}) => <li className={styles["li"]} {...props} />,
 	del: ({node, ...props}) => <del className={styles["del"]} {...props} />,
 	input: ({node, ...props}) => <input type="checkbox" className={styles["input"]} readOnly={true} checked={props.checked as boolean}  />,
 	table: ({node, ...props}) => <table className={styles["table"]} {...props} />,
-	td: ({node, isHeader, ...props}) => <td className={styles["td"]} {...props} />,
-	th: ({node, isHeader, ...props}) => <th className={styles["th"]} {...props} />,
-	tr: ({node, isHeader, ...props}) => <tr className={styles["tr"]} {...props} />,
+	td: ({node, ...props}) => <td className={styles["td"]} {...props} />,
+	th: ({node, ...props}) => <th className={styles["th"]} {...props} />,
+	tr: ({node, ...props}) => <tr className={styles["tr"]} {...props} />,
 	pre: ({node, ...props}) => <pre {...props} className={styles["pre"]} />,
-	code: ({node, inline, ...props}) => {
-		if(inline) {
+	code: ({node, ...props}) => {
+		// TODO: figure out how to detect if inline
+		if(false) {
 			return <code {...props} className={`${styles["code"]} ${styles["inline"]}`} />;
 		}
 
@@ -58,7 +59,7 @@ const componentMapping: Partial<NormalComponents & SpecialComponents> = {
 
 		return (
 			<SyntaxHighlighter style={vscDarkPlus} language={lang} PreTag={CustomPreTag}>
-				{ props.children.toString().trim() }
+				{ props.children!.toString().trim() }
 			</SyntaxHighlighter>
 		);
 	}

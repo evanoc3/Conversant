@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react"; 
+import { useSession } from "next-auth/react";
 import styles from "./[lessonId].module.scss";
 import { Background } from "@components/index";
 import { ConversationArea, SendMessageForm, Sidebar, TitleBar } from "@components/LessonPage/index";

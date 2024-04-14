@@ -45,6 +45,7 @@
     "remark-gfm": "^4.0.0",
     "remark-math": "^6.0.0",
     "sass": "^1.75.0",
-    "serverless-postgres": "^2.1.0"
+    "serverless-postgres": "^2.1.0",
+    "slashes": "^3.0.12"
   }
 }

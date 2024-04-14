@@ -1,4 +1,5 @@
 import { getSession } from "next-auth/react";
+import { removeSlashes } from "slashes";
 import { connectToDatabase, getLessonPart } from "@util/database";
 import { LessonPartResponseType } from "@customTypes/lesson";
 import type ServerlessClient from "serverless-postgres";
@@ -59,7 +60,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		let resp: Partial<Response> = {
 			timestamp: (new Date()).toISOString(),
 			id: lessonPart.id,
-			content: processedLessonContent,
+			content: removeSlashes(processedLessonContent),
 			pause: lessonPart.pause,
 			type: lessonPart.type,
 		};
