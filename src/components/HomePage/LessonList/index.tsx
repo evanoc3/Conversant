@@ -1,6 +1,6 @@
 import { PropsWithChildren, useState, useEffect } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import styles from "./LessonList.module.scss";
 import type { Response as ApiRouteResponse, TopicDetail } from "@pages/api/my/topics";
 
@@ -11,7 +11,7 @@ type Props = PropsWithChildren<{
 
 
 export default function LessonList(props: Props): JSX.Element {
-	const [ session, sessionIsLoading ] = useSession(); 
+	const { data: session, status } = useSession(); 
 	const [isLoading, setIsLoading] = useState(true);
 	const [ topics, setTopics ] = useState<TopicDetail[]>([]);
 
@@ -35,17 +35,13 @@ export default function LessonList(props: Props): JSX.Element {
 
 		return topics.map(topic => (
 			<li key={topic.id} className={styles["list-item"]}>
-				<Link href={`/topic/${topic.id}`}>
-					<a href={`/topic/${topic.id}`} className={styles["list-item-link"]}>
-						{ topic.label }
-					</a>
-				</Link>
+				<Link href={`/topic/${topic.id}`} className={styles["list-item-link"]}> { topic.label } </Link>
 			</li>
 		));
 	}
 
 
-	if(!sessionIsLoading && session !== null) {
+	if(status !== "loading" && session !== null) {
 		return (
 			<div id={styles["container"]} className={props.className}>
 				<h2 id={styles["title"]}>Your Topics</h2>

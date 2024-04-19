@@ -1,7 +1,7 @@
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import { connectToDatabase } from "@util/database";
 
-import type { ServerlessMysql } from "serverless-mysql";
+import type ServerlessClient from "serverless-postgres";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { IAuthSession } from "@customTypes/auth";
 import type { ApiResponse } from "@customTypes/api";
@@ -26,8 +26,7 @@ export type Response = ApiResponse<{
  * Main function for this API route.
  */
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	// let conn: Connection | undefined;
-	let mysql: ServerlessMysql | undefined;
+	let dbClient: ServerlessClient | undefined;
 
 	try {
 		// qet user session and query parameters
@@ -35,10 +34,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		const userId = session.user!.id!;
 
 		// connect to the database
-		const mysql = await connectToDatabase();
+		dbClient = await connectToDatabase();
 
 		// query the database for topics the current user is enrolled in
-		const enrolledTopics = await getEnrolledTopics(mysql, userId).catch(err => { throw err; });
+		const enrolledTopics = await getEnrolledTopics(dbClient, userId).catch(err => { throw err; });
 
 		// send the happy-route response
 		res.status(200).json({
@@ -56,8 +55,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 	finally {
 		// Do serverless MySQL cleanup
-		if(mysql !== undefined) {
-			mysql.end();
+		if(dbClient) {
+			dbClient.end();
 		}
 	}
 };
@@ -68,19 +67,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
  * 
  * @throws if the database query fails for any reason.
  */
-async function getEnrolledTopics(mysql: ServerlessMysql, userId: string): Promise<TopicDetail[]> {
-	const rows = await mysql.query<{topic: string, label: string}[]>(`
+async function getEnrolledTopics(dbClient: ServerlessClient, userId: string): Promise<TopicDetail[]> {
+	const res = await dbClient.query(`
 		SELECT DISTINCT topic, label
 		FROM lesson_completions
 		LEFT JOIN lessons ON lesson_completions.lesson = lessons.id
 		LEFT JOIN topics on lessons.topic = topics.id
-		WHERE \`user\` = ?
-	`, [ userId ]).catch(err => {
+		WHERE "user" = $1
+	`, [ userId ]).catch((err: any) => {
 		console.error(`Error: failed to query database for enrolled topics for user \"${userId}\". Error message: `, err);
 		throw err;
 	});
 
-	return rows.map(row => {
+	return res.rows.map((row: any) => {
 		return {
 			id: row.topic,
 			label: row.label

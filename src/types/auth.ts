@@ -2,7 +2,7 @@ import type { Session, DefaultUser } from "next-auth";
 
 
 export interface IUser extends DefaultUser {
-	id?: string
+	id: string
 }
 
 

@@ -1,212 +1,111 @@
-# ************************************************************
-# Sequel Pro SQL dump
-# Version 4541
-#
-# http://www.sequelpro.com/
-# https://github.com/sequelpro/sequelpro
-#
-# Host: mysql1.it.nuigalway.ie (MySQL 5.7.33-0ubuntu0.18.04.1-log)
-# Database: mydb3940
-# Generation Time: 2021-05-11 11:58:01 +0000
-# ************************************************************
+BEGIN;
+
+-- NextAuth Schema --
+
+CREATE TABLE "verification_token" (
+  "identifier" TEXT NOT NULL,
+  "expires" TIMESTAMPTZ NOT NULL,
+  "token" TEXT NOT NULL,
+ 
+  PRIMARY KEY ("identifier", "token")
+);
+ 
+CREATE TABLE "accounts" (
+  "id" SERIAL PRIMARY KEY,
+  "userId" INTEGER NOT NULL,
+  "type" VARCHAR(255) NOT NULL,
+  "provider" VARCHAR(255) NOT NULL,
+  "providerAccountId" VARCHAR(255) NOT NULL,
+  "refresh_token" TEXT,
+  "access_token" TEXT,
+  "expires_at" BIGINT,
+  "id_token" TEXT,
+  "scope" TEXT,
+  "session_state" TEXT,
+  "token_type" TEXT
+);
+ 
+CREATE TABLE "sessions" (
+  "id" SERIAL PRIMARY KEY,
+  "userId" INTEGER NOT NULL,
+  "expires" TIMESTAMPTZ NOT NULL,
+  "sessionToken" VARCHAR(255) NOT NULL
+);
+ 
+CREATE TABLE "users" (
+  "id" SERIAL PRIMARY KEY,
+  "name" VARCHAR(255),
+  "email" VARCHAR(255),
+  "emailVerified" TIMESTAMPTZ,
+  "image" TEXT
+);
+
+-- End NextAuth Schema --
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- Conversant Schema --
+CREATE TABLE "lesson_completions" (
+  "id" SERIAL PRIMARY KEY,
+  "user" int NOT NULL,
+  "lesson" int NOT NULL,
+
+  UNIQUE ("user",lesson)
+);
+
+CREATE TYPE LESSON_PART_TYPE AS ENUM('proceed', 'yesNo', 'endOfLesson', 'multipleChoice');
+
+CREATE TABLE "lesson_parts" (
+  "id" SERIAL PRIMARY KEY,
+  "lesson" int NOT NULL,
+  "content" text NOT NULL,
+  "pause" int NOT NULL DEFAULT '0',
+  "type" LESSON_PART_TYPE DEFAULT 'proceed',
+  "proceedTo" int DEFAULT NULL,
+  "onYes" int DEFAULT NULL,
+  "onNo" int DEFAULT NULL,
+  "onA" int DEFAULT NULL,
+  "onB" int DEFAULT NULL,
+  "onC" int DEFAULT NULL,
+  "onD" int DEFAULT NULL,
+  "onUndecided" int DEFAULT NULL
+);
+
+CREATE TABLE "lessons" (
+  "id" SERIAL PRIMARY KEY,
+  "topic" varchar(255) DEFAULT '',
+  "title" varchar(255) NOT NULL,
+  "description" text,
+  "firstPart" int DEFAULT NULL,
+  "nextLesson" int DEFAULT NULL
+);
 
 
-# Dump of table accounts
-# ------------------------------------------------------------
+CREATE TABLE "topics" (
+  "id" varchar(255) NOT NULL PRIMARY KEY,
+  "label" varchar(255) NOT NULL,
+  "description" text,
+  "firstLesson" int DEFAULT NULL
+);
 
-DROP TABLE IF EXISTS `accounts`;
+ALTER TABLE "lesson_completions" ADD FOREIGN KEY ("user") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE;
+ALTER TABLE "lesson_completions" ADD FOREIGN KEY ("lesson") REFERENCES "lessons" ("id") ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE;
 
-CREATE TABLE `accounts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `compound_id` varchar(255) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `provider_type` varchar(255) NOT NULL,
-  `provider_id` varchar(255) NOT NULL,
-  `provider_account_id` varchar(255) NOT NULL,
-  `refresh_token` text,
-  `access_token` text,
-  `access_token_expires` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-  `created_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `compound_id` (`compound_id`),
-  KEY `provider_account_id` (`provider_account_id`),
-  KEY `provider_id` (`provider_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+ALTER TABLE "lesson_parts" ADD FOREIGN KEY ("lesson") REFERENCES "lessons" ("id") ON DELETE RESTRICT ON UPDATE CASCADE DEFERRABLE;
+ALTER TABLE "lesson_parts" ADD FOREIGN KEY ("proceedTo") REFERENCES "lesson_parts" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
+ALTER TABLE "lesson_parts" ADD FOREIGN KEY ("onYes") REFERENCES "lesson_parts" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
+ALTER TABLE "lesson_parts" ADD FOREIGN KEY ("onNo") REFERENCES "lesson_parts" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
+ALTER TABLE "lesson_parts" ADD FOREIGN KEY ("onA") REFERENCES "lesson_parts" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
+ALTER TABLE "lesson_parts" ADD FOREIGN KEY ("onB") REFERENCES "lesson_parts" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
+ALTER TABLE "lesson_parts" ADD FOREIGN KEY ("onC") REFERENCES "lesson_parts" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
+ALTER TABLE "lesson_parts" ADD FOREIGN KEY ("onD") REFERENCES "lesson_parts" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
+ALTER TABLE "lesson_parts" ADD FOREIGN KEY ("onUndecided") REFERENCES "lesson_parts" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
 
+ALTER TABLE "lessons" ADD FOREIGN KEY ("topic") REFERENCES "topics" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
+ALTER TABLE "lessons" ADD FOREIGN KEY ("firstPart") REFERENCES "lesson_parts" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
+ALTER TABLE "lessons" ADD FOREIGN KEY ("nextLesson") REFERENCES "lessons" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
 
+ALTER TABLE "topics" ADD FOREIGN KEY ("firstLesson") REFERENCES "lessons" ("id") ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE;
 
-# Dump of table lesson_completions
-# ------------------------------------------------------------
+-- End Conversant Schema --
 
-DROP TABLE IF EXISTS `lesson_completions`;
-
-CREATE TABLE `lesson_completions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` int(11) NOT NULL,
-  `lesson` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user` (`user`,`lesson`),
-  KEY `lesson` (`lesson`),
-  CONSTRAINT `lesson_completions_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `lesson_completions_ibfk_2` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table lesson_parts
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `lesson_parts`;
-
-CREATE TABLE `lesson_parts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `lesson` int(11) NOT NULL,
-  `content` text NOT NULL,
-  `pause` int(11) NOT NULL DEFAULT '0',
-  `type` enum('proceed','yesNo','endOfLesson','multipleChoice') NOT NULL DEFAULT 'proceed',
-  `proceedTo` int(11) DEFAULT NULL,
-  `onYes` int(11) DEFAULT NULL,
-  `onNo` int(11) DEFAULT NULL,
-  `onA` int(11) DEFAULT NULL,
-  `onB` int(11) DEFAULT NULL,
-  `onC` int(11) DEFAULT NULL,
-  `onD` int(11) DEFAULT NULL,
-  `onUndecided` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `lesson` (`lesson`),
-  KEY `proceedTo` (`proceedTo`),
-  KEY `onYes` (`onYes`),
-  KEY `onNo` (`onNo`),
-  KEY `onA` (`onA`),
-  KEY `onB` (`onB`),
-  KEY `onC` (`onC`),
-  KEY `onD` (`onD`),
-  KEY `onDidntUnderstand` (`onUndecided`),
-  CONSTRAINT `lesson_parts_ibfk_1` FOREIGN KEY (`lesson`) REFERENCES `lessons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `lesson_parts_ibfk_2` FOREIGN KEY (`proceedTo`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `lesson_parts_ibfk_3` FOREIGN KEY (`onYes`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `lesson_parts_ibfk_4` FOREIGN KEY (`onNo`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `lesson_parts_ibfk_5` FOREIGN KEY (`onA`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `lesson_parts_ibfk_6` FOREIGN KEY (`onB`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `lesson_parts_ibfk_7` FOREIGN KEY (`onC`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `lesson_parts_ibfk_8` FOREIGN KEY (`onD`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `lesson_parts_ibfk_9` FOREIGN KEY (`onUndecided`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table lessons
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `lessons`;
-
-CREATE TABLE `lessons` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `topic` varchar(255) DEFAULT '',
-  `title` varchar(255) NOT NULL,
-  `description` text,
-  `firstPart` int(11) DEFAULT NULL,
-  `nextLesson` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `topic` (`topic`),
-  KEY `firstPart` (`firstPart`),
-  KEY `nextLesson` (`nextLesson`),
-  CONSTRAINT `lessons_ibfk_1` FOREIGN KEY (`topic`) REFERENCES `topics` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `lessons_ibfk_2` FOREIGN KEY (`firstPart`) REFERENCES `lesson_parts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `lessons_ibfk_3` FOREIGN KEY (`nextLesson`) REFERENCES `lessons` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table sessions
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `sessions`;
-
-CREATE TABLE `sessions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `expires` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-  `session_token` varchar(255) NOT NULL,
-  `access_token` varchar(255) NOT NULL,
-  `created_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `session_token` (`session_token`),
-  UNIQUE KEY `access_token` (`access_token`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table topics
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `topics`;
-
-CREATE TABLE `topics` (
-  `id` varchar(255) NOT NULL,
-  `label` varchar(255) NOT NULL,
-  `description` mediumtext,
-  `firstLesson` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `firstLesson` (`firstLesson`),
-  CONSTRAINT `topics_ibfk_1` FOREIGN KEY (`firstLesson`) REFERENCES `lessons` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table users
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `users`;
-
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `email_verified` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-  `image` varchar(255) DEFAULT NULL,
-  `created_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table verification_requests
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `verification_requests`;
-
-CREATE TABLE `verification_requests` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `identifier` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL,
-  `expires` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-  `created_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `token` (`token`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+COMMIT;

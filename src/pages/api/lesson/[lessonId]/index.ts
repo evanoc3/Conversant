@@ -1,8 +1,7 @@
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import { connectToDatabase, checkIfUserHasCompletedLesson, getLesson } from "@util/database";
-
+import type ServerlessClient from "serverless-postgres";
 import type { NextApiRequest, NextApiResponse } from "next";
-import type { ServerlessMysql } from "serverless-mysql";
 import type { ApiResponse } from "@customTypes/api";
 import type { Lesson } from "@customTypes/lesson";
 import type { IAuthSession } from "@customTypes/auth"; 
@@ -21,27 +20,27 @@ export type Response = ApiResponse<{
  * Main function for this API route.
  */
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	let mysql: ServerlessMysql | undefined;
+	let dbClient: ServerlessClient | undefined;
 	let hasUserCompletedLesson = false;
 
 	try {
-		// See if the user sending the request has a session
+		// @ts-ignore – See if the user sending the request has a session
 		const session: IAuthSession | null = await getSession({ req });
 
 		// parse the relevant query parameters
 		const lessonId = req.query["lessonId"] as string ?? "";
 
 		// connect to the database
-		mysql = await connectToDatabase();
+		dbClient = await connectToDatabase();
 
 		// query the database for the particular lesson
-		const lesson = await getLesson(mysql, lessonId).catch(err => {
+		const lesson = await getLesson(dbClient, lessonId).catch(err => {
 			throw err;
 		});
 
 		// if the user has a session, check if that user has completed the lesson
 		if(session?.user?.id !== undefined) {
-			hasUserCompletedLesson = await checkIfUserHasCompletedLesson(mysql, session.user.id, lessonId);
+			hasUserCompletedLesson = await checkIfUserHasCompletedLesson(dbClient, session.user.id, lessonId);
 		}
 
 		// send the happy-route response
@@ -60,8 +59,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 	finally {
 		// Close the database connection
-		if(mysql !== undefined) {
-			mysql.end();
+		if(dbClient) {
+			await dbClient.clean();
+			dbClient.end();
 		}
 	}
 };

@@ -1,11 +1,5 @@
-# flyctl launch added from .gitignore
-# Standard Node.js ignoreable files
-**/node_modules
-
-# Next.js artifacts
-**/.next
-**/out
-
-# PWA
-**/public/sw.js*
-**/public/workbox-*.js*
+.git/
+node_modules/
+.next/
+public/sw.js
+public/workbox-*.js

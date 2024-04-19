@@ -1,14 +1,13 @@
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
+import { removeSlashes } from "slashes";
 import { connectToDatabase, getLessonPart } from "@util/database";
-
+import { LessonPartResponseType } from "@customTypes/lesson";
+import type ServerlessClient from "serverless-postgres";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Session } from "next-auth";
 import type { User } from "next-auth";
-import type { ServerlessMysql } from "serverless-mysql";
 import type { ApiResponse } from "@customTypes/api";
-
 import type { ILessonPartsTableRow } from "@customTypes/database";
-import { LessonPartResponseType } from "@customTypes/lesson";
 
 
 
@@ -24,7 +23,7 @@ export type Response = ApiResponse<
  * Main function for this API route.
  */
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	let mysql: ServerlessMysql | undefined;
+	let dbClient: ServerlessClient | undefined;
 	let session: Session | null;
 
 	try {
@@ -44,10 +43,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 
 		// connect to the database
-		mysql = await connectToDatabase();
+		dbClient = await connectToDatabase();
 
 		// query the database for the particular lesson
-		const lessonPart = await getLessonPart(mysql, partNumber).catch(err => {
+		const lessonPart = await getLessonPart(dbClient, partNumber).catch(err => {
 			throw err;
 		});
 
@@ -61,7 +60,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		let resp: Partial<Response> = {
 			timestamp: (new Date()).toISOString(),
 			id: lessonPart.id,
-			content: processedLessonContent,
+			content: removeSlashes(processedLessonContent),
 			pause: lessonPart.pause,
 			type: lessonPart.type,
 		};
@@ -84,8 +83,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 	finally {
 		// Close the database connection
-		if(mysql !== undefined) {
-			mysql.end();
+		if(dbClient) {
+			dbClient.end();
 		}
 	}
 };
@@ -94,7 +93,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 /**
  * Helper function which templates in the user's name to the message wherever it finds "[[NAME]]"
  */
-function processMessage(messageText: string, user: User | null): string {
+function processMessage(messageText: string, user: Omit<User, "id"> | null): string {
 	// Replace "[[NAME]]" with the user's first name
 	const nameRegex = /\s?\[\[NAME\]\]/gm;
 	if(nameRegex.test(messageText)) {

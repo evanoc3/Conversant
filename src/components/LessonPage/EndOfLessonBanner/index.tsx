@@ -1,6 +1,5 @@
 import Link from "next/link";
 import styles from "./EndOfLessonBanner.module.scss";
-
 import type { PropsWithChildren } from "react";
 
 
@@ -20,29 +19,17 @@ export default function EndOfLessonBanner(props: Props): JSX.Element {
 				<div id={styles["choices-row"]}>
 					{
 						(props.nextLesson !== null) ? (
-							<Link href={`/lesson/${props.nextLesson}`}>
-								<a href={`/lesson/${props.nextLesson}`} className={styles["choice"]}>
-									Next Lesson
-								</a>
-							</Link>
+							<Link href={`/lesson/${props.nextLesson}`} className={styles["choice"]}>Next Lesson</Link>
 						) : ""
 					}
 
 					{
 						(props.topic !== undefined) ? (
-							<Link href={`/topic/${props.topic}`}>
-								<a href={`/topic/${props.topic}`} className={styles["choice"]}>
-									View other lessons in { props.topicShortLabel ?? "topic" }
-								</a>
-							</Link>
+							<Link href={`/topic/${props.topic}`} className={styles["choice"]}>View other lessons in { props.topicShortLabel ?? "topic" }</Link>
 						) : "" 
 					}
 
-					<Link href="/home">
-						<a href="/home" className={styles["choice"]}>
-							Return home
-						</a>
-					</Link>
+					<Link href="/home" className={styles["choice"]}>Return home</Link>
 				</div>
 			</div>
 		</div>

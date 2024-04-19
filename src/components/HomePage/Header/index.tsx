@@ -30,12 +30,8 @@ export default class Header extends Component<Props, State> {
 	public render(): JSX.Element {
 		return (
 			<header id={styles["header"]}>
-				<h1 id={styles["title"]}>
-					<Link href="/">
-						<a id={styles["title-link"]}>
-							Conversant
-						</a>
-					</Link>
+				<h1 id={styles["title"]} >
+					<Link href="/" id={styles["title-link"]}>Conversant</Link>
 				</h1>
 
 				<div className={styles["spacer"]} />

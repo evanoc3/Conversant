@@ -1,51 +1,32 @@
-import serverlessMysql from "serverless-mysql";
-
-import type { ServerlessMysql } from "serverless-mysql";
-import type { ConnectionConfig } from "mysql";
+import ServerlessClient from "serverless-postgres";
+import type { Config } from "serverless-postgres";
 import type { Lesson } from "@customTypes/lesson";
 import type { ILessonPartsTableRow } from "@customTypes/database";
 
 
-export function getConnectionConfig(): ConnectionConfig {
-	const matches = /^mysql:\/\/(\w+):(\w+)@([\.\w-]+)(?::(\d+))?\/(\w+)$/gi.exec(process.env.AUTH_DATABASE!);
-
-	if(matches === null || matches.length < 5) {
-		throw new Error("failed to parse the database connection string");
-	}
-
-	let config: ConnectionConfig = {
-		user: matches[1],
-		password: matches[2],
-		host: matches[3]
-	};
-
-	if (matches.length === 6) {
-		config.port = Number(matches[4]);
-		config.database = matches[5];
-	} else {
-		config.database = matches[4];
-	}
-
-	return config;
+export function getConnectionConfig(): Config {
+	return {
+		connectionString: process.env.DATABASE!,
+		debug: process.env.NODE_ENV === "development"
+	} as Config;
 }
 
 
-export async function connectToDatabase(): Promise<ServerlessMysql> {
-	// Create the ServerlessMysql object with a config from `getDatabaseConfig()`
-	const mysql = serverlessMysql({
-		config: getConnectionConfig(),
-		onConnect: () => console.log("Connection to the database was successful"),
-		onClose: () => console.log("Closed the connection to the database successfully")
-	});
+export async function connectToDatabase(): Promise<ServerlessClient> {
+	// Create the serverless-postgres client object with a config from `getDatabaseConfig()`
+	const client = new ServerlessClient(getConnectionConfig());
+
+	// @ts-ignore
+	client._library.types.setTypeParser(client._library.types.builtins.INT4, val => parseInt(val));
 
 	// Wait for it to actually connect, otherwise throw an error
-	await mysql.connect().catch(err => {
-		console.error(`Error: failed to connect to the database. Error message: ${err}`);
+	await client.connect().catch(err => {
+		console.error(`Error: failed to connect to the database. Error message: ${err}.`);
 		throw err;
 	});
 
-	// return the ServerlessMysql instance for use by API routes
-	return mysql;
+	// return the serverless-postgres client instance for use by API routes
+	return client;
 }
 
 
@@ -55,18 +36,20 @@ export async function connectToDatabase(): Promise<ServerlessMysql> {
  * @throws any database related error that occurs during the query.
  * @throws If more or less than 1 row is returned by the database.
  */
-export async function getLessonPart(mysql: ServerlessMysql, id: number): Promise<ILessonPartsTableRow> {
-	const rows = await mysql.query<ILessonPartsTableRow[]>(`
-		SELECT id, lesson, content, pause, type, proceedTo, onYes, onNo, onA, onB, onC, onD, onUndecided
+export async function getLessonPart(dbClient: ServerlessClient, id: number): Promise<ILessonPartsTableRow> {
+	const res = await dbClient.query(`
+		SELECT id, lesson, content, pause, type, "proceedTo", "onYes", "onNo", "onA", "onB", "onC", "onD", "onUndecided"
 		FROM lesson_parts
-		WHERE id = ?
+		WHERE id = $1
 	`, [ id ]).catch(err => { throw err; });
 
-	if(rows.length !== 1) {
+	if(res.rows.length !== 1) {
 		throw new Error();
 	}
 
-	return rows[0];
+	await dbClient.clean();
+
+	return res.rows[0];
 }
 
 
@@ -75,12 +58,12 @@ export async function getLessonPart(mysql: ServerlessMysql, id: number): Promise
  * 
  * @throws Any database-related error occurs during the query.
  */
- export async function checkIfUserHasCompletedLesson(mysql: ServerlessMysql, userId: string, lessonId: string): Promise<boolean> {
-	const rows = await mysql.query<any[]>(`
+ export async function checkIfUserHasCompletedLesson(dbClient: ServerlessClient, userId: string, lessonId: string): Promise<boolean> {
+	const res = await dbClient.query(`
 		SELECT id, user, lesson FROM lesson_completions WHERE user = ? AND lesson = ?
 	`, [userId, lessonId]).catch(err => { throw err });
 	
-	return rows.length >= 1;
+	return res.rows.length >= 1;
 }
 
 
@@ -90,22 +73,22 @@ export async function getLessonPart(mysql: ServerlessMysql, id: number): Promise
  * @throws Any database-related error occurs during the query.
  * @throws if 0 or more than 1 row is returned by the database query, as it searches by primary key there should only be 1 result.
  */
-export async function getLesson(mysql: ServerlessMysql, lessonId: string): Promise<Lesson> {
-	const lessonRows = await mysql.query<Lesson[]>(`
-		SELECT lessons.id, title, topic, topics.label as topicLabel, firstPart, nextLesson
+export async function getLesson(dbClient: ServerlessClient, lessonId: string): Promise<Lesson> {
+	const res = await dbClient.query(`
+		SELECT lessons.id, title, topic, topics.label as "topicLabel", "firstPart", lessons."nextLesson"
 		FROM lessons
 		LEFT JOIN topics ON lessons.topic = topics.id
-		WHERE lessons.id = ?
+		WHERE lessons.id = $1
 	`, [ lessonId ]).catch(err => {
 		console.error(`Error: failed to query database for lesson ${lessonId}. Error message: `, err);
 		throw new Error(err);
 	});
 
 	// if anything except 1 rows is returned then throw an error
-	if(lessonRows.length !== 1) {
-		console.error(`Error: found ${lessonRows.length} rows when querying the database for lessonId \"${lessonId}\"`);
+	if(res.rows.length !== 1) {
+		console.error(`Error: found ${res.rows.length} rows when querying the database for lessonId \"${lessonId}\"`);
 		throw new Error("No lesson was found");
 	}
 
-	return lessonRows[0];
+	return res.rows[0];
 }

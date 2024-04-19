@@ -54,7 +54,7 @@ const TopicPage: NextPage = (props) => {
 							<div>
 								Loading...
 								<br />
-								<Link href="/"><a href="/">Go back to home</a></Link>
+								<Link href="/">Go back to home</Link>
 							</div>
 						)
 					}

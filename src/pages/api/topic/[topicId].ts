@@ -1,8 +1,8 @@
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
+import { removeSlashes } from "slashes";
 import { connectToDatabase } from "@util/database";
-
 import type { NextApiRequest, NextApiResponse } from "next";
-import type { ServerlessMysql } from "serverless-mysql";
+import type ServerlessClient from "serverless-postgres";
 import type { ApiResponse } from "@customTypes/api";
 import type { IAuthSession } from "@customTypes/auth";
 
@@ -41,7 +41,7 @@ export type Response = ApiResponse<TopicInformation>
  * Main function for this API route.
  */
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-	let mysql: ServerlessMysql | undefined;
+	let dbClient: ServerlessClient | undefined;
 
 	try {
 
@@ -53,16 +53,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		const topicId = (req.query["topicId"] as string) ?? "";
 
 		// connect to the database
-		const mysql = await connectToDatabase();
+		dbClient = await connectToDatabase();
 
 		// perform the query
-		const topicMetadata = await getTopicMetadata(mysql, topicId).catch(err => { throw err; });
-		const topicLessonData = await getTopicLessonData(mysql, topicId, userId).catch(err => { throw err; });
+		const topicMetadata = await getTopicMetadata(dbClient, topicId).catch(err => { throw err; });
+		const topicLessonData = await getTopicLessonData(dbClient, topicId, userId).catch(err => { throw err; });
 
 		// send an OK response
 		res.status(200).json({
 			timestamp: (new Date()).toISOString(),
 			...topicMetadata,
+			description: removeSlashes(topicMetadata.description),
 			lessons: topicLessonData
 		} as Response);
 	}
@@ -75,8 +76,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 	finally {
 		// Perform Serverless MySQL cleanup
-		if(mysql !== undefined) {
-			await mysql.end();
+		if(dbClient) {
+			await dbClient.end();
 		}
 	}
 };
@@ -84,67 +85,58 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 type TopicMetadata = Pick<TopicInformation, "id" | "label" | "description" | "lessonCount">
 
-async function getTopicMetadata(mysql: ServerlessMysql, topicId: string): Promise<TopicMetadata> {
+async function getTopicMetadata(dbClient: ServerlessClient, topicId: string): Promise<TopicMetadata> {
 	// get metadata about the topic
-	const topicInfoRow = await mysql.query<TopicMetadata[]>(`
-		SELECT topics.id, label, topics.description, COUNT(*) as lessonCount
+	const res = await dbClient.query(`
+		SELECT topics.id, label, topics.description, COUNT(*) as "lessonCount"
 		FROM topics
 		RIGHT JOIN lessons ON lessons.topic = topics.id
-		WHERE topics.id = ?
+		WHERE topics.id = $1
+		GROUP BY topics.id, label, topics.description
 	`, [ topicId ]).catch(err => {
 		console.error("Error: failed to query database for topic information. Error: ", err);
 		throw err;
 	});
 
-	if(topicInfoRow.length !== 1 || topicInfoRow[0].id === null) {
+	if(res.rows.length !== 1 || res.rows[0].id === null) {
 		throw new Error("No matching topic was found");
 	}
 
-	return topicInfoRow[0];
+	return res.rows[0];
 }
 
 
-interface ITopicLessonData<P> {
-	id: number,
-	title: string,
-	description: string,
-	is_completed: P
-}
-
-type RawLessonData = ITopicLessonData<number>
-
-async function getTopicLessonData(mysql: ServerlessMysql, topicId: string, userId: string | null): Promise<TopicLessonInformation[]> {
-	let query: Promise<RawLessonData[]>;
+async function getTopicLessonData(dbClient: ServerlessClient, topicId: string, userId: string | null): Promise<TopicLessonInformation[]> {
+	let res: Promise<any>;
 
 	// Run the query and check for completion if a userId is provided
 	if(userId !== null) {
-		query = mysql.query<RawLessonData[]>(`
-			SELECT id, title, description, (SELECT COUNT(*) FROM lesson_completions lc WHERE lc.\`user\` = ? AND lc.lesson = l.id) as is_completed
+		res = dbClient.query(`
+			SELECT id, title, description, (SELECT COUNT(*) FROM lesson_completions lc WHERE lc.user = $1 AND lc.lesson = l.id) as is_completed
 			FROM lessons l
-			WHERE l.topic = ?	
+			WHERE l.topic = $2
 		`, [ userId, topicId ]);
 	}
 	// Run the query without checking for completion if a userId is not provided
 	else {
-		query = mysql.query<RawLessonData[]>(`
-		SELECT id, title, description, false as is_completed
-		FROM lessons 
-		WHERE topic = ?	
-	`, [ topicId ]);
+		res = dbClient.query(`
+			SELECT id, title, description, false as is_completed
+			FROM lessons 
+			WHERE topic = $1
+		`, [ topicId ]);
 	}
 
 
-	return await query.then<TopicLessonInformation[]>(rows => {
+	return await res.then<any>(res => {
 		// mutate the data returned to include additional, calculated fields
-		const newRows = rows.map<ITopicLessonData<number | boolean>>(row => {
+		return (res.rows as any).map((row: any) => {
 			return {
 				...row,
+				description: removeSlashes(row.description),
 				is_completed: row.is_completed >= 1,
 				href: `/lesson/${encodeURIComponent(row.id)}`
 			};
-		}) as TopicLessonInformation[];
-
-		return newRows;
+		}) as TopicLessonInformation[];;
 	})
 	.catch(err => {
 		console.error("Error: failed to query database for topic information. Error: ", err);
